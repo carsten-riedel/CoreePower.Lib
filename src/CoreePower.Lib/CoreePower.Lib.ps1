@@ -41,11 +41,11 @@ function CanExecuteInDesiredScope {
         } elseif (HasLocalAdministratorClaim) {
             # The current user is not running as admin, but is a member of the local admin group
             Write-Error "The operation cannot be executed in the desired scope due to insufficient privileges of the process. You need to run the process as an administrator."
-            exit
+            return $false
         } else {
             # The current user is not an administrator
             Write-Error "The operation cannot be executed in the desired scope due to insufficient privileges of the user. You need to run the process as an administrator for this you need to be member of the local Administrators group."
-            exit
+            return $false
         }
     }
 }
@@ -58,7 +58,10 @@ function ChangeSomethingScoped {
     )
 
     # Check if the current process can execute in the desired scope
-    CanExecuteInDesiredScope -Scope $Scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
 
     if ($Scope -eq [Scope]::CurrentUser)
     {
