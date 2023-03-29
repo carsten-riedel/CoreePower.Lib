@@ -1,3 +1,11 @@
+function NewGuid {
+    [alias("nguid")]
+    param()
+    $guid = New-Guid
+    $guidString = $guid.ToString()
+    return $guidString
+}
+
 enum Scope {
     CurrentUser = 1
     LocalMachine = 2
