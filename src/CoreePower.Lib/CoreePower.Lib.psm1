@@ -2,10 +2,9 @@
     CoreePower.Lib root module
 #>
 
+# You can specify multiple .ps1 files here, but it's recommended to keep module functionality in a single file.
+# Calling functions directly in .psm1 files requires enhanced system configuration, which is not standard practice.
+
 . "$PSScriptRoot\CoreePower.Lib.ps1"
 
-# Use Export-ModuleMember because FunctionsToExport can not export enums.
-Export-ModuleMember -Enum Scope
-Export-ModuleMember -Function HasLocalAdministratorClaim -Alias IsLocalAdministrator
-Export-ModuleMember -Function CanExecuteInDesiredScope
-Export-ModuleMember -Function NewGuid -Alias nguid
+

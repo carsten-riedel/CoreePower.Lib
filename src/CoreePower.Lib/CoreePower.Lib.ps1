@@ -6,13 +6,9 @@ function NewGuid {
     return $guidString
 }
 
-enum Scope {
-    CurrentUser = 1
-    LocalMachine = 2
-}
-
 # Check if the current user is a local administrator on the machine, to be 100% accurate you normaly need to check the process claim, have fun :)
 function HasLocalAdministratorClaim {
+    [alias("IsLocalAdministrator")]
     $claims = (New-Object System.Security.Principal.WindowsPrincipal([System.Security.Principal.WindowsIdentity]::GetCurrent())).Claims
     $administratorsSid = New-Object System.Security.Principal.SecurityIdentifier([System.Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid, $null)
 
@@ -27,6 +23,7 @@ function HasLocalAdministratorClaim {
 
 # Check if the current process can execute in the desired scope
 function CanExecuteInDesiredScope {
+    [alias("cedc")]
     param (
         [Scope]$Scope
     )

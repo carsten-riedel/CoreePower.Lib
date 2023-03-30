@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.5'
+ModuleVersion = '0.0.0.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = '(c) 2022 Carsten Riedel. All rights reserved.'
 Description = 'Powershell library module for the CoreePower project'
 
 # Minimum version of the Windows PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '5.1'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
@@ -60,7 +60,7 @@ Description = 'Powershell library module for the CoreePower project'
 # ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
-# TypesToProcess = @()
+TypesToProcess = @('CoreePower.Lib.ps1xml')
 
 # Format files (.ps1xml) to be loaded when importing this module
 # FormatsToProcess = @()
@@ -69,7 +69,7 @@ Description = 'Powershell library module for the CoreePower project'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-#FunctionsToExport = 'NewGuid' , 'IsLocalAdministrator'
+FunctionsToExport = 'NewGuid' , 'CanExecuteInDesiredScope', 'HasLocalAdministratorClaim'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
@@ -78,7 +78,7 @@ CmdletsToExport = '*'
 VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-#AliasesToExport = 'nguid'
+AliasesToExport = 'nguid' , 'cedc' , 'IsLocalAdministrator'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
