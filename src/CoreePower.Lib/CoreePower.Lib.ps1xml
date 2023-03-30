@@ -1,6 +1,0 @@
-# Type definitions for the module defined by TypesToProcess in the psd1 file.
-
-enum Scope {
-    CurrentUser = 1
-    LocalMachine = 2
-}

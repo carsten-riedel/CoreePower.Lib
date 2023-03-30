@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.6'
+ModuleVersion = '0.0.0.7'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -60,7 +60,7 @@ PowerShellVersion = '5.1'
 # ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
-TypesToProcess = @('CoreePower.Lib.ps1xml')
+#TypesToProcess = @()
 
 # Format files (.ps1xml) to be loaded when importing this module
 # FormatsToProcess = @()
@@ -72,10 +72,10 @@ TypesToProcess = @('CoreePower.Lib.ps1xml')
 FunctionsToExport = 'NewGuid' , 'CanExecuteInDesiredScope', 'HasLocalAdministratorClaim'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+#CmdletsToExport = '*'
 
 # Variables to export from this module
-VariablesToExport = '*'
+#VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = 'nguid' , 'cedc' , 'IsLocalAdministrator'

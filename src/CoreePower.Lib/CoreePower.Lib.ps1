@@ -1,3 +1,9 @@
+
+enum Scope {
+    CurrentUser = 1
+    LocalMachine = 2
+}
+
 function NewGuid {
     [alias("nguid")]
     param()
