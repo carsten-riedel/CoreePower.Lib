@@ -17,7 +17,7 @@ $newGuid = Generate-GuidAsString
 This function has an alias "ggas" for ease of use.
 #>
 
-function Generate-GuidAsString {
+function GenerateGuidAsString {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     [alias("ggas")]
     param()
