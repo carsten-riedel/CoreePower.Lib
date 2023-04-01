@@ -1,8 +1,9 @@
-
-enum Scope {
-    CurrentUser = 1
-    LocalMachine = 2
+Add-Type @'
+public enum Scope {
+    CurrentUser,
+    LocalMachine
 }
+'@
 
 <#
 .SYNOPSIS
@@ -104,7 +105,7 @@ function CanExecuteInDesiredScope {
     } elseif ($Scope -eq [Scope]::LocalMachine) {
         if ($IsAdmin -eq $true) {
             return $true
-        } elseif (IsLocalAdministratorsGroup) {
+        } elseif (CouldRunAsAdministrator) {
             # The current user is not running as admin, but is a member of the local admin group
             Write-Error "The operation cannot be executed in the desired scope due to insufficient privileges of the process. You need to run the process as an administrator."
             return $false
