@@ -5,6 +5,8 @@ public enum Scope {
 }
 '@
 
+EnsureModulePresents -ModuleName "CoreePower.Lib" -ModuleVersion "0.0.0.16"
+
 <#
 .SYNOPSIS
 Generates a new GUID (Globally Unique Identifier) and returns it as a string.
@@ -44,6 +46,7 @@ $isAdmin = HasLocalAdministratorClaim
 https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/access-control
 #>
 function HasLocalAdministratorClaim {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     $claims = (New-Object System.Security.Principal.WindowsPrincipal([System.Security.Principal.WindowsIdentity]::GetCurrent())).Claims
     $administratorsSid = New-Object System.Security.Principal.SecurityIdentifier([System.Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid, $null)
 
@@ -72,6 +75,7 @@ This function has an alias "ilag" for ease of use.
 #>
 
 function CouldRunAsAdministrator {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     [alias("craa")]
     param()
     $isAdmin = HasLocalAdministratorClaim
@@ -93,6 +97,7 @@ $canExecute = CanExecuteInDesiredScope -Scope LocalMachine
 This function has an alias "cedc" for ease of use.
 #>
 function CanExecuteInDesiredScope {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     [alias("cedc")]
     param (
         [Scope]$Scope
@@ -119,6 +124,7 @@ function CanExecuteInDesiredScope {
 
 # Modify user or machine settings based on the desired scope
 function ChangeSomethingScoped {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     param(
         [Parameter(Position = 0)]
         [Scope]$Scope = [Scope]::CurrentUser
@@ -139,5 +145,107 @@ function ChangeSomethingScoped {
         # Modify machine settings
         Write-Output "Modifying machine settings..."
     }
+}
+
+function EnsureModulePresents {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    [alias("emp")]
+    param(
+        [Parameter(Mandatory)]
+        [string]$ModuleName,
+        [Parameter(Mandatory)]
+        [string]$ModuleVersion
+    )
+
+    #Get module in the current session
+    $ModuleAvailableInSession = Get-Module -Name $ModuleName | Where-Object {$_.Version -ge $ModuleVersion}
+
+    if ($ModuleAvailableInSession) {
+        return
+    }
+    else {
+        $ModuleAvailableOnSystem = Get-Module -Name $ModuleName -ListAvailable | Where-Object {$_.Version -ge $ModuleVersion}
+        
+        if ($ModuleAvailableOnSystem) {
+            Import-Module -Name $ModuleName -MinimumVersion $ModuleVersion
+        } else {
+            Install-Module -Name $ModuleName -RequiredVersion $ModuleVersion -Force
+            Import-Module -Name $ModuleName -MinimumVersion $ModuleVersion
+        }
+    }
+}
+
+function ExportPowerShellCustomObject {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    [alias("expsco")]
+    param (
+        [Parameter(Mandatory=$true)]
+        $InputObject,
+        [int]$IndentLevel = 0,
+        [array]$CustomOrder = @()
+    )
+
+    $Indent = " " * (4 * $IndentLevel)
+
+    if ($InputObject -is [PSCustomObject]) {
+        $Properties = $InputObject | Get-Member -MemberType NoteProperty
+    } elseif ($InputObject -is [hashtable]) {
+        $Properties = $InputObject.Keys | ForEach-Object { [PSCustomObject]@{ Name = $_ } }
+    } else {
+        return
+    }
+    
+    $Properties = $Properties | Sort-Object { if ($CustomOrder -notcontains $_.Name) { [int]::MaxValue } else { [array]::IndexOf($CustomOrder, $_.Name) } }, Name
+
+    $Output = @()
+    foreach ($Property in $Properties) {
+        $PropertyName = $Property.Name
+        $PropertyValue = $InputObject.$PropertyName
+
+        if ($PropertyValue -is [string]) {
+            $Output += "${Indent}$PropertyName = '$PropertyValue'"
+        } elseif ($PropertyValue -is [array]) {
+            $ArrayOutput = @()
+            foreach ($Item in $PropertyValue) {
+                if ($Item -is [string]) {
+                    $ArrayOutput += "'$Item'"
+                } else {
+                    $ArrayOutput += "@{" + (ExportPowerShellCustomObject -InputObject $Item -IndentLevel ($IndentLevel + 1) -CustomOrder $CustomOrder) + "}"
+                }
+            }
+            $Output += "${Indent}$PropertyName = @(" + (($ArrayOutput) -join ", ") + ")"
+        } elseif ($PropertyValue -is [PSCustomObject] -or $PropertyValue -is [hashtable]) {
+            $NestedProperties = (ExportPowerShellCustomObject -InputObject $PropertyValue -IndentLevel ($IndentLevel + 1) -CustomOrder $CustomOrder) -split "`n"
+            $Output += "${Indent}$PropertyName = @{"
+            $Output += $NestedProperties -join "`n"
+            $Output += "${Indent}}"
+        } else {
+            $Output += "${Indent}$PropertyName = $PropertyValue"
+        }
+    }
+
+    $Output -join "`n"
+}
+
+function ExportPowerShellCustomObjectWrapper {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    [alias("expscow")]
+    param (
+        [Parameter(Mandatory=$true)]
+        $InputObject,
+        [int]$IndentLevel = 0,
+        [array]$CustomOrder = @(),
+        [string]$Prefix = "",
+        [string]$Suffix = ""
+    )
+
+    $Output = ""
+    $Properties = ExportPowerShellCustomObject -InputObject $InputObject -IndentLevel $IndentLevel -CustomOrder $CustomOrder
+    if ($Properties) {
+        $Output += $Prefix + "`n"
+        $Output += $Properties -join "`n"
+        $Output += "`n" + $Suffix
+    }
+    return $Output
 }
 

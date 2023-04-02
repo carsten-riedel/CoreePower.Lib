@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.14'
+ModuleVersion = '0.0.0.16'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -72,7 +72,10 @@ PowerShellVersion = '5.1'
 FunctionsToExport = 'GenerateGuidAsString' ,
                     'HasLocalAdministratorClaim',
                     'CouldRunAsAdministrator',
-                    'CanExecuteInDesiredScope'
+                    'CanExecuteInDesiredScope',
+                    'EnsureModulePresents',
+                    'ExportPowerShellCustomObject',
+                    'ExportPowerShellCustomObjectWrapper'
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 #CmdletsToExport = '*'
 
@@ -80,7 +83,7 @@ FunctionsToExport = 'GenerateGuidAsString' ,
 #VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'ggas' , 'craa' , 'cedc' 
+AliasesToExport = 'ggas' , 'craa' , 'cedc' , 'emp' , 'expsco' , 'expscow'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -100,7 +103,7 @@ PrivateData = @{
         Tags = 'lib', 'windows'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.14/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.16/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/carsten-riedel/CoreePower.Lib'
