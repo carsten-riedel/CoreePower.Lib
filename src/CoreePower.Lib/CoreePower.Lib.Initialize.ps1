@@ -1,3 +1,12 @@
+if (-not ([System.Management.Automation.PSTypeName]'Scope').Type) {
+    Add-Type @"
+    public enum Scope {
+        CurrentUser,
+        LocalMachine
+    }
+"@
+}
+
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     $nugetSource = Get-PackageSource -Name NuGet -ErrorAction SilentlyContinue
@@ -16,9 +25,17 @@ function Initialize-NugetSourceRegistered {
 
 function Initialize-NugetPackageProviderInstalled {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param (
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
-         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null
+         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
          if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
             Write-Output "NuGet package provider successfully installed."
          }
@@ -32,29 +49,84 @@ function Initialize-NugetPackageProviderInstalled {
 
 function Initialize-PowerShellGetLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param()
-    Update-ModulesLatest -ModulNames @("PowerShellGet")
+    param (
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+    Update-ModulesLatest -ModulNames @("PowerShellGet") -Scope $Scope
 }
 
 function Initialize-PackageManagementLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param()
-    Update-ModulesLatest -ModulNames @("PackageManagement")
+    param (
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+    Update-ModulesLatest -ModulNames @("PackageManagement") -Scope $Scope
 }
 
 function Initialize-Powershell {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param()
-    Initialize-NugetPackageProviderInstalled
-    Initialize-PowerShellGetLatest
-    Initialize-PackageManagementLatest
+    param (
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+
+    Initialize-NugetPackageProviderInstalled -Scope $Scope
+    Initialize-PowerShellGetLatest  -Scope $Scope
+    Initialize-PackageManagementLatest  -Scope $Scope
     Initialize-NugetSourceRegistered
 }
 
 function Initialize-CorePowerLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param()
-    Update-ModulesLatest -ModulNames @("CoreePower.Module","CoreePower.Config")
+    param (
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+    Update-ModulesLatest -ModulNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
+}
+
+function Get-ModuleInfoExtended {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string[]] $ModuleNames,
+        [Scope]$Scope = [Scope]::LocalMachine
+    )
+    
+    $LocalModulesAll = Get-Module -ListAvailable $ModuleNames |  Select-Object *,
+        @{ Name='BasePath' ; Expression={ $_.ModuleBase.TrimEnd($_.Version.ToString()).TrimEnd('\').TrimEnd($_.Name).TrimEnd('\')  } },
+        @{ Name='IsMachine' ; Expression={ ($_.ModuleBase -Like "*$env:ProgramFiles*") -or ($_.ModuleBase -Like "*$env:ProgramW6432*")  } },
+        @{ Name='IsUser' ; Expression={ ($_.ModuleBase -Like "*$env:userprofile*") } },
+        @{ Name='IsSystem' ; Expression={ ($_.ModuleBase -Like "*$env:SystemRoot*")  } } 
+
+    if ($Scope -eq [Scope]::LocalMachine)
+    {
+        return $LocalModulesAll
+    }
+    else {
+        $UserModules = $LocalModulesAll | Where-Object { $_.IsUser -eq $true }
+        return $UserModules
+    }
+
 }
 
 <#
@@ -76,11 +148,12 @@ function Find-UpdatableModules {
     param(
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string[]] $ModuleNames
+        [string[]] $ModuleNames,
+        [Scope]$Scope = [Scope]::LocalMachine
     )
     
     $AvailableUpdates = Find-Module -Name $ModuleNames -Repository PSGallery | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
-    $LocalModulesAll = Get-Module -ListAvailable $ModuleNames | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
+    $LocalModulesAll = Get-ModuleInfoExtended -ModuleNames $ModuleNames -Scope $Scope | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
     $LatestLocalModules = $LocalModulesAll | Group-Object Name | ForEach-Object { $_.Group | Select-Object -First 1  }
 
     $ModulesToUpdate = $AvailableUpdates | Where-Object { $currentUpdate = $_; -not ($LatestLocalModules | Where-Object { $_.Name -eq $currentUpdate.Name -and $_.Version -eq $currentUpdate.Version }) }
@@ -107,10 +180,16 @@ function Find-LocalOutdatedModules {
     param(
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string[]] $ModuleNames
+        [string[]] $ModuleNames,
+        [Scope]$Scope = [Scope]::CurrentUser
     )
-    
-    $AllLocalModules = Get-Module -ListAvailable $ModuleNames | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
+
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+
+    $AllLocalModules = Get-ModuleInfoExtended -ModuleNames $ModuleNames -Scope $Scope | Sort-Object Name, Version -Descending
     $OutdatedLocalModules = $AllLocalModules | Group-Object Name | ForEach-Object { $_.Group | Select-Object -Skip 1  }
 
     return $OutdatedLocalModules
@@ -135,9 +214,15 @@ function Update-ModulesLatest {
     param(
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string[]] $ModuleNames
+        [string[]] $ModuleNames,
+        [Scope]$Scope = [Scope]::CurrentUser
     )
-    
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+
     $UpdatableModules = Find-UpdatableModules -ModuleNames $ModuleNames
     $UpdatesApplied = $false
 
@@ -147,7 +232,7 @@ function Update-ModulesLatest {
             Write-Output "Installing user module: $($module.Name) $($module.Version)" 
         }
 
-        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope CurrentUser -Force -AllowClobber | Out-Null
+        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         
         if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
             Write-Output "Importing user module: $($module.Name) $($module.Version)"
@@ -166,4 +251,32 @@ function Update-ModulesLatest {
     }
 }
 
+#CreateModule -Path "C:\temp" -ModuleName "CoreePower.Module" -Description "Library for module management" -Author "Carsten Riedel" 
+#UpdateModuleVersion -Path "C:\temp\CoreePower.Module"
+
+function Remove-ModulesOld {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$ModuleNames,
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+
+    $outdated = Find-LocalOutdatedModules -ModuleNames $ModuleNames -Scope $Scope
+ 
+    foreach ($item in $outdated)
+    {
+        $DirVers = "$($item.Path)\$($item.Name)\$($item.Version)"
+        Remove-Item -Recurse -Force -Path $DirVers
+        Write-Host "User rights removed user module:" $DirVers
+    }
+ 
+}
 
