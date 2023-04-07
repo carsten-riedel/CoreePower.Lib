@@ -57,7 +57,7 @@ function Initialize-PowerShellGetLatest {
     {
         return
     }
-    Update-ModulesLatest -ModulNames @("PowerShellGet") -Scope $Scope
+    Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope
 }
 
 function Initialize-PackageManagementLatest {
@@ -70,7 +70,7 @@ function Initialize-PackageManagementLatest {
     {
         return
     }
-    Update-ModulesLatest -ModulNames @("PackageManagement") -Scope $Scope
+    Update-ModulesLatest -ModuleNames @("PackageManagement") -Scope $Scope
 }
 
 function Initialize-Powershell {
@@ -100,7 +100,7 @@ function Initialize-CorePowerLatest {
     {
         return
     }
-    Update-ModulesLatest -ModulNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
+    Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
 }
 
 function Get-ModuleInfoExtended {
@@ -109,7 +109,8 @@ function Get-ModuleInfoExtended {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string[]] $ModuleNames,
-        [Scope]$Scope = [Scope]::LocalMachine
+        [Scope]$Scope = [Scope]::LocalMachine,
+        [bool]$ExcludeSystemModules = $false
     )
     
     $LocalModulesAll = Get-Module -ListAvailable $ModuleNames |  Select-Object *,
@@ -118,11 +119,15 @@ function Get-ModuleInfoExtended {
         @{ Name='IsUser' ; Expression={ ($_.ModuleBase -Like "*$env:userprofile*") } },
         @{ Name='IsSystem' ; Expression={ ($_.ModuleBase -Like "*$env:SystemRoot*")  } } 
 
-    if ($Scope -eq [Scope]::LocalMachine)
+    if ($Scope -eq [Scope]::LocalMachine -and ($ExcludeSystemModules -eq $false))
     {
         return $LocalModulesAll
     }
-    else {
+    elseif ($Scope -eq [Scope]::LocalMachine -and ($ExcludeSystemModules -eq $true)) {
+        $LocalAndUser = $LocalModulesAll | Where-Object { $_.IsSystem -eq $false }
+        return $LocalAndUser
+    }
+    elseif ($Scope -eq [Scope]::CurrentUser) {
         $UserModules = $LocalModulesAll | Where-Object { $_.IsUser -eq $true }
         return $UserModules
     }
@@ -189,7 +194,7 @@ function Find-LocalOutdatedModules {
         return
     }
 
-    $AllLocalModules = Get-ModuleInfoExtended -ModuleNames $ModuleNames -Scope $Scope | Sort-Object Name, Version -Descending
+    $AllLocalModules = Get-ModuleInfoExtended -ModuleNames $ModuleNames -Scope $Scope -ExcludeSystemModules $true | Sort-Object Name, Version -Descending
     $OutdatedLocalModules = $AllLocalModules | Group-Object Name | ForEach-Object { $_.Group | Select-Object -Skip 1  }
 
     return $OutdatedLocalModules
@@ -273,10 +278,9 @@ function Remove-ModulesOld {
  
     foreach ($item in $outdated)
     {
-        $DirVers = "$($item.Path)\$($item.Name)\$($item.Version)"
+        $DirVers = "$($item.BasePath)\$($item.Name)\$($item.Version)"
         Remove-Item -Recurse -Force -Path $DirVers
         Write-Host "User rights removed user module:" $DirVers
     }
  
 }
-
