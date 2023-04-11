@@ -11,7 +11,7 @@ function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     $nugetSource = Get-PackageSource -Name NuGet -ErrorAction SilentlyContinue
     if (!$nugetSource) {
-        Register-PackageSource -Name NuGet -Location https://api.nuget.org/v3/index.json -Provider NuGet
+        Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted
         if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
             Write-Output "NuGet package source added successfully."
         }
@@ -58,6 +58,7 @@ function Initialize-PowerShellGetLatest {
         return
     }
     Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope
+    Set-PackageSource -Name PSGallery -Trusted -ProviderName PowerShellGet | Out-Null
 }
 
 function Initialize-PackageManagementLatest {
