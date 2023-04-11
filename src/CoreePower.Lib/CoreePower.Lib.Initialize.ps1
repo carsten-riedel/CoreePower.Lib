@@ -100,6 +100,11 @@ function Initialize-CorePowerLatest {
     {
         return
     }
+    
+    Initialize-NugetPackageProviderInstalled -Scope $Scope
+    Initialize-PowerShellGetLatest  -Scope $Scope
+    Initialize-PackageManagementLatest  -Scope $Scope
+    Initialize-NugetSourceRegistered
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
 }
 
