@@ -12,14 +12,11 @@ function Initialize-NugetSourceRegistered {
     $nugetSource = Get-PackageSource -Name NuGet -ErrorAction SilentlyContinue
     if (!$nugetSource) {
         Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted
-        if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output "NuGet package source added successfully."
-        }
+        Write-Output "NuGet package source added successfully."
     }
     else {
-        if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output "NuGet package source already exists."
-        }
+        Write-Output "NuGet package source already exists."
+
     }
 }
 
@@ -36,14 +33,10 @@ function Initialize-NugetPackageProviderInstalled {
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
          Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
-         if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output "NuGet package provider successfully installed."
-         }
+         Write-Output "NuGet package provider successfully installed."
     }
     else {
-        if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output   "NuGet package provider already exists."
-        }
+         Write-Output   "NuGet package provider already exists."
     }
 }
 
