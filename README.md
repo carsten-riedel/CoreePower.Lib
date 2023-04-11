@@ -2,5 +2,5 @@
 CoreePower.Lib is a set of functions that can be used to enhance the functionality of your CoreePower project.
 
 ```
-$Install="CoreePower*" ; Find-Module -Name @("PackageManagement", "PowerShellGet", "$Install") -Repository PSGallery | Select-Object Name,Version | Where-Object { -not (Get-Module -ListAvailable $_.Name) } | ForEach-Object { Install-Module -Name $_.Name -RequiredVersion $_.Version -Scope CurrentUser -Force -AllowClobber ; Import-Module -Name $_.Name -MinimumVersion $_.Version  }
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))
 ```
