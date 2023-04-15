@@ -232,9 +232,9 @@ function Update-ModulesLatest {
 
         Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         
-        Write-Output "Importing user module: $($module.Name) $($module.Version)"
+        #Write-Output "Importing user module: $($module.Name) $($module.Version)"
 
-        Import-Module -Name $module.Name -MinimumVersion $module.Version -Force | Out-Null
+        #Import-Module -Name $module.Name -MinimumVersion $module.Version -Force | Out-Null
 
         $UpdatesApplied = $true
     }
