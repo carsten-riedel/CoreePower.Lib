@@ -1,12 +1,3 @@
-if (-not ([System.Management.Automation.PSTypeName]'Scope').Type) {
-    Add-Type @"
-    public enum Scope {
-        CurrentUser,
-        LocalMachine
-    }
-"@
-}
-
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     $nugetSource = Get-PackageSource -Name NuGet -ErrorAction SilentlyContinue
@@ -101,6 +92,10 @@ function Initialize-CorePowerLatest {
     Initialize-PackageManagementLatest  -Scope $Scope
     Initialize-NugetSourceRegistered
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
+
+    #try { Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force } catch {}
+
+    #$Install=@('PowerShellGet', 'CoreePower.*') ; try { Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) { Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null } ; Find-Module -Name $Install -Repository PSGallery | Select-Object Name,Version | Where-Object { -not (Get-Module -ListAvailable -Name $_.Name | Sort-Object Version -Descending | Select-Object -First 1 | Where-Object Version -eq $_.Version) } | ForEach-Object {  Install-Module -Name $_.Name -RequiredVersion $_.Version -Scope CurrentUser -Force -AllowClobber ; Import-Module -Name $_.Name -MinimumVersion $_.Version  }
 }
 
 function Get-ModuleInfoExtended {

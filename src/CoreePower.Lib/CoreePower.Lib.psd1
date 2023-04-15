@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.34'
+ModuleVersion = '0.0.0.37'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -69,13 +69,8 @@ Description = 'Powershell library module for the CoreePower project'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'GenerateGuidAsString', 'HasLocalAdministratorClaim', 
-               'CouldRunAsAdministrator', 'CanExecuteInDesiredScope', 
-               'EnsureModulePresents', 'ExportPowerShellCustomObject', 
-               'ExportPowerShellCustomObjectWrapper', 
-               'ExportPowerShellCustomObject2', 
-               'ExportPowerShellCustomObjectWrapper2', 'ConvertToExpression', 
-               'Initialize-NugetSourceRegistered', 
+FunctionsToExport = 'HasLocalAdministratorClaim', 'CouldRunAsAdministrator', 
+               'CanExecuteInDesiredScope', 'Initialize-NugetSourceRegistered', 
                'Initialize-NugetPackageProviderInstalled', 
                'Initialize-PowerShellGetLatest', 
                'Initialize-PackageManagementLatest', 'Initialize-Powershell', 
@@ -84,14 +79,13 @@ FunctionsToExport = 'GenerateGuidAsString', 'HasLocalAdministratorClaim',
                'Get-ModuleInfoExtended', 'Remove-ModulesOld'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'ggas', 'craa', 'cedc', 'emp', 'expsco', 'expscow', 'expsco2', 'expscow2', 'cte', 
-               'cpcp'
+AliasesToExport = 'cpcp'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -111,7 +105,7 @@ PrivateData = @{
         Tags = 'lib', 'windows'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.34/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.37/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         # ProjectUri = ''
