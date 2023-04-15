@@ -86,6 +86,7 @@ function Initialize-Powershell {
 
 function Initialize-CorePowerLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    [alias("cpcp")] 
     param (
         [Scope]$Scope = [Scope]::CurrentUser
     )
@@ -232,15 +233,11 @@ function Update-ModulesLatest {
 
     foreach($module in $UpdatableModules)
     {
-        if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output "Installing user module: $($module.Name) $($module.Version)" 
-        }
+        Write-Output "Installing user module: $($module.Name) $($module.Version)" 
 
         Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         
-        if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output "Importing user module: $($module.Name) $($module.Version)"
-        }
+        Write-Output "Importing user module: $($module.Name) $($module.Version)"
 
         Import-Module -Name $module.Name -MinimumVersion $module.Version -Force | Out-Null
 
@@ -249,9 +246,7 @@ function Update-ModulesLatest {
 
     if ($UpdatesApplied)
     {
-        if ( ($args | ForEach-Object { $_.ToLower() }) -contains '-verbose') {
-            Write-Output "Updates have been applied. Please restart your PowerShell session to ensure that the changes take effect."
-        }
+        Write-Output "Updates have been applied. Please restart your PowerShell session to ensure that the changes take effect."
     }
 }
 
