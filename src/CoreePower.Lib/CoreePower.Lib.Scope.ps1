@@ -1,8 +1,8 @@
-if (-not ([System.Management.Automation.PSTypeName]'Scopeing').Type) {
+if (-not ([System.Management.Automation.PSTypeName]'Scope').Type) {
     Add-Type @"
-    public enum Scopeing {
-        User,
-        Machine
+    public enum Scope {
+        CurrentUser,
+        LocalMachine
     }
 "@
 }
@@ -79,14 +79,14 @@ function CanExecuteInDesiredScope {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     [alias("cedc")]
     param (
-        [Scopeing]$Scope
+        [Scope]$Scope
     )
 
     $IsAdmin = (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-    if ($Scope -eq [Scopeing]::User) {
+    if ($Scope -eq [Scope]::CurrentUser) {
         return $true
-    } elseif ($Scope -eq [Scopeing]::Machine) {
+    } elseif ($Scope -eq [Scope]::LocalMachine) {
         if ($IsAdmin -eq $true) {
             return $true
         } elseif (CouldRunAsAdministrator) {

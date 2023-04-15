@@ -14,7 +14,7 @@ function Initialize-NugetSourceRegistered {
 function Initialize-NugetPackageProviderInstalled {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -34,7 +34,7 @@ function Initialize-NugetPackageProviderInstalled {
 function Initialize-PowerShellGetLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -48,7 +48,7 @@ function Initialize-PowerShellGetLatest {
 function Initialize-PackageManagementLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -61,7 +61,7 @@ function Initialize-PackageManagementLatest {
 function Initialize-Powershell {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -79,7 +79,7 @@ function Initialize-CorePowerLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     [alias("cpcp")] 
     param (
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -104,7 +104,7 @@ function Get-ModuleInfoExtended {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string[]] $ModuleNames,
-        [Scopeing]$Scope = [Scopeing]::Machine,
+        [Scope]$Scope = [Scope]::LocalMachine,
         [bool]$ExcludeSystemModules = $false
     )
     
@@ -114,15 +114,15 @@ function Get-ModuleInfoExtended {
         @{ Name='IsUser' ; Expression={ ($_.ModuleBase -Like "*$env:userprofile*") } },
         @{ Name='IsSystem' ; Expression={ ($_.ModuleBase -Like "*$env:SystemRoot*")  } } 
 
-    if ($Scope -eq [Scopeing]::Machine -and ($ExcludeSystemModules -eq $false))
+    if ($Scope -eq [Scope]::LocalMachine -and ($ExcludeSystemModules -eq $false))
     {
         return $LocalModulesAll
     }
-    elseif ($Scope -eq [Scopeing]::Machine -and ($ExcludeSystemModules -eq $true)) {
+    elseif ($Scope -eq [Scope]::LocalMachine -and ($ExcludeSystemModules -eq $true)) {
         $LocalAndUser = $LocalModulesAll | Where-Object { $_.IsSystem -eq $false }
         return $LocalAndUser
     }
-    elseif ($Scope -eq [Scopeing]::User) {
+    elseif ($Scope -eq [Scope]::CurrentUser) {
         $UserModules = $LocalModulesAll | Where-Object { $_.IsUser -eq $true }
         return $UserModules
     }
@@ -149,7 +149,7 @@ function Find-UpdatableModules {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string[]] $ModuleNames,
-        [Scopeing]$Scope = [Scopeing]::Machine
+        [Scope]$Scope = [Scope]::LocalMachine
     )
     
     $AvailableUpdates = Find-Module -Name $ModuleNames -Repository PSGallery | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
@@ -181,7 +181,7 @@ function Find-LocalOutdatedModules {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string[]] $ModuleNames,
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
 
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -215,7 +215,7 @@ function Update-ModulesLatest {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string[]] $ModuleNames,
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
@@ -254,7 +254,7 @@ function Remove-ModulesOld {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string[]]$ModuleNames,
-        [Scopeing]$Scope = [Scopeing]::User
+        [Scope]$Scope = [Scope]::CurrentUser
     )
 
     # Check if the current process can execute in the desired scope
