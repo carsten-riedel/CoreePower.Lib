@@ -14,7 +14,7 @@ function Initialize-NugetSourceRegistered {
     $nugetSource = Get-PackageSource -Name nuget.org -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
 
-        Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted | Out-Null
+        Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted -SkipValidate | Out-Null
         #$argsx = "Write-Output `$PSVersionTable ;Import-Module PowershellGet -Scope Local ;Get-PackageSource ; Register-PackageSource -Name nuget.org -Location 'https://api.nuget.org/v3/index.json' -ProviderName NuGet -Trusted ; sleep 15"
         #$full = "cmd /c start /min """" ""powershell.exe"" -version 5.0 -Command { $argsx }"
     
