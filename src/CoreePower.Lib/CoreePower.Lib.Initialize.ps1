@@ -84,9 +84,8 @@ function Initialize-CorePowerLatest {
     Initialize-NugetPackageProviderInstalled -Scope $Scope
     Initialize-PowerShellGetLatest  -Scope $Scope
     Initialize-PackageManagementLatest  -Scope $Scope
-    Initialize-NugetSourceRegistered
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
-
+    Initialize-NugetSourceRegistered
 }
 
 function Get-ModuleInfoExtended {
@@ -218,7 +217,7 @@ function Update-ModulesLatest {
 
     foreach($module in $UpdatableModules)
     {
-        Write-Output "Installing user module: $($module.Name) $($module.Version)" 
+        Write-Output "Installing module: $($module.Name) $($module.Version)" 
 
         Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         
@@ -238,7 +237,8 @@ function Update-ModulesLatest {
 #CreateModule -Path "C:\temp" -ModuleName "CoreePower.Module" -Description "Library for module management" -Author "Carsten Riedel" 
 #UpdateModuleVersion -Path "C:\temp\CoreePower.Module"
 
-function Remove-ModulesOld {
+
+function Remove-OutdatedModules {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     param(
         [Parameter(Mandatory)]
@@ -261,5 +261,4 @@ function Remove-ModulesOld {
         Remove-Item -Recurse -Force -Path $DirVers
         Write-Host "User rights removed user module:" $DirVers
     }
- 
 }
