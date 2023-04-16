@@ -1,10 +1,53 @@
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    $nugetSource = Get-PackageSource -Name NuGet -ErrorAction SilentlyContinue
+    $nugetSource = Get-PackageSource -Name NuGet -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
         Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
         Write-Output "NuGet package source added successfully."
     }
+
+    if ($nugetSource.IsTrusted -eq $false)
+    {
+        Set-PackageSource -Name NuGet -NewName NuGet -Trusted -ProviderName NuGet
+    }
+
+    $nugetSource = Get-PackageSource -Name nuget.org -Provider Nuget -ErrorAction SilentlyContinue
+    if (!$nugetSource) {
+        Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted | Out-Null
+        Write-Output "NuGet package source added successfully."
+    }
+
+    if ($nugetSource.IsTrusted -eq $false)
+    {
+        Set-PackageSource -Name nuget.org -NewName nuget.org -Trusted -ProviderName NuGet
+    }
+    
+
+}
+
+function Install-NugetToPackagemanagement {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param (
+        [Parameter(Mandatory)]
+        [string]$Name,
+        [string]$RequiredVersion = $null,
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+
+    if ($Scope -eq [Scope]::LocalMachine)
+    {
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -ProviderName NuGet -Source NuGet -Scope AllUsers -Verbose
+    }
+    elseif ($Scope -eq [Scope]::CurrentUser) {
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -ProviderName NuGet -Source NuGet -Scope CurrentUser -Verbose
+    }
+
 }
 
 function Initialize-NugetPackageProviderInstalled {
@@ -262,3 +305,6 @@ function Remove-OutdatedModules {
         Write-Host "User rights removed user module:" $DirVers
     }
 }
+
+Initialize-NugetSourceRegistered
+Install-NugetToPackagemanagement -Name "Nuget.Commandline"
