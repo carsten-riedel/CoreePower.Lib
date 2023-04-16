@@ -13,8 +13,16 @@ function Initialize-NugetSourceRegistered {
 
     $nugetSource = Get-PackageSource -Name nuget.org -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
+
         Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted | Out-Null
-        Write-Output "NuGet package source added successfully."
+        #$argsx = "Write-Output `$PSVersionTable ;Import-Module PowershellGet -Scope Local ;Get-PackageSource ; Register-PackageSource -Name nuget.org -Location 'https://api.nuget.org/v3/index.json' -ProviderName NuGet -Trusted ; sleep 15"
+        #$full = "cmd /c start /min """" ""powershell.exe"" -version 5.0 -Command { $argsx }"
+    
+        #invoke-expression "$full"
+       
+
+        #Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted | Out-Null
+        Write-Output "nuget.org package source added successfully."
     }
 
     if ($nugetSource.IsTrusted -eq $false)
@@ -306,5 +314,5 @@ function Remove-OutdatedModules {
     }
 }
 
-#Initialize-NugetSourceRegistered
+Initialize-NugetSourceRegistered
 #Install-NugetToPackagemanagement -Name "Nuget.Commandline"
