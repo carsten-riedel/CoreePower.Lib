@@ -157,7 +157,8 @@ function Initialize-CorePowerLatest {
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Initialize-NugetSourceRegistered
     Install-NugetToPackagemanagement -Name "Nuget.Commandline"
-    Install-NugetToPackagemanagement -Name "GitVersion.Commandline"
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
+    cmd /k "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
 }
 
 function Get-ModuleInfoExtended {
@@ -335,8 +336,73 @@ function Remove-OutdatedModules {
     }
 }
 
+function Get-GithubLatestReleaseAssetUrls {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$RepositoryUrl
+    )
+
+    $repositoryUri = [System.Uri]$RepositoryUrl
+  
+    return $(Invoke-RestMethod "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url
+}
+
+function Find-ItemsContainingAllStrings {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$InputItems,
+        [Parameter(Mandatory)]
+        [string[]]$SearchStrings
+    )
+
+    $matchedItems = $InputItems | Where-Object {
+        $foundStringCount = 0
+        foreach ($searchString in $SearchStrings) {
+            if ($_.Contains($searchString)) {
+                $foundStringCount++
+            }
+        }
+        $foundStringCount -eq $SearchStrings.Count
+    }
+
+    return $matchedItems
+}
+
+function Download-GithubLatestReleaseMatchingAssets {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$RepositoryUrl,
+        [Parameter(Mandatory)]
+        [string[]]$AssetNameFilters
+    )
+
+    $assetUrls = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "$RepositoryUrl"
+    $matchedUrl = Find-ItemsContainingAllStrings -InputItems $assetUrls -SearchStrings $AssetNameFilters
+    $fileName = $matchedUrl.Split("/")[-1]
+
+    $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
+    if (-not (Test-Path $temporaryDir)) {
+        New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
+    }
+
+    $downloadTargetLocation = "$temporaryDir\$fileName"
+
+    Invoke-WebRequest -Uri $matchedUrl -OutFile "$downloadTargetLocation"
+
+    return $downloadTargetLocation
+}
+
+#cmd /c "start /min /wait """" ""c:\temp\PortableGit-2.40.0-64-bit.7z.exe"" -y -o""C:\DevKit2"" "
+
+
+
 #Initialize-NugetSourceRegistered
 #Install-NugetToPackagemanagement -Name "Nuget.Commandline"
 #$foo = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
 #$foox = "$foo\tools\nuget.exe"
-#$x1=0
