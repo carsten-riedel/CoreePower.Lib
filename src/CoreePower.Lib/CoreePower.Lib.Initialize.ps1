@@ -158,7 +158,7 @@ function Initialize-CorePowerLatest {
     Initialize-NugetSourceRegistered
     Install-NugetToPackagemanagement -Name "Nuget.Commandline"
     $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-    cmd /k "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+    cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
 }
 
 function Get-ModuleInfoExtended {
@@ -406,3 +406,5 @@ function Download-GithubLatestReleaseMatchingAssets {
 #Install-NugetToPackagemanagement -Name "Nuget.Commandline"
 #$foo = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
 #$foox = "$foo\tools\nuget.exe"
+#$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
+#cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
