@@ -1,8 +1,9 @@
 #https://learn.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior
+#https://learn.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
 #nuget install Newtonsoft.Json
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    <#
+    
     $nugetSource = Get-PackageSource -Name NuGet -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
         Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
@@ -13,7 +14,6 @@ function Initialize-NugetSourceRegistered {
     {
         Set-PackageSource -Name NuGet -NewName NuGet -Trusted -ProviderName NuGet
     }
-    #>
 
     $nugetSource = Get-PackageSource -Name nuget.org -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
@@ -156,6 +156,8 @@ function Initialize-CorePowerLatest {
     Initialize-PackageManagementLatest  -Scope $Scope
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Initialize-NugetSourceRegistered
+    Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+    Install-NugetToPackagemanagement -Name "GitVersion.Commandline"
 }
 
 function Get-ModuleInfoExtended {
