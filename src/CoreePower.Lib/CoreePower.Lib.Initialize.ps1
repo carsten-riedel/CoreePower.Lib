@@ -2,7 +2,7 @@ function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     $nugetSource = Get-PackageSource -Name NuGet -ErrorAction SilentlyContinue
     if (!$nugetSource) {
-        Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted
+        Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
         Write-Output "NuGet package source added successfully."
     }
 }
@@ -17,6 +17,7 @@ function Initialize-NugetPackageProviderInstalled {
     {
         return
     }
+
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
          Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
