@@ -15,22 +15,13 @@ function Initialize-NugetSourceRegistered {
     if (!$nugetSource) {
 
         Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted -SkipValidate | Out-Null
-        #$argsx = "Write-Output `$PSVersionTable ;Import-Module PowershellGet -Scope Local ;Get-PackageSource ; Register-PackageSource -Name nuget.org -Location 'https://api.nuget.org/v3/index.json' -ProviderName NuGet -Trusted ; sleep 15"
-        #$full = "cmd /c start /min """" ""powershell.exe"" -version 5.0 -Command { $argsx }"
-    
-        #invoke-expression "$full"
-       
-
-        #Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted | Out-Null
-        Write-Output "nuget.org package source added successfully."
+         Write-Output "nuget.org package source added successfully."
     }
 
     if ($nugetSource.IsTrusted -eq $false)
     {
-        Set-PackageSource -Name nuget.org -NewName nuget.org -Trusted -ProviderName NuGet
+        Set-PackageSource -Name nuget.org -ProviderName NuGet -Trusted -SkipValidate 
     }
-    
-
 }
 
 function Install-NugetToPackagemanagement {
@@ -50,13 +41,37 @@ function Install-NugetToPackagemanagement {
 
     if ($Scope -eq [Scope]::LocalMachine)
     {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source nuget.org -ProviderName NuGet -Scope AllUsers -Verbose
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers -Verbose
     }
     elseif ($Scope -eq [Scope]::CurrentUser) {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source nuget.org -ProviderName NuGet -Scope CurrentUser -Verbose
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope CurrentUser -Verbose
+    }
+}
+
+function Get-NugetToPackagemanagementPathLatest {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param (
+        [Parameter(Mandatory)]
+        [string]$Name,
+        [string]$RequiredVersion = $null,
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
     }
 
+    if ($Scope -eq [Scope]::LocalMachine) {
+        return Find-Package -Name $Name -AllVersions -Source "$($Env:Programfiles)\AppData\Local\PackageManagement\NuGet\Packages" | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}} | Select-Object -ExpandProperty Path
+    }
+    elseif ($Scope -eq [Scope]::CurrentUser) {
+        return Find-Package -Name $Name -AllVersions -Source "$($env:userprofile)\AppData\Local\PackageManagement\NuGet\Packages" | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}}  | Select-Object -ExpandProperty Path
+    }
 }
+
+
 
 function Initialize-NugetPackageProviderInstalled {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
@@ -316,3 +331,6 @@ function Remove-OutdatedModules {
 
 #Initialize-NugetSourceRegistered
 #Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+#$foo = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
+#$foox = "$foo\tools\nuget.exe"
+#$x1=0
