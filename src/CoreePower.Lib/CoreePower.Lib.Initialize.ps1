@@ -430,13 +430,105 @@ function AddPathEnviromentVariable {
     }
 }
 
-#cmd /c "start /min /wait """" ""c:\temp\PortableGit-2.40.0-64-bit.7z.exe"" -y -o""C:\DevKit2"" "
+function Set-AsInvoker {
+    param (
+        [string] $FilePath
+    )
+
+    $bytes = [System.IO.File]::ReadAllBytes($FilePath)
+
+    # Define the byte sequences to search for and replace.
+    $searchBytes = [System.Text.Encoding]::ASCII.GetBytes("requireAdministrator`"")
+    $replaceBytes = [System.Text.Encoding]::ASCII.GetBytes("asInvoker`"           ")
+    #$searchBytes = @(0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x41, 0x64, 0x6D, 0x69, 0x6E, 0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x6F, 0x72, 0x22)
+    #$replaceBytes = @(0x61, 0x73, 0x49, 0x6E, 0x76, 0x6F, 0x6B, 0x65, 0x72, 0x22, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20)
+
+    # Find the position of the search bytes.
+    $pos = IndexOfBytes $bytes $searchBytes
+
+    if ($pos -ge 0) {
+        # Replace the search bytes with the replace bytes.
+        for ($i = 0; $i -lt $replaceBytes.Length; $i++) {
+            $bytes[$pos + $i] = $replaceBytes[$i]
+        }
+
+        # Write the modified bytes back to the file.
+        [System.IO.File]::WriteAllBytes($FilePath, $bytes)
+    }
+    else {
+        Write-Error "No application manifest found in $FilePath"
+    }
+}
+
+function IndexOfBytes {
+    param (
+        [byte[]] $array,
+        [byte[]] $search,
+        [int] $startIndex = 0
+    )
+
+    $i = $startIndex
+    while ($i -le $array.Length - $search.Length) {
+        $j = 0
+        while ($j -lt $search.Length -and $array[$i + $j] -eq $search[$j]) {
+            $j++
+        }
+        if ($j -eq $search.Length) {
+            return $i
+        }
+        $i++
+    }
+    return -1
+}
+
+<# 7z preperation
 
 
+$szx = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json")
+$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
 
-#Initialize-NugetSourceRegistered
-#Install-NugetToPackagemanagement -Name "Nuget.Commandline"
-#$foo = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
-#$foox = "$foo\tools\nuget.exe"
-#$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-#cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+$file = $sz.filename.Split("/")[-1]
+
+
+$DOWNLOAD_URL = "$($sz.url)"
+
+
+$request = [System.Net.HttpWebRequest]::Create($DOWNLOAD_URL)
+$request.Method = "HEAD"
+
+# Retrieve the response from the web request.
+$response = $request.GetResponse()
+
+# Follow any redirects until we reach the final download URL.
+while ($response.StatusCode -eq "Found") {
+    $DOWNLOAD_URL = $response.Headers["Location"]
+    $request = [System.Net.HttpWebRequest]::Create($DOWNLOAD_URL)
+    $request.Method = "HEAD"
+    $response = $request.GetResponse()
+}
+
+
+$client = New-Object System.Net.WebClient
+$client.DownloadFile($DOWNLOAD_URL, "C:\temp\$file")
+
+Set-AsInvoker -FilePath "C:\temp\$file"
+
+$psi = New-Object System.Diagnostics.ProcessStartInfo
+$psi.FileName = "C:\temp\$file"
+$psi.Arguments = "/S /D=`"C:\temp\_exu`""
+$psi.WorkingDirectory = "C:\temp\"
+$psi.CreateNoWindow = $true
+$psi.UseShellExecute = $false
+$psi.RedirectStandardOutput = $true
+$psi.RedirectStandardError = $true
+#$psi.EnvironmentVariables.Add("MYAPP_CONFIG", "C:\MyApp\config.xml")
+
+$process = [System.Diagnostics.Process]::Start($psi)
+$output = $process.StandardOutput.ReadToEnd()
+$errorOutput = $process.StandardError.ReadToEnd()
+$process.WaitForExit()
+
+
+$x = 1
+
+#>
