@@ -1,5 +1,8 @@
+#https://learn.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior
+#nuget install Newtonsoft.Json
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    <#
     $nugetSource = Get-PackageSource -Name NuGet -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
         Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
@@ -10,6 +13,7 @@ function Initialize-NugetSourceRegistered {
     {
         Set-PackageSource -Name NuGet -NewName NuGet -Trusted -ProviderName NuGet
     }
+    #>
 
     $nugetSource = Get-PackageSource -Name nuget.org -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
