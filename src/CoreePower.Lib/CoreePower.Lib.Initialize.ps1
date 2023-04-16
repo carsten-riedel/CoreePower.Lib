@@ -314,5 +314,5 @@ function Remove-OutdatedModules {
     }
 }
 
-Initialize-NugetSourceRegistered
+#Initialize-NugetSourceRegistered
 #Install-NugetToPackagemanagement -Name "Nuget.Commandline"
