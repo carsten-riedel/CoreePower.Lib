@@ -42,10 +42,10 @@ function Install-NugetToPackagemanagement {
 
     if ($Scope -eq [Scope]::LocalMachine)
     {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -ProviderName NuGet -Source NuGet -Scope AllUsers -Verbose
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source nuget.org -ProviderName NuGet -Scope AllUsers -Verbose
     }
     elseif ($Scope -eq [Scope]::CurrentUser) {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -ProviderName NuGet -Source NuGet -Scope CurrentUser -Verbose
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source nuget.org -ProviderName NuGet -Scope CurrentUser -Verbose
     }
 
 }
@@ -306,5 +306,5 @@ function Remove-OutdatedModules {
     }
 }
 
-Initialize-NugetSourceRegistered
-Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+#Initialize-NugetSourceRegistered
+#Install-NugetToPackagemanagement -Name "Nuget.Commandline"
