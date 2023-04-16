@@ -75,8 +75,6 @@ function Get-NugetToPackagemanagementPathLatest {
     }
 }
 
-
-
 function Initialize-NugetPackageProviderInstalled {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
@@ -157,8 +155,15 @@ function Initialize-CorePowerLatest {
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Initialize-NugetSourceRegistered
     Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+
+    $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
+
+    AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
+
     $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
     cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+
+    AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
 }
 
 function Get-ModuleInfoExtended {
@@ -396,6 +401,33 @@ function Download-GithubLatestReleaseMatchingAssets {
     Invoke-WebRequest -Uri $matchedUrl -OutFile "$downloadTargetLocation"
 
     return $downloadTargetLocation
+}
+
+function AddPathEnviromentVariable {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Path,
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+    
+    if ($Scope -eq [Scope]::CurrentUser) {
+        $USERPATHS = [System.Environment]::GetEnvironmentVariable("PATH",[System.EnvironmentVariableTarget]::User)
+        $NEW = "$USERPATHS;$Path"
+        [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::User)
+    }
+    elseif ($Scope -eq [Scope]::LocalMachine) {
+        $MACHINEPATHS = [System.Environment]::GetEnvironmentVariable("PATH",[System.EnvironmentVariableTarget]::Machine)
+        $NEW = "$MACHINEPATHS;$Path"
+        [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Machine)
+    }
 }
 
 #cmd /c "start /min /wait """" ""c:\temp\PortableGit-2.40.0-64-bit.7z.exe"" -y -o""C:\DevKit2"" "
