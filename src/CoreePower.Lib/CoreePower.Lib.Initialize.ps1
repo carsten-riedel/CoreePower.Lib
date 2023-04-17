@@ -167,6 +167,12 @@ function Initialize-CorePowerLatest {
         AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
     } 
 
+    if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
+        #winget install --id GitHub.cli
+    } 
+
+    
+
     Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
 }
 
@@ -432,6 +438,10 @@ function AddPathEnviromentVariable {
         $NEW = "$MACHINEPATHS;$Path"
         [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Machine)
     }
+
+    $PROCESSPATHS = [System.Environment]::GetEnvironmentVariable("PATH",[System.EnvironmentVariableTarget]::Process)
+    $NEW = "$PROCESSPATHS;$Path"
+    [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Process)
 }
 
 function Set-AsInvoker {
