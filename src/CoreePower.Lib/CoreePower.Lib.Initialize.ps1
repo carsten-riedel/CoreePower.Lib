@@ -154,16 +154,20 @@ function Initialize-CorePowerLatest {
     Initialize-PackageManagementLatest  -Scope $Scope
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Initialize-NugetSourceRegistered
-    Install-NugetToPackagemanagement -Name "Nuget.Commandline"
 
-    $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
+    if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
+        Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+        $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
+        AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
+    } 
 
-    AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
+    if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
+        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
+        cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+        AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
+    } 
 
-    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-    cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
-
-    AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
+    Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
 }
 
 function Get-ModuleInfoExtended {
