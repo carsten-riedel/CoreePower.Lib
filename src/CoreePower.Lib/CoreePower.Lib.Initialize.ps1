@@ -168,10 +168,24 @@ function Initialize-CorePowerLatest {
     } 
 
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
-        #winget install --id GitHub.cli
+        #The `msstore` source requires that you view the following agreements before using.
+        #Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
+        #The source requires the current machine's 2-letter geographic region to be sent to the backend service to function properly (ex. "US").
+        #Do you agree to all the source agreements terms?
+        #[Y] Yes  [N] No: 
+        
+        #winget install --id GitHub.cli --silent
     } 
 
-    
+    if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
+        $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
+        $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
+        Set-AsInvoker -FilePath "$file"
+        Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
+        AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
+    } 
+
+
 
     Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
 }
@@ -454,8 +468,6 @@ function Set-AsInvoker {
     # Define the byte sequences to search for and replace.
     $searchBytes = [System.Text.Encoding]::ASCII.GetBytes("requireAdministrator`"")
     $replaceBytes = [System.Text.Encoding]::ASCII.GetBytes("asInvoker`"           ")
-    #$searchBytes = @(0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x41, 0x64, 0x6D, 0x69, 0x6E, 0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x6F, 0x72, 0x22)
-    #$replaceBytes = @(0x61, 0x73, 0x49, 0x6E, 0x76, 0x6F, 0x6B, 0x65, 0x72, 0x22, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20)
 
     # Find the position of the search bytes.
     $pos = IndexOfBytes $bytes $searchBytes
@@ -527,22 +539,126 @@ $client.DownloadFile($DOWNLOAD_URL, "C:\temp\$file")
 
 Set-AsInvoker -FilePath "C:\temp\$file"
 
-$psi = New-Object System.Diagnostics.ProcessStartInfo
-$psi.FileName = "C:\temp\$file"
-$psi.Arguments = "/S /D=`"C:\temp\_exu`""
-$psi.WorkingDirectory = "C:\temp\"
-$psi.CreateNoWindow = $true
-$psi.UseShellExecute = $false
-$psi.RedirectStandardOutput = $true
-$psi.RedirectStandardError = $true
-#$psi.EnvironmentVariables.Add("MYAPP_CONFIG", "C:\MyApp\config.xml")
-
-$process = [System.Diagnostics.Process]::Start($psi)
-$output = $process.StandardOutput.ReadToEnd()
-$errorOutput = $process.StandardError.ReadToEnd()
-$process.WaitForExit()
-
 
 $x = 1
 
 #>
+
+
+
+
+<#
+.SYNOPSIS
+Downloads a file from a URL that may involve one or more redirects.
+
+.DESCRIPTION
+The Get-RedirectDownload function downloads a file from the specified URL that may involve one or more redirects before reaching the final download URL. The function takes two mandatory parameters: $Url, which is the URL to download the file from, and $OutputDirectory, which is the directory to save the downloaded file to.
+
+.PARAMETER Url
+The URL to download the file from.
+
+.PARAMETER OutputDirectory
+The directory to save the downloaded file to.
+
+.EXAMPLE
+Get-RedirectDownload -Url "https://example.com/file.zip" -OutputDirectory "C:\Downloads"
+This example downloads the file at the specified URL and saves it to the specified output directory.
+
+.LINK
+Link to online documentation or related resources.
+
+#>
+function Get-RedirectDownload {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Url,
+        [Parameter(Mandatory = $true)]
+        [string]$OutputDirectory
+    )
+
+
+    # Create a Uri object from the URL and remove any query or fragment parameters.
+    $Uri = [System.Uri]::new($Url)
+    $UriWithoutParams = [System.UriBuilder]::new($Uri)
+    $UriWithoutParams.Query = $null
+    $UriWithoutParams.Fragment = $null
+
+    
+    # Extract the filename from the URL.
+    $FileName = [System.IO.Path]::GetFileName($UriWithoutParams.Uri)
+
+    # Create the output directory if it does not exist.
+    if (-not (Test-Path $OutputDirectory)) {
+        New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
+    }
+
+    $OutputPath = Join-Path $OutputDirectory $FileName
+
+    # Send a HEAD request to the provided URL to check the response status code.
+    $request = [System.Net.HttpWebRequest]::Create($UriWithoutParams.Uri)
+    $request.Method = 'HEAD'
+
+    # Retrieve the response from the web request.
+    $response = $request.GetResponse()
+
+    # Follow any redirects until we reach the final download URL.
+    while ($response.StatusCode -eq 'Found') {
+        $UriWithoutParams.Path = $response.Headers['Location']
+        $request = [System.Net.HttpWebRequest]::Create($UriWithoutParams.Uri)
+        $request.Method = 'HEAD'
+        $response = $request.GetResponse()
+    }
+
+    # Download the file from the final URL and save it to the specified output directory.
+    $client = New-Object System.Net.WebClient
+    $client.DownloadFile($UriWithoutParams.Uri, $OutputPath)
+
+    return $OutputPath
+}
+
+<#
+.SYNOPSIS
+Starts a new process without creating a visible window.
+
+.DESCRIPTION
+The Start-ProcessSilent function starts a new process with the specified file and arguments, and captures both the standard output and standard error streams. This function is designed to be used with applications that normally create a visible window, and suppresses the window from appearing on the desktop.
+
+.PARAMETER File
+The path to the file to be executed.
+
+.PARAMETER Arguments
+The arguments to be passed to the file.
+
+.EXAMPLE
+PS C:\> $output, $errorOutput = Start-ProcessSilent -File "$((Get-Command "cmd.exe").Path)" -Arguments "/C dir"
+Starts the specified file with the specified arguments, and captures both the standard output and standard error streams.
+
+#>
+function Start-ProcessSilent {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$File,
+
+        [Parameter(Mandatory=$false)]
+        [string]$Arguments = ""
+    )
+
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = $File
+    $psi.Arguments = $Arguments
+    $psi.WorkingDirectory = [System.IO.Path]::GetDirectoryName($File)
+    $psi.CreateNoWindow = $true
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+
+    $process = [System.Diagnostics.Process]::Start($psi)
+    $output = $process.StandardOutput.ReadToEnd()
+    $errorOutput = $process.StandardError.ReadToEnd()
+    $process.WaitForExit()
+
+    return ,$output, $errorOutput
+}
+
+Initialize-CorePowerLatest
