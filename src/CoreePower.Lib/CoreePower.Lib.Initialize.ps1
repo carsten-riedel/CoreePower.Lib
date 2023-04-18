@@ -173,7 +173,7 @@ function Initialize-CorePowerLatest {
         #The source requires the current machine's 2-letter geographic region to be sent to the backend service to function properly (ex. "US").
         #Do you agree to all the source agreements terms?
         #[Y] Yes  [N] No: 
-        
+
         #winget install --id GitHub.cli --silent
     } 
 
@@ -507,44 +507,6 @@ function IndexOfBytes {
     return -1
 }
 
-<# 7z preperation
-
-
-$szx = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json")
-$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-
-$file = $sz.filename.Split("/")[-1]
-
-
-$DOWNLOAD_URL = "$($sz.url)"
-
-
-$request = [System.Net.HttpWebRequest]::Create($DOWNLOAD_URL)
-$request.Method = "HEAD"
-
-# Retrieve the response from the web request.
-$response = $request.GetResponse()
-
-# Follow any redirects until we reach the final download URL.
-while ($response.StatusCode -eq "Found") {
-    $DOWNLOAD_URL = $response.Headers["Location"]
-    $request = [System.Net.HttpWebRequest]::Create($DOWNLOAD_URL)
-    $request.Method = "HEAD"
-    $response = $request.GetResponse()
-}
-
-
-$client = New-Object System.Net.WebClient
-$client.DownloadFile($DOWNLOAD_URL, "C:\temp\$file")
-
-Set-AsInvoker -FilePath "C:\temp\$file"
-
-
-$x = 1
-
-#>
-
-
 
 
 <#
@@ -661,4 +623,3 @@ function Start-ProcessSilent {
     return ,$output, $errorOutput
 }
 
-Initialize-CorePowerLatest
