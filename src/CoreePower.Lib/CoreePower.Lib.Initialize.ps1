@@ -178,7 +178,6 @@ function Initialize-CorePowerLatest {
         
         Copy-Item -Path "$temporaryDir" -Destination "$($env:localappdata)\githubcli" -Recurse -Force -Container
         
-        
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
         
@@ -192,6 +191,8 @@ function Initialize-CorePowerLatest {
             }
         }
         
+        AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+
         #winget install --id GitHub.cli --silent
         #winget install --id GitHub.cli --silent --disable-interactivity --accept-source-agreements --accept-package-agreements
     } 
