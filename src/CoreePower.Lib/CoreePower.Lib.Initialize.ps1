@@ -168,6 +168,7 @@ function Initialize-CorePowerLatest {
     } 
 
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
+        
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
         $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
         if (-not (Test-Path $temporaryDir)) {
@@ -176,7 +177,20 @@ function Initialize-CorePowerLatest {
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         
         Copy-Item -Path "$temporaryDir" -Destination "$($env:localappdata)\githubcli" -Recurse -Force -Container
-        AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+        
+        
+        $source = "$temporaryDir"
+        $destination = "$($env:localappdata)\githubcli"
+        
+        Get-ChildItem $source -Recurse | Foreach-Object {
+            $targetPath = $_.FullName -replace [regex]::Escape($source), $destination
+            if ($_.PSIsContainer) {
+                New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
+            }
+            else {
+                Copy-Item $_.FullName -Destination $targetPath -Force | Out-Null
+            }
+        }
         
         #winget install --id GitHub.cli --silent
         #winget install --id GitHub.cli --silent --disable-interactivity --accept-source-agreements --accept-package-agreements
@@ -628,13 +642,4 @@ function Start-ProcessSilent {
     return ,$output, $errorOutput
 }
 
-$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-$temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
-if (-not (Test-Path $temporaryDir)) {
-    New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
-}
-Expand-Archive -Path $file -DestinationPath $temporaryDir
 
-Copy-Item -Path "$temporaryDir" -Destination "$($env:localappdata)\githubcli" -Recurse -Force -Container
-AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
-$x=1
