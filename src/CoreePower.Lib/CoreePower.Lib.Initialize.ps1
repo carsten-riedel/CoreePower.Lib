@@ -1,6 +1,5 @@
 #https://learn.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior
 #https://learn.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
-#nuget install Newtonsoft.Json
 
 if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) { 
     . $PSScriptRoot\CoreePower.Lib.Includes.ps1

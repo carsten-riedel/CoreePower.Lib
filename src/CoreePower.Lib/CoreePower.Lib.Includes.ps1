@@ -20,7 +20,7 @@ for ($index = 0; $index -lt $global:includes.Count; $index++) {
         {
             Write-Output "Loading $($global:includes[$index].Name)"
             # Execute the script in the global scope using the . operator and the -Scope Global parameter
-            . ([scriptblock]::Create($script)) -Scope Global
+            . ([scriptblock]::Create($script))
         }
     }
 }
