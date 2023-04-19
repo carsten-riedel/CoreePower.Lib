@@ -175,7 +175,7 @@ function Initialize-CorePowerLatest {
         }
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         
-        Copy-Item -Path "$temporaryDir\*" -Destination "$($env:localappdata)\githubcli" -Recurse -Force
+        Copy-Item -Path "$temporaryDir" -Destination "$($env:localappdata)\githubcli" -Recurse -Force -Container
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
         
         #winget install --id GitHub.cli --silent
@@ -628,3 +628,13 @@ function Start-ProcessSilent {
     return ,$output, $errorOutput
 }
 
+$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
+$temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
+if (-not (Test-Path $temporaryDir)) {
+    New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
+}
+Expand-Archive -Path $file -DestinationPath $temporaryDir
+
+Copy-Item -Path "$temporaryDir" -Destination "$($env:localappdata)\githubcli" -Recurse -Force -Container
+AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+$x=1
