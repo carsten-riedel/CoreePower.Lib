@@ -1,6 +1,11 @@
 #https://learn.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior
 #https://learn.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
 #nuget install Newtonsoft.Json
+
+if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) { 
+    . $PSScriptRoot\CoreePower.Lib.Includes.ps1
+ }
+
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     
@@ -170,27 +175,15 @@ function Initialize-CorePowerLatest {
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
         
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-        $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
-        if (-not (Test-Path $temporaryDir)) {
-            New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
-        }
+
+        $temporaryDir = New-Tempdir
+
         Expand-Archive -Path $file -DestinationPath $temporaryDir
-        
-        Copy-Item -Path "$temporaryDir" -Destination "$($env:localappdata)\githubcli" -Recurse -Force -Container
-        
+
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
-        
-        Get-ChildItem $source -Recurse | Foreach-Object {
-            $targetPath = $_.FullName -replace [regex]::Escape($source), $destination
-            if ($_.PSIsContainer) {
-                New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
-            }
-            else {
-                Copy-Item $_.FullName -Destination $targetPath -Force | Out-Null
-            }
-        }
-        
+        Copy-Recursive -Source $source -Destination $destination
+
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
 
         #winget install --id GitHub.cli --silent
@@ -205,6 +198,7 @@ function Initialize-CorePowerLatest {
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
     } 
 
+    
 
 
     Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
@@ -599,6 +593,55 @@ function Get-RedirectDownload {
     return $OutputPath
 }
 
+function Get-RedirectDownload2 {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Url,
+        [string]$OutputDirectory = "",
+        [bool]$RemoveQueryParams = $false
+    )
+
+    $Uri = [System.Uri]::new($Url)
+
+    if ($RemoveQueryParams)
+    {
+        $UriWithoutParams = [System.UriBuilder]::new($Uri)
+        $UriWithoutParams.Query = $null
+        $UriWithoutParams.Fragment = $null
+        $Uri = $UriWithoutParams
+    }
+
+    # Send a HEAD request to the provided URL to check the response status code.
+    $request = [System.Net.HttpWebRequest]::Create($Uri)
+    $request.Method = 'HEAD'
+
+    # Retrieve the response from the web request.
+    $response = $request.GetResponse()
+
+    
+    # Extract the filename from the URL.
+    $FileName = [System.IO.Path]::GetFileName($response.ResponseUri)
+
+
+    if ($OutputDirectory -eq "")
+    {
+        $OutputDirectory = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
+    }
+
+    $OutputPath = Join-Path $OutputDirectory $FileName
+    # Create the output directory if it does not exist.
+    if (-not (Test-Path $OutputDirectory)) {
+        New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
+    }
+
+    # Download the file from the final URL and save it to the specified output directory.
+    $client = New-Object System.Net.WebClient
+    $client.DownloadFile($response.ResponseUri, $OutputPath)
+
+    return $OutputPath
+}
+
 <#
 .SYNOPSIS
 Starts a new process without creating a visible window.
@@ -644,3 +687,10 @@ function Start-ProcessSilent {
 }
 
 
+
+#$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
+#$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
+
+#$temporaryDir = New-Tempdir
+#$file4 = Get-RedirectDownload2 -Url "https://code.visualstudio.com/docs/?dv=winzip"
+#$x=1
