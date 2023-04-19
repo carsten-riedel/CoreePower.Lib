@@ -45,10 +45,10 @@ function Install-NugetToPackagemanagement {
 
     if ($Scope -eq [Scope]::LocalMachine)
     {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers -Verbose
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers | Out-Null
     }
     elseif ($Scope -eq [Scope]::CurrentUser) {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope CurrentUser -Verbose
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope CurrentUser | Out-Null
     }
 }
 
@@ -168,13 +168,18 @@ function Initialize-CorePowerLatest {
     } 
 
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
-        #The `msstore` source requires that you view the following agreements before using.
-        #Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
-        #The source requires the current machine's 2-letter geographic region to be sent to the backend service to function properly (ex. "US").
-        #Do you agree to all the source agreements terms?
-        #[Y] Yes  [N] No: 
-
+        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
+        $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
+        if (-not (Test-Path $temporaryDir)) {
+            New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
+        }
+        Expand-Archive -Path $file -DestinationPath $temporaryDir
+        
+        Copy-Item -Path "$temporaryDir\*" -Destination "$($env:localappdata)\githubcli" -Recurse -Force
+        AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+        
         #winget install --id GitHub.cli --silent
+        #winget install --id GitHub.cli --silent --disable-interactivity --accept-source-agreements --accept-package-agreements
     } 
 
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
