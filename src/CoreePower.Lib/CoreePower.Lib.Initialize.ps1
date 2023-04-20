@@ -197,6 +197,14 @@ function Initialize-CorePowerLatest {
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
     } 
 
+    if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
+        $temporaryDir = New-Tempdir
+        $file4 = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
+        Expand-Archive -Path $file4 -DestinationPath $temporaryDir
+    
+        Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
+    }
+
     
 
 
@@ -617,8 +625,8 @@ function Get-RedirectDownload2 {
 
     # Retrieve the response from the web request.
     $response = $request.GetResponse()
+   
 
-    
     # Extract the filename from the URL.
     $FileName = [System.IO.Path]::GetFileName($response.ResponseUri)
 
@@ -637,6 +645,8 @@ function Get-RedirectDownload2 {
     # Download the file from the final URL and save it to the specified output directory.
     $client = New-Object System.Net.WebClient
     $client.DownloadFile($response.ResponseUri, $OutputPath)
+
+    
 
     return $OutputPath
 }
@@ -685,11 +695,12 @@ function Start-ProcessSilent {
     return ,$output, $errorOutput
 }
 
+if ($Host.Name -match "Visual Studio Code")
+{
+    Write-Output "Test code execution"
+    #$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
+    #$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
 
+    $x=1
+}
 
-#$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-#$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
-
-#$temporaryDir = New-Tempdir
-#$file4 = Get-RedirectDownload2 -Url "https://code.visualstudio.com/docs/?dv=winzip"
-#$x=1
