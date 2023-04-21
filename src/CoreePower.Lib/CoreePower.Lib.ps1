@@ -25,15 +25,15 @@ function Write-Begin {
     $intro = "CoreePower $date`:".PadRight($IntroLimit, ' ').Substring(0,$IntroLimit)
     $Text = "$Text".PadRight($TextLimit, ' ').Substring(0,$TextLimit)
     
-    Write-Host -NoNewline "$intro" -ForegroundColor Blue -BackgroundColor Black
-    Write-Host -NoNewline "$Text" -ForegroundColor DarkBlue -BackgroundColor Black
+    Write-Host -NoNewline "$intro" -ForegroundColor DarkGray -BackgroundColor Black
+    Write-Host -NoNewline "$Text" -ForegroundColor Gray -BackgroundColor Black
 
     if ($null -ne $State )
     {
         $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
         $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped } | Select-Object -First 1
         if ($null -eq $color.Color) { 
-            $color = "DarkBlue"
+            $color = "White"
         }
         else {
             $color= $color.Color
@@ -42,7 +42,7 @@ function Write-Begin {
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor Black
     }
     else {
-        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor DarkBlue -BackgroundColor Black
+        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor White -BackgroundColor Black
     }
 }
 
@@ -74,7 +74,7 @@ function Write-State {
         $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
         $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped } | Select-Object -First 1
         if ($null -eq $color.Color) { 
-            $color = "DarkBlue"
+            $color = "White"
         }
         else {
             $color= $color.Color
@@ -83,7 +83,7 @@ function Write-State {
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor Black
     }
     else {
-        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor DarkBlue -BackgroundColor Black
+        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor White -BackgroundColor Black
     }
 }
 
