@@ -72,8 +72,8 @@ function Write-State {
     if ($null -ne $State )
     {
         $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
-        $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped }
-        if ($null -eq $color) { 
+        $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped } | Select-Object -First 1
+        if ($null -eq $color -or $null -ne $color.Color) { 
             $color = "DarkBlue"
         }
         else {
@@ -106,5 +106,5 @@ function Set-ConsoleCursorPosition {
 }
 
 #Write-Begin "Initialize-NugetSourceRegistered" -State "Checking"
-#Write-State "Done"
+#Write-State "Donex"
 #Write-State "sdgsdg"
