@@ -105,7 +105,7 @@ function Initialize-PowerShellGetLatest {
     {
         return
     }
-    Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope
+    Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope  | Out-Null
     Set-PackageSource -Name PSGallery -Trusted -ProviderName PowerShellGet | Out-Null
 }
 
@@ -119,7 +119,7 @@ function Initialize-PackageManagementLatest {
     {
         return
     }
-    Update-ModulesLatest -ModuleNames @("PackageManagement") -Scope $Scope
+    Update-ModulesLatest -ModuleNames @("PackageManagement") -Scope $Scope | Out-Null
 }
 
 function Initialize-Powershell {
@@ -395,8 +395,6 @@ function Update-ModulesLatest {
         
         $UpdatesApplied = $true
     }
-
-    Write-Output "test"
     if ($UpdatesApplied)
     {
         return $true
