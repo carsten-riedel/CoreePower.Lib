@@ -11,7 +11,7 @@ function Initialize-NugetSourceRegistered {
     $nugetSource = Get-PackageSource -Name NuGet -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
         Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
-        Write-Output "NuGet package source added successfully."
+        Write-Output "NuGet package source registered successfully"
     }
 
     if ($nugetSource.IsTrusted -eq $false)
@@ -23,7 +23,7 @@ function Initialize-NugetSourceRegistered {
     if (!$nugetSource) {
 
         Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted -SkipValidate | Out-Null
-         Write-Output "nuget.org package source added successfully."
+         Write-Output "Nuget.org package source registered successfully."
     }
 
     if ($nugetSource.IsTrusted -eq $false)
@@ -153,25 +153,34 @@ function Initialize-CorePowerLatest {
         return
     }
     
+    Write-Output "Initialize-NugetPackageProviderInstalled"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
+
+    Write-Output "Initialize-PowerShellGetLatest"
     Initialize-PowerShellGetLatest  -Scope $Scope
+    Write-Output "Initialize-PackageManagementLatest"
     Initialize-PackageManagementLatest  -Scope $Scope
+    Write-Output "Update-ModulesLatest"
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
+    Write-Output "Initialize-NugetSourceRegistered"
     Initialize-NugetSourceRegistered
 
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
+        Write-Output "nuget"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
         $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
     } 
 
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
+        Write-Output "git"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
         cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
         AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
     } 
 
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
+        Write-Output "gh"
         
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
 
@@ -190,6 +199,7 @@ function Initialize-CorePowerLatest {
     } 
 
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
+        Write-Output "7z"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
         Set-AsInvoker -FilePath "$file"
@@ -198,22 +208,24 @@ function Initialize-CorePowerLatest {
     } 
 
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
+        Write-Output "code"
         $temporaryDir = New-Tempdir
-        $file4 = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
-        Expand-Archive -Path $file4 -DestinationPath $temporaryDir
+        $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
+        Expand-Archive -Path $file -DestinationPath $temporaryDir
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip" -Scope CurrentUser
     }
 
     if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS"
+        Write-Output "dotnet"
+        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
         AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
     }
     
     # Run a separate PowerShell process because the script calls exit, so it will end the current PowerShell session.
     
 
-
+    Write-Output "Update-ModulesLatest"
     Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
 }
 
@@ -534,8 +546,6 @@ function IndexOfBytes {
     return -1
 }
 
-
-
 <#
 .SYNOPSIS
 Downloads a file from a URL that may involve one or more redirects.
@@ -708,5 +718,9 @@ if ($Host.Name -match "Visual Studio Code")
     #$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
     Initialize-CorePowerLatest
     $x=1
+
+    #Save-Module -Name PowerShellGet -Path C:\Test\Modules -Repository PSGallery
+    #Register-PSRepository -Name FileShareRepo -SourceLocation '\\server1\FileShareRepo' ‑InstallationPolicy Trusted
+    #Publish-Module -Name TestModule -Repository FileShareRepo
 }
 
