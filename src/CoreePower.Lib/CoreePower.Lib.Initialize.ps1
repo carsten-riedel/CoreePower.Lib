@@ -89,15 +89,9 @@ function Initialize-NugetPackageProviderInstalled {
         return
     }
 
-    Write-Begin "NugetProvider version" -State "check"
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
-         Write-State "Installing."
          Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
-         Write-State "Installed."
-    }
-    else {
-        Write-State "already installed."
     }
 }
 
@@ -157,22 +151,35 @@ function Initialize-CorePowerLatest {
         return
     }
     
+    Write-Begin "Initialize-NugetPackageProviderInstalled" -State "Before"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
+    Write-State "After"
 
-    Write-Output "Initialize-PowerShellGetLatest"
+    Write-Begin "Initialize-PowerShellGetLatest" -State "Before"
     Initialize-PowerShellGetLatest  -Scope $Scope
-    Write-Output "Initialize-PackageManagementLatest"
-    Initialize-PackageManagementLatest  -Scope $Scope
-    Write-Output "Update-ModulesLatest"
-    Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
-    Write-Output "Initialize-NugetSourceRegistered"
-    Initialize-NugetSourceRegistered
+    Write-State "After"
 
+    Write-Begin "Initialize-PackageManagementLatest" -State "Before"
+    Initialize-PackageManagementLatest  -Scope $Scope
+    Write-State "After"
+
+
+    Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Before"
+    Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
+    Write-State "After"
+
+
+    Write-Begin "Initialize-NugetSourceRegistered" -State "Before"
+    Initialize-NugetSourceRegistered
+    Write-State "After"
+
+    Write-Begin "Checking if nuget cmd is availible" -State "Before"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
-        Write-Output "nuget"
+        Write-State "Installing"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
         $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
+        Write-State "Installed"
     } 
 
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {

@@ -7,9 +7,9 @@ function Write-Begin {
     )
 
     $WriteOut = @(
-        @{ Items=@("installed","ok","true"); Color="Green"; },
+        @{ Items=@("installed","ok","already installed","true",'installing'); Color="Green"; },
         @{ Items=@("not installed"); Color="Red"; },
-        @{ Items=@("done","open"); Color="Yellow"; }
+        @{ Items=@("done","open","check"); Color="Yellow"; }
     )
 
     $uneven = $Host.UI.RawUI.WindowSize.Width % 16
@@ -30,7 +30,7 @@ function Write-Begin {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim() }
+        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower() }
         if ($null -eq $color) { $color = "DarkBlue" }
         else {
             $color= $color |  Select-Object -ExpandProperty Color
@@ -51,9 +51,9 @@ function Write-State {
     )
 
     $WriteOut = @(
-        @{ Items=@("installed","ok","true"); Color="Green"; },
+        @{ Items=@("installed","ok","already installed","true",'installing'); Color="Green"; },
         @{ Items=@("not installed"); Color="Red"; },
-        @{ Items=@("done"); Color="Yellow"; }
+        @{ Items=@("done","open","check"); Color="Yellow"; }
     )
 
     $uneven = $Host.UI.RawUI.WindowSize.Width % 16
@@ -68,7 +68,7 @@ function Write-State {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim()  }
+        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()  }
         if ($null -eq $color) { $color = "DarkBlue" }
         else {
             $color= $color |  Select-Object -ExpandProperty Color
