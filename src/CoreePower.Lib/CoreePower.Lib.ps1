@@ -39,10 +39,12 @@ function Write-Begin {
             $color= $color.Color
         }
 
-        Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor Black
+        $write = "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
+        Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
     }
     else {
-        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor White -BackgroundColor Black
+        $write = "".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
+        Write-Host "$write" -ForegroundColor White -BackgroundColor Black
     }
 }
 
@@ -80,11 +82,15 @@ function Write-State {
             $color= $color.Color
         }
 
-        Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor Black
+        $write = "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
+        Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
     }
     else {
-        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor White -BackgroundColor Black
+        $write = "".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
+        Write-Host "$write" -ForegroundColor White -BackgroundColor Black
     }
+
+
 }
 
 function Set-ConsoleCursorPosition {

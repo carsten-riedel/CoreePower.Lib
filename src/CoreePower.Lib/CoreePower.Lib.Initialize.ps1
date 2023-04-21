@@ -167,7 +167,7 @@ function Initialize-CorePowerLatest {
 
 
     Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
-    $updatesDone = (Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope)
+    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Write-State "Done"
 
 
@@ -381,7 +381,7 @@ function Update-ModulesLatest {
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
     {
-        return $null
+        return
     }
 
     $UpdatableModules = Find-UpdatableModules -ModuleNames $ModuleNames
@@ -391,7 +391,7 @@ function Update-ModulesLatest {
     {
         #Write-Output "Installing module: $($module.Name) $($module.Version)" 
 
-        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber -Verbose:$false | Out-Null
+        $x = Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         
         $UpdatesApplied = $true
     }
