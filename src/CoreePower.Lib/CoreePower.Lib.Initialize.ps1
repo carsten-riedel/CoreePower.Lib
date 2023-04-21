@@ -175,7 +175,7 @@ function Initialize-CorePowerLatest {
     Initialize-NugetSourceRegistered
     Write-State "Done"
 
-    Write-Begin "Checking if nuget cmd is availible" -State "Checking"
+    Write-Begin "hecking for availible command, nuget" -State "Checking"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
@@ -187,7 +187,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "Checking if git cmd is availible" -State "Checking"
+    Write-Begin "hecking for availible command, git" -State "Checking"
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
@@ -198,7 +198,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "Checking if gh cmd is availible" -State "Checking"
+    Write-Begin "hecking for availible command, gh" -State "Checking"
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
@@ -213,7 +213,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "Checking if 7z cmd is availible" -State "Checking"
+    Write-Begin "hecking for availible command, 7z" -State "Checking"
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
@@ -226,7 +226,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "Checking if code cmd is availible" -State "Checking"
+    Write-Begin "Checking for availible command, code" -State "Checking"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
         Write-State "Installing"
         $temporaryDir = New-Tempdir
@@ -239,7 +239,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "Checking if dotnet cmd is availible" -State "Checking"
+    Write-Begin "Checking for availible command, dotnet" -State "Checking"
     if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
