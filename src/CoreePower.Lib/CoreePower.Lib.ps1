@@ -73,7 +73,7 @@ function Write-State {
     {
         $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
         $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped } | Select-Object -First 1
-        if ($null -ne $color.Color) { 
+        if ($null -eq $color.Color) { 
             $color = "DarkBlue"
         }
         else {
