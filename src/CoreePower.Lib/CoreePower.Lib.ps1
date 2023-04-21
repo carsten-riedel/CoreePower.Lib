@@ -7,8 +7,8 @@ function Write-Begin {
     )
 
     $WriteOut = @(
-        @{ Items=@("installed","ok","true",$true); Color="Green"; },
-        @{ Items=@("not installed",$false); Color="Red"; },
+        @{ Items=@("installed","ok","true"); Color="Green"; },
+        @{ Items=@("not installed"); Color="Red"; },
         @{ Items=@("done","open"); Color="Yellow"; }
     )
 
@@ -30,39 +30,11 @@ function Write-Begin {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $state } | Select-Object -ExpandProperty Color
-
-        Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor White
-    }
-    else {
-        Write-Host "".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor DarkBlue -BackgroundColor White
-    }
-}
-
-function Write-End {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [Parameter(Mandatory)]
-        [string]$State
-    )
-
-    $WriteOut = @(
-        @{ Items=@("installed","ok","true",$true); Color="Green"; },
-        @{ Items=@("not installed",$false); Color="Red"; },
-        @{ Items=@("done"); Color="Yellow"; }
-    )
-
-    $uneven = $Host.UI.RawUI.WindowSize.Width % 16
-    $parts = ($Host.UI.RawUI.WindowSize.Width - $uneven) / 16
-
-    $consoleWidth = ($parts * 8) + $uneven
-    $IntroLimit = $parts * 4
-    $StateLimit = $parts * 4
-    $TextLimit = $consoleWidth
-
-    if ($null -ne $State )
-    {
-        $color = $WriteOut | Where-Object { $_.Items -contains $state } | Select-Object -ExpandProperty Color
+        $color = $WriteOut | Where-Object { $_.Items -contains $State }
+        if ($null -eq $color) { $color = "DarkBlue" }
+        else {
+            $color= $color |  Select-Object -ExpandProperty Color
+        }
 
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor White
     }
@@ -79,8 +51,8 @@ function Write-State {
     )
 
     $WriteOut = @(
-        @{ Items=@("installed","ok","true",$true); Color="Green"; },
-        @{ Items=@("not installed",$false); Color="Red"; },
+        @{ Items=@("installed","ok","true"); Color="Green"; },
+        @{ Items=@("not installed"); Color="Red"; },
         @{ Items=@("done"); Color="Yellow"; }
     )
 
@@ -96,8 +68,11 @@ function Write-State {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -icontains $state } | Select-Object -ExpandProperty Color
-
+        $color = $WriteOut | Where-Object { $_.Items -contains $State }
+        if ($null -eq $color) { $color = "DarkBlue" }
+        else {
+            $color= $color |  Select-Object -ExpandProperty Color
+        }
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor White
     }
     else {
@@ -122,3 +97,7 @@ function Set-ConsoleCursorPosition {
     $pos = New-Object System.Management.Automation.Host.Coordinates -ArgumentList $x, $y
     $Host.UI.RawUI.CursorPosition = $pos
 }
+
+#Write-Begin "sdfsdf" -State "aaaaa"
+#Write-State "done"
+#Write-State "sdgsdg"
