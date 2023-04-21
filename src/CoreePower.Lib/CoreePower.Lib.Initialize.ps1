@@ -257,6 +257,7 @@ function Initialize-CorePowerLatest {
     {
         Write-Begin "Update has been done that require Powershell restart" -State "Info"
     }
+
 }
 
 function Get-ModuleInfoExtended {
@@ -395,7 +396,13 @@ function Update-ModulesLatest {
         $UpdatesApplied = $true
     }
 
-    return $UpdatesApplied
+    if ($UpdatesApplied)
+    {
+        return $true
+    } else {
+        return $false
+    }
+    
 }
 
 #CreateModule -Path "C:\temp" -ModuleName "CoreePower.Module" -Description "Library for module management" -Author "Carsten Riedel" 
