@@ -381,7 +381,7 @@ function Update-ModulesLatest {
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
     {
-        return
+       # return
     }
 
     $UpdatableModules = Find-UpdatableModules -ModuleNames $ModuleNames
@@ -744,6 +744,11 @@ function Start-ProcessSilent {
 
 if ($Host.Name -match "Visual Studio Code")
 {
+
+    Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
+    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config")
+    Write-State "Done"
+
     #Initialize-NugetPackageProviderInstalled
     #Write-Out "Test code execution" -State $true
     #$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
