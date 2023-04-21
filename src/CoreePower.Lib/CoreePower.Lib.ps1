@@ -30,10 +30,11 @@ function Write-Begin {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower() }
+        $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
+        $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped }
         if ($null -eq $color) { $color = "DarkBlue" }
         else {
-            $color= $color |  Select-Object -ExpandProperty Color
+            $color= $color | Select-Object -ExpandProperty Color
         }
 
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor White
@@ -68,11 +69,13 @@ function Write-State {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()  }
+        $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
+        $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped }
         if ($null -eq $color) { $color = "DarkBlue" }
         else {
-            $color= $color |  Select-Object -ExpandProperty Color
+            $color= $color | Select-Object -ExpandProperty Color
         }
+        
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor White
     }
     else {
