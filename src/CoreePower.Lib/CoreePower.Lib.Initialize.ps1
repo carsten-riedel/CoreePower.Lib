@@ -175,7 +175,7 @@ function Initialize-CorePowerLatest {
     Initialize-NugetSourceRegistered
     Write-State "Done"
 
-    Write-Begin "hecking for availible command, nuget" -State "Checking"
+    Write-Begin "Checking for availible command, nuget" -State "Checking"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
@@ -187,7 +187,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "hecking for availible command, git" -State "Checking"
+    Write-Begin "Checking for availible command, git" -State "Checking"
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
@@ -198,7 +198,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "hecking for availible command, gh" -State "Checking"
+    Write-Begin "Checking for availible command, gh" -State "Checking"
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
@@ -213,7 +213,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "hecking for availible command, 7z" -State "Checking"
+    Write-Begin "Checking for availible command, 7z" -State "Checking"
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
@@ -250,7 +250,7 @@ function Initialize-CorePowerLatest {
     }
 
     Write-Begin "Update-ModulesLatest CoreePower.Lib" -State "Checking"
-    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope | Out-Null
+    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
     Write-State "Done"
 
     if ($updatesDone)
