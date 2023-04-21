@@ -391,7 +391,7 @@ function Update-ModulesLatest {
     {
         #Write-Output "Installing module: $($module.Name) $($module.Version)" 
 
-        $x = Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
+        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         
         $UpdatesApplied = $true
     }

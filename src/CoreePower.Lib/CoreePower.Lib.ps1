@@ -31,7 +31,7 @@ function Write-Begin {
         Write-Host -NoNewline "$Text" -ForegroundColor Gray -BackgroundColor Black
     }
     else {
-        Write-Host -NoNewline "$intro"
+        Write-Output -NoNewline "$intro"
         Write-Host -NoNewline "$Text"
     }
 
@@ -52,7 +52,7 @@ function Write-Begin {
             Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
         }
         else {
-            Write-Host "$write"
+            Write-Output "$write"
         }
     }
     else {
@@ -62,7 +62,7 @@ function Write-Begin {
             Write-Host "$write" -ForegroundColor White -BackgroundColor Black
         }
         else {
-            Write-Host "$write"
+            Write-Output "$write"
         }
     }
 }
@@ -107,7 +107,7 @@ function Write-State {
             Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
         }
         else {
-            Write-Host "$write"
+            Write-Output "$write"
         }
         
     }
@@ -118,7 +118,7 @@ function Write-State {
             Write-Host "$write" -ForegroundColor White -BackgroundColor Black
         }
         else {
-            Write-Host "$write"
+            Write-Output "$write"
         }
     }
 
