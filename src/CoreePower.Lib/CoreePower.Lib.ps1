@@ -30,7 +30,7 @@ function Write-Begin {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $State }
+        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim() }
         if ($null -eq $color) { $color = "DarkBlue" }
         else {
             $color= $color |  Select-Object -ExpandProperty Color
@@ -68,7 +68,7 @@ function Write-State {
 
     if ($null -ne $State )
     {
-        $color = $WriteOut | Where-Object { $_.Items -contains $State }
+        $color = $WriteOut | Where-Object { $_.Items -contains $State.Trim().Trim('.').Trim('!').Trim('?').Trim()  }
         if ($null -eq $color) { $color = "DarkBlue" }
         else {
             $color= $color |  Select-Object -ExpandProperty Color
