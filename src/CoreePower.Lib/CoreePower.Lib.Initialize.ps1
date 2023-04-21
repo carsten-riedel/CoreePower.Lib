@@ -388,14 +388,10 @@ function Update-ModulesLatest {
 
     foreach($module in $UpdatableModules)
     {
-        Write-Output "Installing module: $($module.Name) $($module.Version)" 
+        #Write-Output "Installing module: $($module.Name) $($module.Version)" 
 
-        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
+        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber -Verbose:$false | Out-Null
         
-        #Write-Output "Importing user module: $($module.Name) $($module.Version)"
-
-        #Import-Module -Name $module.Name -MinimumVersion $module.Version -Force | Out-Null
-
         $UpdatesApplied = $true
     }
 
