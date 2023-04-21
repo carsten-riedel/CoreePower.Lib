@@ -12,8 +12,15 @@ function Write-Begin {
         @{ Items=@("open","check","checking","info"); Color="Yellow"; }
     )
 
-    $uneven = $Host.UI.RawUI.WindowSize.Width % 16
-    $parts = ($Host.UI.RawUI.WindowSize.Width - $uneven) / 16
+    if (-not($Host.Name -match "Windows PowerShell ISE Host"))
+    {
+        $uneven = $Host.UI.RawUI.WindowSize.Width % 16
+        $parts = ($Host.UI.RawUI.WindowSize.Width - $uneven) / 16
+    }
+    else {
+        $uneven = $Host.UI.RawUI.BufferSize.Width % 16
+        $parts = ($Host.UI.RawUI.BufferSize.Width - $uneven) / 16
+    }
 
     $consoleWidth = ($parts * 8) + $uneven
     $IntroLimit = $parts * 5
@@ -25,15 +32,10 @@ function Write-Begin {
     $intro = "CoreePower $date`:".PadRight($IntroLimit, ' ').Substring(0,$IntroLimit)
     $Text = "$Text".PadRight($TextLimit, ' ').Substring(0,$TextLimit)
     
-    if (-not($Host.Name -match "Windows PowerShell ISE Host"))
-    {
-        Write-Host -NoNewline "$intro" -ForegroundColor DarkGray -BackgroundColor Black
-        Write-Host -NoNewline "$Text" -ForegroundColor Gray -BackgroundColor Black
-    }
-    else {
-        Write-Output -NoNewline "$intro"
-        Write-Host -NoNewline "$Text"
-    }
+
+    Write-Host -NoNewline "$intro" -ForegroundColor DarkGray -BackgroundColor Black
+    Write-Host -NoNewline "$Text" -ForegroundColor Gray -BackgroundColor Black
+
 
     if ($null -ne $State )
     {
