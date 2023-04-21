@@ -201,10 +201,16 @@ function Initialize-CorePowerLatest {
         $temporaryDir = New-Tempdir
         $file4 = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
         Expand-Archive -Path $file4 -DestinationPath $temporaryDir
-    
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
+        AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip" -Scope CurrentUser
     }
 
+    if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
+        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS"
+        AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
+    }
+    
+    # Run a separate PowerShell process because the script calls exit, so it will end the current PowerShell session.
     
 
 
@@ -700,7 +706,7 @@ if ($Host.Name -match "Visual Studio Code")
     Write-Output "Test code execution"
     #$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
     #$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
-
+    Initialize-CorePowerLatest
     $x=1
 }
 
