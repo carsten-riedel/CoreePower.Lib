@@ -7,9 +7,9 @@ function Write-Begin {
     )
 
     $WriteOut = @(
-        @{ Items=@("installed","ok","already installed","true",'installing'); Color="Green"; },
+        @{ Items=@("installed","ok","already installed","true",'installing',"done"); Color="Green"; },
         @{ Items=@("not installed"); Color="Red"; },
-        @{ Items=@("done","open","check"); Color="Yellow"; }
+        @{ Items=@("open","check","checking"); Color="Yellow"; }
     )
 
     $uneven = $Host.UI.RawUI.WindowSize.Width % 16
@@ -54,9 +54,9 @@ function Write-State {
     )
 
     $WriteOut = @(
-        @{ Items=@("installed","ok","already installed","true",'installing'); Color="Green"; },
+        @{ Items=@("installed","ok","already installed","true",'installing',"done"); Color="Green"; },
         @{ Items=@("not installed"); Color="Red"; },
-        @{ Items=@("done","open","check"); Color="Yellow"; }
+        @{ Items=@("open","check","checking"); Color="Yellow"; }
     )
 
     $uneven = $Host.UI.RawUI.WindowSize.Width % 16

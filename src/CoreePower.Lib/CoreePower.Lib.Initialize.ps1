@@ -185,61 +185,71 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
+    Write-Begin "Checking if git cmd is availible" -State "Checking"
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
-        Write-Output "git"
+        Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
         cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
         AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
-    } 
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
+    }
 
+    Write-Begin "Checking if gh cmd is availible" -State "Checking"
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
-        Write-Output "gh"
-        
+        Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-
         $temporaryDir = New-Tempdir
-
         Expand-Archive -Path $file -DestinationPath $temporaryDir
-
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
         Copy-Recursive -Source $source -Destination $destination
-
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
+    }
 
-        #winget install --id GitHub.cli --silent
-        #winget install --id GitHub.cli --silent --disable-interactivity --accept-source-agreements --accept-package-agreements
-    } 
-
+    Write-Begin "Checking if 7z cmd is availible" -State "Checking"
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
-        Write-Output "7z"
+        Write-State "Installing"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
         Set-AsInvoker -FilePath "$file"
         Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
-    } 
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
+    }
 
+    Write-Begin "Checking if code cmd is availible" -State "Checking"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
-        Write-Output "code"
+        Write-State "Installing"
         $temporaryDir = New-Tempdir
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip" -Scope CurrentUser
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
     }
 
+    Write-Begin "Checking if dotnet cmd is availible" -State "Checking"
     if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        Write-Output "dotnet"
+        Write-State "Installing"
         &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
         AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
     }
-    
-    # Run a separate PowerShell process because the script calls exit, so it will end the current PowerShell session.
-    
 
-    Write-Output "Update-ModulesLatest"
+    Write-Begin "Update-ModulesLatest CoreePower.Lib" -State "Checking"
     Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
+    Write-State "Done"
 }
 
 function Get-ModuleInfoExtended {
