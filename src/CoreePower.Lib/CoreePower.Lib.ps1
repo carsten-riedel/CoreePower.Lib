@@ -25,8 +25,15 @@ function Write-Begin {
     $intro = "CoreePower $date`:".PadRight($IntroLimit, ' ').Substring(0,$IntroLimit)
     $Text = "$Text".PadRight($TextLimit, ' ').Substring(0,$TextLimit)
     
-    Write-Host -NoNewline "$intro" -ForegroundColor DarkGray -BackgroundColor Black
-    Write-Host -NoNewline "$Text" -ForegroundColor Gray -BackgroundColor Black
+    if (-not($Host.Name -match "Windows PowerShell ISE Host"))
+    {
+        Write-Host -NoNewline "$intro" -ForegroundColor DarkGray -BackgroundColor Black
+        Write-Host -NoNewline "$Text" -ForegroundColor Gray -BackgroundColor Black
+    }
+    else {
+        Write-Host -NoNewline "$intro"
+        Write-Host -NoNewline "$Text"
+    }
 
     if ($null -ne $State )
     {
@@ -40,11 +47,23 @@ function Write-Begin {
         }
 
         $write = "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
-        Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
+        if (-not($Host.Name -match "Windows PowerShell ISE Host"))
+        {
+            Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
+        }
+        else {
+            Write-Host "$write"
+        }
     }
     else {
         $write = "".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
-        Write-Host "$write" -ForegroundColor White -BackgroundColor Black
+        if (-not($Host.Name -match "Windows PowerShell ISE Host"))
+        {
+            Write-Host "$write" -ForegroundColor White -BackgroundColor Black
+        }
+        else {
+            Write-Host "$write"
+        }
     }
 }
 
@@ -83,11 +102,24 @@ function Write-State {
         }
 
         $write = "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
-        Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
+        if (-not($Host.Name -match "Windows PowerShell ISE Host"))
+        {
+            Write-Host "$write" -ForegroundColor $color -BackgroundColor Black
+        }
+        else {
+            Write-Host "$write"
+        }
+        
     }
     else {
         $write = "".PadRight($StateLimit, ' ').Substring(0,$StateLimit)
-        Write-Host "$write" -ForegroundColor White -BackgroundColor Black
+        if (-not($Host.Name -match "Windows PowerShell ISE Host"))
+        {
+            Write-Host "$write" -ForegroundColor White -BackgroundColor Black
+        }
+        else {
+            Write-Host "$write"
+        }
     }
 
 
