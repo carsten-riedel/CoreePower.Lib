@@ -381,7 +381,7 @@ function Update-ModulesLatest {
     # Check if the current process can execute in the desired scope
     if (-not(CanExecuteInDesiredScope -Scope $Scope))
     {
-        return
+        return $null
     }
 
     $UpdatableModules = Find-UpdatableModules -ModuleNames $ModuleNames
