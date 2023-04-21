@@ -151,29 +151,29 @@ function Initialize-CorePowerLatest {
         return
     }
     
-    Write-Begin "Initialize-NugetPackageProviderInstalled" -State "Before"
+    Write-Begin "Initialize-NugetPackageProviderInstalled" -State "Checking"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
-    Write-State "After"
+    Write-State "Done"
 
-    Write-Begin "Initialize-PowerShellGetLatest" -State "Before"
+    Write-Begin "Initialize-PowerShellGetLatest" -State "Checking"
     Initialize-PowerShellGetLatest  -Scope $Scope
-    Write-State "After"
+    Write-State "Done"
 
-    Write-Begin "Initialize-PackageManagementLatest" -State "Before"
+    Write-Begin "Initialize-PackageManagementLatest" -State "Checking"
     Initialize-PackageManagementLatest  -Scope $Scope
-    Write-State "After"
+    Write-State "Done"
 
 
-    Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Before"
+    Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
     Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
-    Write-State "After"
+    Write-State "Done"
 
 
-    Write-Begin "Initialize-NugetSourceRegistered" -State "Before"
+    Write-Begin "Initialize-NugetSourceRegistered" -State "Checking"
     Initialize-NugetSourceRegistered
-    Write-State "After"
+    Write-State "Done"
 
-    Write-Begin "Checking if nuget cmd is availible" -State "Before"
+    Write-Begin "Checking if nuget cmd is availible" -State "Checking"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
@@ -181,6 +181,9 @@ function Initialize-CorePowerLatest {
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
         Write-State "Installed"
     } 
+    else {
+        Write-State "Already installed"
+    }
 
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
         Write-Output "git"
