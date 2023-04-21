@@ -122,7 +122,3 @@ function Set-ConsoleCursorPosition {
     $pos = New-Object System.Management.Automation.Host.Coordinates -ArgumentList $x, $y
     $Host.UI.RawUI.CursorPosition = $pos
 }
-
-Write-Begin "sdfsdf" -State $true
-Write-State "xxxxx"
-
