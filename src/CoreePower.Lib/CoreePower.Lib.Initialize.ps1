@@ -167,7 +167,7 @@ function Initialize-CorePowerLatest {
 
 
     Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
-    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope | Out-Null
+    $updatesDone = (Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope)
     Write-State "Done"
 
 
