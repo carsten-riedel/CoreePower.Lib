@@ -20,7 +20,7 @@ function Write-Begin {
     $StateLimit = $parts * 3
     $TextLimit = $consoleWidth
 
-    $date = [datetime]::Now.ToUniversalTime().ToString()
+    $date = [datetime]::Now.ToString()
 
     $intro = "CoreePower $date`:".PadRight($IntroLimit, ' ').Substring(0,$IntroLimit)
     $Text = "$Text".PadRight($TextLimit, ' ').Substring(0,$TextLimit)
