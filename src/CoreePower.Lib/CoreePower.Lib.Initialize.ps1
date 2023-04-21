@@ -165,7 +165,7 @@ function Initialize-CorePowerLatest {
 
 
     Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
-    Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
+    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Write-State "Done"
 
 
@@ -248,8 +248,13 @@ function Initialize-CorePowerLatest {
     }
 
     Write-Begin "Update-ModulesLatest CoreePower.Lib" -State "Checking"
-    Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
+    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
     Write-State "Done"
+
+    if ($updatesDone)
+    {
+        Write-Begin "Update has been done that require Powershell restart" -State "Info"
+    }
 }
 
 function Get-ModuleInfoExtended {
@@ -392,10 +397,7 @@ function Update-ModulesLatest {
         $UpdatesApplied = $true
     }
 
-    if ($UpdatesApplied)
-    {
-        Write-Output "Updates have been applied. Please restart your PowerShell session to ensure that the changes take effect."
-    }
+    return $UpdatesApplied
 }
 
 #CreateModule -Path "C:\temp" -ModuleName "CoreePower.Module" -Description "Library for module management" -Author "Carsten Riedel" 

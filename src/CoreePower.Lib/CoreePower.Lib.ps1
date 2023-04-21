@@ -9,7 +9,7 @@ function Write-Begin {
     $WriteOut = @(
         @{ Items=@("installed","ok","already installed","true",'installing',"done"); Color="Green"; },
         @{ Items=@("not installed"); Color="Red"; },
-        @{ Items=@("open","check","checking"); Color="Yellow"; }
+        @{ Items=@("open","check","checking","info"); Color="Yellow"; }
     )
 
     $uneven = $Host.UI.RawUI.WindowSize.Width % 16
@@ -56,7 +56,7 @@ function Write-State {
     $WriteOut = @(
         @{ Items=@("installed","ok","already installed","true",'installing',"done"); Color="Green"; },
         @{ Items=@("not installed"); Color="Red"; },
-        @{ Items=@("open","check","checking"); Color="Yellow"; }
+        @{ Items=@("open","check","checking","info"); Color="Yellow"; }
     )
 
     $uneven = $Host.UI.RawUI.WindowSize.Width % 16
