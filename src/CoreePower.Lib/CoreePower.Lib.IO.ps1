@@ -1,5 +1,3 @@
-
-
 function Copy-Recursive {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     [alias("copyrec")] 

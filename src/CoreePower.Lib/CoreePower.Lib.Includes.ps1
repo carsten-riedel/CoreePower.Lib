@@ -1,9 +1,4 @@
-$includes = @(
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.IO.ps1"} ,
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Scope.ps1"},
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"},
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.ps1"}
-)
+
 
 for ($index = 0; $index -lt $includes.Count; $index++) {
 

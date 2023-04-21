@@ -47,8 +47,7 @@ function Install-NugetToPackagemanagement {
         return
     }
 
-    if ($Scope -eq [Scope]::LocalMachine)
-    {
+    if ($Scope -eq [Scope]::LocalMachine)  {
         Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers | Out-Null
     }
     elseif ($Scope -eq [Scope]::CurrentUser) {
@@ -90,10 +89,15 @@ function Initialize-NugetPackageProviderInstalled {
         return
     }
 
+    Write-Begin "NugetProvider version" -State "check"
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
+         Write-State "Installing"
          Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
-         Write-Output "NuGet package provider successfully installed."
+         Write-State "Installed"
+    }
+    else {
+        Write-State "already installed."
     }
 }
 
@@ -153,7 +157,7 @@ function Initialize-CorePowerLatest {
         return
     }
     
-    Write-Output "Initialize-NugetPackageProviderInstalled"
+    Write-Out "Initialize-NugetPackageProviderInstalled"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
 
     Write-Output "Initialize-PowerShellGetLatest"
@@ -713,10 +717,11 @@ function Start-ProcessSilent {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    Write-Output "Test code execution"
+    #Initialize-NugetPackageProviderInstalled
+    #Write-Out "Test code execution" -State $true
     #$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
     #$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
-    Initialize-CorePowerLatest
+    #Initialize-CorePowerLatest
     $x=1
 
     #Save-Module -Name PowerShellGet -Path C:\Test\Modules -Repository PSGallery
