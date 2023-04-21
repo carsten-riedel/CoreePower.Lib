@@ -396,6 +396,7 @@ function Update-ModulesLatest {
         $UpdatesApplied = $true
     }
 
+    Write-Output "test"
     if ($UpdatesApplied)
     {
         return $true
