@@ -92,9 +92,9 @@ function Initialize-NugetPackageProviderInstalled {
     Write-Begin "NugetProvider version" -State "check"
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
-         Write-State "Installing"
+         Write-State "Installing."
          Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
-         Write-State "Installed"
+         Write-State "Installed."
     }
     else {
         Write-State "already installed."
@@ -157,7 +157,6 @@ function Initialize-CorePowerLatest {
         return
     }
     
-    Write-Out "Initialize-NugetPackageProviderInstalled"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
 
     Write-Output "Initialize-PowerShellGetLatest"

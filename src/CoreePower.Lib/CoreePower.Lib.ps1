@@ -16,8 +16,8 @@ function Write-Begin {
     $parts = ($Host.UI.RawUI.WindowSize.Width - $uneven) / 16
 
     $consoleWidth = ($parts * 8) + $uneven
-    $IntroLimit = $parts * 4
-    $StateLimit = $parts * 4
+    $IntroLimit = $parts * 5
+    $StateLimit = $parts * 3
     $TextLimit = $consoleWidth
 
     $date = [datetime]::Now.ToUniversalTime().ToString()
@@ -60,8 +60,8 @@ function Write-State {
     $parts = ($Host.UI.RawUI.WindowSize.Width - $uneven) / 16
 
     $consoleWidth = ($parts * 8) + $uneven
-    $IntroLimit = $parts * 4
-    $StateLimit = $parts * 4
+    $IntroLimit = $parts * 5
+    $StateLimit = $parts * 3
     $TextLimit = $consoleWidth
 
     Set-ConsoleCursorPosition -X ($IntroLimit + $consoleWidth) -Y ($Host.UI.RawUI.CursorPosition.Y - 1)
