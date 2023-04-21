@@ -150,6 +150,8 @@ function Initialize-CorePowerLatest {
     {
         return
     }
+
+    $updatesDone = $false
     
     Write-Begin "Initialize-NugetPackageProviderInstalled" -State "Checking"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
