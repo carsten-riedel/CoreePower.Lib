@@ -32,7 +32,9 @@ function Write-Begin {
     {
         $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
         $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped }
-        if ($null -eq $color) { $color = "DarkBlue" }
+        if ($null -eq $color) { 
+            $color = "DarkBlue"
+        }
         else {
             $color= $color | Select-Object -ExpandProperty Color
         }
@@ -71,11 +73,13 @@ function Write-State {
     {
         $stateStriped = $State.Trim().Trim('.').Trim('!').Trim('?').Trim().ToLower()
         $color = $WriteOut | Where-Object { $_.Items -contains $stateStriped }
-        if ($null -eq $color) { $color = "DarkBlue" }
+        if ($null -eq $color) { 
+            $color = "DarkBlue"
+        }
         else {
             $color= $color | Select-Object -ExpandProperty Color
         }
-        
+
         Write-Host "$State".PadRight($StateLimit, ' ').Substring(0,$StateLimit) -ForegroundColor $color -BackgroundColor White
     }
     else {
@@ -101,6 +105,6 @@ function Set-ConsoleCursorPosition {
     $Host.UI.RawUI.CursorPosition = $pos
 }
 
-#Write-Begin "sdfsdf" -State "aaaaa"
-#Write-State "done"
+#Write-Begin "Initialize-NugetSourceRegistered" -State "Checking"
+#Write-State "Done"
 #Write-State "sdgsdg"
