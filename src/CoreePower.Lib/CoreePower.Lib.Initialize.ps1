@@ -251,12 +251,12 @@ function Initialize-CorePowerLatest {
     }
 
     Write-Begin "Update-ModulesLatest CoreePower.Lib" -State "Checking"
-    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope
+    $updatesDone = $updatesDone -or (Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope)
     Write-State "Done"
 
     if ($updatesDone)
     {
-        Write-Begin "Update has been done that require Powershell restart" -State "Info"
+        Write-Begin "A restart of Powershell is required to implement the update." -State "Info"
     }
 
 }
