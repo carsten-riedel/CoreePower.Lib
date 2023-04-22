@@ -17,6 +17,13 @@ wget -qO- https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/s
 ```
 
 ```
+wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+sudo apt-get update && sudo apt-get install -y dotnet-sdk-7.0
+```
+
+```
 git clone --branch V0.0.0.45 --depth 1 https://github.com/carsten-riedel/CoreePower.Module C:\temp\CoreePower.Module
 Remove-Item -Recurse -Force "C:\temp\CoreePower.Module\.git"
 ```
