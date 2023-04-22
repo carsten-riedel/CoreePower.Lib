@@ -20,7 +20,8 @@ wget -qO- https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/s
 wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
-sudo apt-get update && sudo apt-get install -y dotnet-sdk-7.0
+sudo apt-get update && sudo apt-get install -y dotnet-sdk-6.0
+dotnet tool install --global Powershell
 ```
 
 ```
