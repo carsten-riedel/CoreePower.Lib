@@ -180,6 +180,7 @@ function Initialize-CorePowerLatest {
         Write-State "Installing"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
         $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
+        AddEnviromentVariable -Name "" -Value ""
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
         Write-State "Installed"
     } 
@@ -312,12 +313,16 @@ function Find-UpdatableModules {
         [string[]] $ModuleNames,
         [Scope]$Scope = [Scope]::LocalMachine
     )
+
     
-    $AvailableUpdates = Find-Module -Name $ModuleNames -Repository PSGallery | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
     $LocalModulesAll = Get-ModuleInfoExtended -ModuleNames $ModuleNames -Scope $Scope | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
     $LatestLocalModules = $LocalModulesAll | Group-Object Name | ForEach-Object { $_.Group | Select-Object -First 1  }
+    [string[]]$SeachLocalModulesInPSGallery = $LatestLocalModules | Select-Object -ExpandProperty Name
+    
+    $AvailableUpdates = Find-Module -Name $ModuleNames -Repository PSGallery | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
+    $AvailableMatches = $AvailableUpdates | Where-Object { $_.Name -in $SeachLocalModulesInPSGallery }
 
-    $ModulesToUpdate = $AvailableUpdates | Where-Object { $currentUpdate = $_; -not ($LatestLocalModules | Where-Object { $_.Name -eq $currentUpdate.Name -and $_.Version -eq $currentUpdate.Version }) }
+    $ModulesToUpdate = $AvailableMatches | Where-Object { $currentUpdate = $_; -not ($LatestLocalModules | Where-Object { $_.Name -eq $currentUpdate.Name -and $_.Version -eq $currentUpdate.Version }) }
 
     return $ModulesToUpdate
 }
@@ -743,9 +748,10 @@ function Start-ProcessSilent {
 if ($Host.Name -match "Visual Studio Code")
 {
 
-    Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
-    $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config")
-    Write-State "Done"
+    #$foo = Find-UpdatableModules -ModuleNames @("coree*")
+    #Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
+    #$updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config")
+    #Write-State "Done"
 
     #Initialize-NugetPackageProviderInstalled
     #Write-Out "Test code execution" -State $true
