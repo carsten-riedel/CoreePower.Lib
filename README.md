@@ -12,7 +12,9 @@ try { Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Forc
 ```
 
 ### TBD LINUX
-wget -qO- https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.sh | bash
+```
+wget -qO- https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.sh | sh
+```
 
 ```
 git clone --branch V0.0.0.45 --depth 1 https://github.com/carsten-riedel/CoreePower.Module C:\temp\CoreePower.Module
