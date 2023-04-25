@@ -160,6 +160,7 @@ function Restart-Proc {
         $InteractiveShell = Test-InteractiveShell
         if ($InteractiveShell)
         {
+            Get-History
             $lastCommandId = (Get-History).Count - 1
             $lastCommand = (Get-History -Id $lastCommandId).CommandLine
             Write-Host "The last command executed in this session was: $lastCommand"
