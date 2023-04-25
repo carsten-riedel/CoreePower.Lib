@@ -160,9 +160,9 @@ function Restart-Proc {
         $InteractiveShell = Test-InteractiveShell
         if ($InteractiveShell)
         {
-            $lastCommand = (Get-History)[-1].CommandLine
+            $lastCommandId = (Get-History).Count - 1
+            $lastCommand = (Get-History -Id $lastCommandId).CommandLine
             Write-Host "The last command executed in this session was: $lastCommand"
-
 
             $CertAnswer = Confirm-AdminRightsEnabled
             if ($CertAnswer -eq 0)
