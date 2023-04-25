@@ -162,8 +162,11 @@ function Restart-Proc {
         {
             Get-History
             $lastCommandId = (Get-History).Count - 1
+            $lastCommandIdx = (Get-History).Count - 1
             $lastCommand = (Get-History -Id $lastCommandId).CommandLine
-            Write-Host "The last command executed in this session was: $lastCommand"
+            $lastCommandx = (Get-History -Id $lastCommandIdx).CommandLine
+            Write-Host "The last command executed in this session was1: $lastCommand"
+            Write-Host "The last command executed in this session was2: $lastCommandx"
 
             $CertAnswer = Confirm-AdminRightsEnabled
             if ($CertAnswer -eq 0)
