@@ -165,6 +165,8 @@ function Restart-Proc {
             $lastCommandIdx = (Get-History).Count - 1
             $lastCommand = (Get-History -Id $lastCommandId).CommandLine
             $lastCommandx = (Get-History -Id $lastCommandIdx).CommandLine
+
+            Write-Host "echo $^"
             Write-Host "The last command executed in this session was1: $lastCommand"
             Write-Host "The last command executed in this session was2: $lastCommandx"
 
