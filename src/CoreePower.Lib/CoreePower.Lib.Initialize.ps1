@@ -745,6 +745,20 @@ function Start-ProcessSilent {
     return ,$output, $errorOutput
 }
 
+function CorePower-AdminSetup {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    [alias("cpadmin")] 
+    param ()
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope ([Scope]::LocalMachine)))
+    {
+        return
+    }
+
+
+}
+
+
 if ($Host.Name -match "Visual Studio Code")
 {
 

@@ -1,3 +1,8 @@
+if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) { 
+    . $PSScriptRoot\CoreePower.Lib.Includes.ps1
+ }
+
+
 function Write-Begin {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
@@ -113,6 +118,68 @@ function Set-ConsoleCursorPosition {
     $pos = New-Object System.Management.Automation.Host.Coordinates -ArgumentList $x, $y
     $Host.UI.RawUI.CursorPosition = $pos
 }
+
+function Test-InteractiveShell {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param()
+
+    $commandLineArgs = [Environment]::GetCommandLineArgs()
+    $nonInteractiveArg = $commandLineArgs | Where-Object { $_ -like '*-NonInteractive*' }
+
+    $isInteractive = [Environment]::UserInteractive -and (-not $nonInteractiveArg)
+
+    return $isInteractive
+}
+
+function Confirm-AdminRightsEnabled {
+    param()
+    $title   = 'Administrator Rights Required'
+    $msg     = 'This command requires administrator rights to run. Please activate/enabled administrator rights before continuing.'
+    $Choices = @(
+        [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "I have enabled administrator rights and understand the risks.")
+        [System.Management.Automation.Host.ChoiceDescription]::new("&No", "I do not want to run this command.")
+    )
+    $ChoiceDefault = 1
+
+    try {
+        $result = $Host.UI.PromptForChoice($title, $msg, $Choices, $ChoiceDefault)
+        return $result
+    }
+    catch {
+        Write-Error "Error occurred while prompting for choice: $_"
+        return 1
+    }
+}
+
+function Restart-Proc {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param()
+
+    if (-not(CanExecuteInDesiredScope -Scope ([Scope]::LocalMachine)))
+    {
+        $InteractiveShell = Test-InteractiveShell
+        if ($InteractiveShell)
+        {
+            $lastCommand = (Get-History)[-1].CommandLine
+            Write-Host "The last command executed in this session was: $lastCommand"
+
+
+            $CertAnswer = Confirm-AdminRightsEnabled
+            if ($CertAnswer -eq 0)
+            {
+                $doo = Get-Process -Id $PID | Select-Object Path , CommandLine
+                Start-Process $doo.Path -Verb RunAs
+                #Exit 0
+                #Add-SubTrust
+            }
+        }
+        return
+    }
+    else {
+        return $true
+    }
+}
+
 
 #Write-Begin "Initialize-NugetSourceRegistered" -State "Checking"
 #Write-State "Donex"
