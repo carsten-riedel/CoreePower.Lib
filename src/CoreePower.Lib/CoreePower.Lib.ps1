@@ -158,31 +158,41 @@ function Restart-Proc {
     if (-not(CanExecuteInDesiredScope -Scope ([Scope]::LocalMachine)))
     {
         $InteractiveShell = Test-InteractiveShell
+
+        $currentPowershellProcess = Get-Process -Id $PID | Select-Object Path , CommandLine
+        
+        $manifestPath = ""
+        $importOrDotSource = ""
+        if ($null -ne $MyInvocation.MyCommand.Module)
+        {
+            $manifestPath = (Get-Module -Name $MyInvocation.MyCommand.Module.Name).Path
+        }
+        $scriptPath = $MyInvocation.ScriptName
+        if ($manifestPath -ne "")
+        {
+            $importOrDotSource = "Import-Module $manifestPath"
+        }
+        else {
+            $importOrDotSource = ". `"$scriptPath`""
+        }
+
+
         if ($InteractiveShell)
         {
-            Get-History
-            $lastCommandId = (Get-History).Count - 1
-            $lastCommandIdx = (Get-History).Count - 1
-            $lastCommand = (Get-History -Id $lastCommandId).CommandLine
-            $lastCommandx = (Get-History -Id $lastCommandIdx).CommandLine
-
-            Write-Host "echo $^"
-            Write-Host "The last command executed in this session was1: $lastCommand"
-            Write-Host "The last command executed in this session was2: $lastCommandx"
-
             $CertAnswer = Confirm-AdminRightsEnabled
             if ($CertAnswer -eq 0)
             {
-                $doo = Get-Process -Id $PID | Select-Object Path , CommandLine
-                Start-Process $doo.Path -Verb RunAs
-                #Exit 0
-                #Add-SubTrust
+                Start-Process $currentPowershellProcess.Path -ArgumentList "-NoProfile -ExecutionPolicy ByPass -Command `"$importOrDotSource ;Restart-Proc`" ; Start-Sleep 10" -Verb RunAs
             }
+        } else {
+            Start-Process $currentPowershellProcess.Path -ArgumentList "-NoProfile -ExecutionPolicy ByPass -Command `"$importOrDotSource ;Restart-Proc`" ; Start-Sleep 10" -Verb RunAs
         }
+
         return
     }
     else {
-        return $true
+        Write-Host " Restart-Proc echo"
+        Start-Sleep 10
     }
 }
 
