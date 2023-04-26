@@ -165,15 +165,27 @@ function Initialize-CorePowerLatest {
     Initialize-PackageManagementLatest  -Scope $Scope
     Write-State "Done"
 
-
     Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
     $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
     Write-State "Done"
 
-
     Write-Begin "Initialize-NugetSourceRegistered" -State "Checking"
     Initialize-NugetSourceRegistered
     Write-State "Done"
+
+    Write-Begin "Checking for availible command, 7z" -State "Checking"
+    if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
+        Write-State "Installing"
+        $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
+        $temporaryDir = New-Tempdir
+        $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
+        Set-AsInvoker -FilePath "$file"
+        Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
+        AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
+    }
 
     Write-Begin "Checking for availible command, nuget" -State "Checking"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
@@ -208,20 +220,6 @@ function Initialize-CorePowerLatest {
         $destination = "$($env:localappdata)\githubcli"
         Copy-Recursive -Source $source -Destination $destination
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
-        Write-State "Installed"
-    } else {
-        Write-State "Already installed"
-    }
-
-    Write-Begin "Checking for availible command, 7z" -State "Checking"
-    if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
-        $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-        $temporaryDir = New-Tempdir
-        $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
-        Set-AsInvoker -FilePath "$file"
-        Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
-        AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
         Write-State "Installed"
     } else {
         Write-State "Already installed"
@@ -495,7 +493,9 @@ function Download-GithubLatestReleaseMatchingAssets {
 
     $downloadTargetLocation = "$temporaryDir\$fileName"
 
-    Invoke-WebRequest -Uri $matchedUrl -OutFile "$downloadTargetLocation"
+    #Invoke-WebRequest -Uri $matchedUrl -OutFile "$downloadTargetLocation"
+    $client = New-Object System.Net.WebClient
+    $client.DownloadFile($matchedUrl, $downloadTargetLocation)
 
     return $downloadTargetLocation
 }
