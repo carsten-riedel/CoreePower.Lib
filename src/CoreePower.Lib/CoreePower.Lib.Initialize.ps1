@@ -11,7 +11,7 @@ function Initialize-NugetSourceRegistered {
     $nugetSource = Get-PackageSource -Name NuGet -Provider Nuget -ErrorAction SilentlyContinue
     if (!$nugetSource) {
         Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
-        Write-Output "NuGet package source registered successfully"
+        #Write-Output "NuGet package source registered successfully"
     }
 
     if ($nugetSource.IsTrusted -eq $false)
@@ -23,7 +23,7 @@ function Initialize-NugetSourceRegistered {
     if (!$nugetSource) {
 
         Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted -SkipValidate | Out-Null
-         Write-Output "Nuget.org package source registered successfully."
+        #Write-Output "Nuget.org package source registered successfully."
     }
 
     if ($nugetSource.IsTrusted -eq $false)
@@ -180,7 +180,6 @@ function Initialize-CorePowerLatest {
         Write-State "Installing"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
         $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
-        AddEnviromentVariable -Name "" -Value ""
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
         Write-State "Installed"
     } 
@@ -218,7 +217,8 @@ function Initialize-CorePowerLatest {
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-        $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
+        $temporaryDir = New-Tempdir
+        $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
         Set-AsInvoker -FilePath "$file"
         Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
@@ -761,6 +761,15 @@ function CorePower-AdminSetup {
 
 if ($Host.Name -match "Visual Studio Code")
 {
+
+
+
+       # $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
+       # $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
+       # Set-AsInvoker -FilePath "$file"
+       # Start-ProcessSilent -File "C:\temp\7z2201-x64.exe" -Arguments "/S /D=`"$($env:localappdata)\7zip2`""
+
+
 
     #$foo = Find-UpdatableModules -ModuleNames @("coree*")
     #Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
