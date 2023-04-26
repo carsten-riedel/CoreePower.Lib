@@ -153,7 +153,10 @@ function Confirm-AdminRightsEnabled {
 
 function Restart-Proc {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
-    param()
+    param (
+        [string]$InvokeCommand = "Restart-Proc",
+        [bool]$ThisModuleScriptLoading = $true
+    )
 
     if (-not(CanExecuteInDesiredScope -Scope ([Scope]::LocalMachine)))
     {
@@ -163,17 +166,20 @@ function Restart-Proc {
         
         $manifestPath = ""
         $importOrDotSource = ""
-        if ($null -ne $MyInvocation.MyCommand.Module)
+        if ($ThisModuleScriptLoading)
         {
-            $manifestPath = (Get-Module -Name $MyInvocation.MyCommand.Module.Name).Path
-        }
-        $scriptPath = $MyInvocation.ScriptName
-        if ($manifestPath -ne "")
-        {
-            $importOrDotSource = "Import-Module $manifestPath -DisableNameChecking"
-        }
-        else {
-            $importOrDotSource = ". `"$scriptPath`""
+            if ($null -ne $MyInvocation.MyCommand.Module)
+            {
+                $manifestPath = (Get-Module -Name $MyInvocation.MyCommand.Module.Name).Path
+            }
+            $scriptPath = $MyInvocation.ScriptName
+            if ($manifestPath -ne "")
+            {
+                $importOrDotSource = "Import-Module $manifestPath -DisableNameChecking"
+            }
+            else {
+                $importOrDotSource = ". `"$scriptPath`""
+            }
         }
 
         if ($InteractiveShell)
@@ -181,16 +187,17 @@ function Restart-Proc {
             $CertAnswer = Confirm-AdminRightsEnabled
             if ($CertAnswer -eq 0)
             {
-                Start-Process $currentPowershellProcess.Path -ArgumentList "-NoProfile -ExecutionPolicy ByPass -Command `"$importOrDotSource ;Restart-Proc`" ; Start-Sleep 10" -Verb RunAs
+                Start-Process $currentPowershellProcess.Path -ArgumentList "-NoProfile -ExecutionPolicy ByPass -Command `"$importOrDotSource ; $InvokeCommand`" ; Start-Sleep 10" -Verb RunAs
             }
+            return
         } else {
-            Start-Process $currentPowershellProcess.Path -ArgumentList "-NoProfile -ExecutionPolicy ByPass -Command `"$importOrDotSource ;Restart-Proc`" ; Start-Sleep 10" -Verb RunAs
+            Start-Process $currentPowershellProcess.Path -ArgumentList "-NoProfile -ExecutionPolicy ByPass -Command `"$importOrDotSource ; $InvokeCommand`" ; Start-Sleep 10" -Verb RunAs
+            return
         }
-
-        return
     }
     else {
         Write-Host "Restart-Proc echo"
+        Write-Host "Wait 10 seconds."
         Start-Sleep 10
     }
 }
