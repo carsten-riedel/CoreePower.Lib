@@ -170,12 +170,11 @@ function Restart-Proc {
         $scriptPath = $MyInvocation.ScriptName
         if ($manifestPath -ne "")
         {
-            $importOrDotSource = "Import-Module $manifestPath"
+            $importOrDotSource = "Import-Module $manifestPath -DisableNameChecking"
         }
         else {
             $importOrDotSource = ". `"$scriptPath`""
         }
-
 
         if ($InteractiveShell)
         {
@@ -191,7 +190,7 @@ function Restart-Proc {
         return
     }
     else {
-        Write-Host " Restart-Proc echo"
+        Write-Host "Restart-Proc echo"
         Start-Sleep 10
     }
 }
