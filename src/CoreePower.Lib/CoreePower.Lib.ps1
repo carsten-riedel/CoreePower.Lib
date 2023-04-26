@@ -155,7 +155,7 @@ function Restart-Proc {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     param (
         [string]$InvokeCommand = "Restart-Proc",
-        [bool]$ThisModuleScriptLoading = $true
+        [bool]$ThisModuleScriptLoading = $false
     )
 
     if (-not(CanExecuteInDesiredScope -Scope ([Scope]::LocalMachine)))
