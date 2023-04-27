@@ -48,10 +48,16 @@ function Install-NugetToPackagemanagement {
     }
 
     if ($Scope -eq [Scope]::LocalMachine)  {
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers | Out-Null
+        $originalProgressPreference = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
+        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers  | Out-Null
+        $ProgressPreference = $originalProgressPreference
     }
     elseif ($Scope -eq [Scope]::CurrentUser) {
+        $originalProgressPreference = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
         Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope CurrentUser | Out-Null
+        $ProgressPreference = $originalProgressPreference
     }
 }
 
@@ -91,7 +97,10 @@ function Initialize-NugetPackageProviderInstalled {
 
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
-         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
+        $originalProgressPreference = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
+        $ProgressPreference = $originalProgressPreference
     }
 }
 
@@ -229,7 +238,10 @@ function Initialize-CorePowerLatest {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
         $temporaryDir = New-Tempdir
+        $originalProgressPreference = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
+        $ProgressPreference = $originalProgressPreference
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
         Copy-Recursive -Source $source -Destination $destination
@@ -408,8 +420,11 @@ function Update-ModulesLatest {
     {
         #Write-Output "Installing module: $($module.Name) $($module.Version)" 
 
-        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
-        
+        $originalProgressPreference = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
+        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber -Quiet | Out-Null
+        $ProgressPreference = $originalProgressPreference
+
         $UpdatesApplied = $true
     }
     if ($UpdatesApplied)
