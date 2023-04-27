@@ -422,7 +422,7 @@ function Update-ModulesLatest {
 
         $originalProgressPreference = $ProgressPreference
         $ProgressPreference = 'SilentlyContinue'
-        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber -Quiet | Out-Null
+        Install-Module -Name $module.Name -RequiredVersion $module.Version -Scope $Scope -Force -AllowClobber | Out-Null
         $ProgressPreference = $originalProgressPreference
 
         $UpdatesApplied = $true
