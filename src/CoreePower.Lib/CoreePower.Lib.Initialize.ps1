@@ -187,6 +187,31 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
+    
+    Write-Begin "Checking for availible command, git" -State "Checking"
+    if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
+        Write-State "Installing"
+        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
+        #cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+        &7z x -y -o"$($env:localappdata)\PortableGit" "$file" | Out-Null
+
+        $psi = New-Object System.Diagnostics.ProcessStartInfo
+        $currendir = Get-Location
+        Set-Location "$($env:localappdata)\PortableGit"
+        $psi.FileName = "$($env:localappdata)\PortableGit\git-bash.exe"
+        $psi.Arguments = "--hide --no-cd --command=post-install.bat"
+        $psi.WorkingDirectory = [System.IO.Path]::GetDirectoryName("$($env:localappdata)\PortableGit\git-bash.exe")
+        $psi.UseShellExecute = $false
+        $process = [System.Diagnostics.Process]::Start($psi)
+        $process.WaitForExit()
+        Set-Location $currendir
+
+        AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
+        Write-State "Installed"
+    } else {
+        Write-State "Already installed"
+    }
+
     Write-Begin "Checking for availible command, nuget" -State "Checking"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
@@ -196,17 +221,6 @@ function Initialize-CorePowerLatest {
         Write-State "Installed"
     } 
     else {
-        Write-State "Already installed"
-    }
-
-    Write-Begin "Checking for availible command, git" -State "Checking"
-    if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
-        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-        cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
-        AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
-        Write-State "Installed"
-    } else {
         Write-State "Already installed"
     }
 
@@ -409,7 +423,6 @@ function Update-ModulesLatest {
 
 #CreateModule -Path "C:\temp" -ModuleName "CoreePower.Module" -Description "Library for module management" -Author "Carsten Riedel" 
 #UpdateModuleVersion -Path "C:\temp\CoreePower.Module"
-
 
 function Remove-OutdatedModules {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
@@ -649,7 +662,6 @@ function Get-RedirectDownload {
 
     return $OutputPath
 }
-
 function Get-RedirectDownload2 {
     [CmdletBinding()]
     param (
@@ -744,7 +756,6 @@ function Start-ProcessSilent {
 
     return ,$output, $errorOutput
 }
-
 function CorePower-AdminSetup {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     [alias("cpadmin")] 
@@ -762,8 +773,21 @@ function CorePower-AdminSetup {
 if ($Host.Name -match "Visual Studio Code")
 {
 
+    
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
+    #cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+    &7z x -y -o"$($env:localappdata)\PortableGit" "$file" | Out-Null
 
-
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $currendir = Get-Location
+    Set-Location "$($env:localappdata)\PortableGit"
+    $psi.FileName = "$($env:localappdata)\PortableGit\git-bash.exe"
+    $psi.Arguments = "--hide --no-cd --command=post-install.bat"
+    $psi.WorkingDirectory = [System.IO.Path]::GetDirectoryName("$($env:localappdata)\PortableGit\git-bash.exe")
+    $psi.UseShellExecute = $false
+    $process = [System.Diagnostics.Process]::Start($psi)
+    $process.WaitForExit()
+    Set-Location $currendir
        # $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
        # $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
        # Set-AsInvoker -FilePath "$file"
