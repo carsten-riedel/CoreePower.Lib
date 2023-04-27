@@ -788,42 +788,7 @@ function CorePower-AdminSetup {
 if ($Host.Name -match "Visual Studio Code")
 {
 
-    
-    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-    #cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
-    &7z x -y -o"$($env:localappdata)\PortableGit" "$file" | Out-Null
-
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $currendir = Get-Location
-    Set-Location "$($env:localappdata)\PortableGit"
-    $psi.FileName = "$($env:localappdata)\PortableGit\git-bash.exe"
-    $psi.Arguments = "--hide --no-cd --command=post-install.bat"
-    $psi.WorkingDirectory = [System.IO.Path]::GetDirectoryName("$($env:localappdata)\PortableGit\git-bash.exe")
-    $psi.UseShellExecute = $false
-    $process = [System.Diagnostics.Process]::Start($psi)
-    $process.WaitForExit()
-    Set-Location $currendir
-       # $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-       # $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "C:\temp"
-       # Set-AsInvoker -FilePath "$file"
-       # Start-ProcessSilent -File "C:\temp\7z2201-x64.exe" -Arguments "/S /D=`"$($env:localappdata)\7zip2`""
-
-
-
-    #$foo = Find-UpdatableModules -ModuleNames @("coree*")
-    #Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
-    #$updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config")
-    #Write-State "Done"
-
-    #Initialize-NugetPackageProviderInstalled
-    #Write-Out "Test code execution" -State $true
-    #$sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-    #$file = Get-RedirectDownload2 -Url "$($sz.url)" -RemoveQueryParams $true
-    #Initialize-CorePowerLatest
     $x=1
 
-    #Save-Module -Name PowerShellGet -Path C:\Test\Modules -Repository PSGallery
-    #Register-PSRepository -Name FileShareRepo -SourceLocation '\\server1\FileShareRepo' ‑InstallationPolicy Trusted
-    #Publish-Module -Name TestModule -Repository FileShareRepo
 }
 
