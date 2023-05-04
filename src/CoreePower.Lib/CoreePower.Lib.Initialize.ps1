@@ -788,7 +788,32 @@ function CorePower-AdminSetup {
 if ($Host.Name -match "Visual Studio Code")
 {
 
-    $x=1
+ 
 
 }
 
+
+function FOO {
+     write-output "HEY"
+     Start-Sleep 2
+     write-output "HOY"
+     }
+
+  
+
+
+
+
+    Start-Job -ScriptBlock ${Function:FOO} -Name "ddd" | Out-Null
+
+    Wait-Job -Name @('ddd')   | Out-Null
+  
+    Receive-Job -Name @('ddd') -OutVariable result | Out-Null
+    
+    $state = Get-Job -State Completed
+
+    $state | Remove-Job
+
+    $s = $result
+ 
+    $x=1
