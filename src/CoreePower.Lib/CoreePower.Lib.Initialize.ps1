@@ -48,16 +48,16 @@ function Install-NugetToPackagemanagement {
     }
 
     if ($Scope -eq [Scope]::LocalMachine)  {
-        $originalProgressPreference = $ProgressPreference
-        $ProgressPreference = 'SilentlyContinue'
+        $originalProgressPreference = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
         Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers  | Out-Null
-        $ProgressPreference = $originalProgressPreference
+        $global:ProgressPreference = $originalProgressPreference
     }
     elseif ($Scope -eq [Scope]::CurrentUser) {
-        $originalProgressPreference = $ProgressPreference
-        $ProgressPreference = 'SilentlyContinue'
+        $originalProgressPreference = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
         Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope CurrentUser | Out-Null
-        $ProgressPreference = $originalProgressPreference
+        $global:ProgressPreference = $originalProgressPreference
     }
 }
 
@@ -97,10 +97,10 @@ function Initialize-NugetPackageProviderInstalled {
 
     $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
     if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
-        $originalProgressPreference = $ProgressPreference
-        $ProgressPreference = 'SilentlyContinue'
+        $originalProgressPreference = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
-        $ProgressPreference = $originalProgressPreference
+        $global:ProgressPreference = $originalProgressPreference
     }
 }
 
@@ -114,11 +114,11 @@ function Initialize-PowerShellGetLatest {
     {
         return
     }
-    $originalProgressPreference = $ProgressPreference
-    $ProgressPreference = 'SilentlyContinue'
+    $originalProgressPreference = $global:ProgressPreference
+    $global:ProgressPreference = 'SilentlyContinue'
     Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope  | Out-Null
     Set-PackageSource -Name PSGallery -Trusted -ProviderName PowerShellGet | Out-Null
-    $ProgressPreference = $originalProgressPreference
+    $global:ProgressPreference = $originalProgressPreference
 }
 
 function Initialize-PackageManagementLatest {
@@ -131,7 +131,10 @@ function Initialize-PackageManagementLatest {
     {
         return
     }
+    $originalProgressPreference = $global:ProgressPreference
+    $global:ProgressPreference = 'SilentlyContinue'
     Update-ModulesLatest -ModuleNames @("PackageManagement") -Scope $Scope | Out-Null
+    $global:ProgressPreference = $originalProgressPreference
 }
 
 function Initialize-Powershell {
