@@ -12,10 +12,10 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.127'
+ModuleVersion = '0.0.0.128'
 
 # Supported PSEditions
-# CompatiblePSEditions = @('Desktop')
+# CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
 GUID = '91253b1f-8db9-48b8-9fd9-e34a30a54915'
@@ -83,7 +83,7 @@ FunctionsToExport = 'HasLocalAdministratorClaim', 'CouldRunAsAdministrator',
 CmdletsToExport = @()
 
 # Variables to export from this module
-# VariablesToExport = @()
+VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = 'cpcp', 'copyrec', 'newtmp'
@@ -106,7 +106,7 @@ PrivateData = @{
         Tags = 'lib', 'windows'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.127/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.128/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         # ProjectUri = ''
