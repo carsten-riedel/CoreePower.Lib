@@ -259,7 +259,10 @@ function Initialize-CorePowerLatest {
         Write-State "Installing"
         $temporaryDir = New-Tempdir
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
+        $originalProgressPreference = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
+        $ProgressPreference = $originalProgressPreference
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip" -Scope CurrentUser
         Write-State "Installed"
