@@ -241,10 +241,10 @@ function Initialize-CorePowerLatest {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
         $temporaryDir = New-Tempdir
-        $originalProgressPreference = $ProgressPreference
-        $ProgressPreference = 'SilentlyContinue'
+        $originalProgressPreference = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
-        $ProgressPreference = $originalProgressPreference
+        $global:ProgressPreference = $originalProgressPreference
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
         Copy-Recursive -Source $source -Destination $destination
@@ -259,10 +259,10 @@ function Initialize-CorePowerLatest {
         Write-State "Installing"
         $temporaryDir = New-Tempdir
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
-        $originalProgressPreference = $ProgressPreference
-        $ProgressPreference = 'SilentlyContinue'
+        $originalProgressPreference = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
-        $ProgressPreference = $originalProgressPreference
+        $global:ProgressPreference = $originalProgressPreference
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip" -Scope CurrentUser
         Write-State "Installed"
