@@ -114,8 +114,11 @@ function Initialize-PowerShellGetLatest {
     {
         return
     }
+    $originalProgressPreference = $ProgressPreference
+    $ProgressPreference = 'SilentlyContinue'
     Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope  | Out-Null
     Set-PackageSource -Name PSGallery -Trusted -ProviderName PowerShellGet | Out-Null
+    $ProgressPreference = $originalProgressPreference
 }
 
 function Initialize-PackageManagementLatest {
@@ -787,33 +790,27 @@ function CorePower-AdminSetup {
 
 if ($Host.Name -match "Visual Studio Code")
 {
+    function FOO {
+        write-output "HEY"
+        Start-Sleep 2
+        write-output "HOY"
+        }
 
+       Start-Job -ScriptBlock ${Function:FOO} -Name "ddd" | Out-Null
+   
+       Wait-Job -Name @('ddd')   | Out-Null
+     
+       Receive-Job -Name @('ddd') -OutVariable result | Out-Null
+       
+       $state = Get-Job -State Completed
+   
+       $state | Remove-Job
+   
+       $s = $result
+    
+       $x=1
  
 
 }
 
 
-function FOO {
-     write-output "HEY"
-     Start-Sleep 2
-     write-output "HOY"
-     }
-
-  
-
-
-
-
-    Start-Job -ScriptBlock ${Function:FOO} -Name "ddd" | Out-Null
-
-    Wait-Job -Name @('ddd')   | Out-Null
-  
-    Receive-Job -Name @('ddd') -OutVariable result | Out-Null
-    
-    $state = Get-Job -State Completed
-
-    $state | Remove-Job
-
-    $s = $result
- 
-    $x=1
