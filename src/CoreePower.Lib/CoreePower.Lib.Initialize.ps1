@@ -195,7 +195,7 @@ function Initialize-CorePowerLatest {
         $temporaryDir = New-Tempdir
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
         Set-AsInvoker -FilePath "$file"
-        Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
+        $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
         Write-State "Installed"
     } else {
