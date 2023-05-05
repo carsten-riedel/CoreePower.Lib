@@ -267,7 +267,7 @@ function Initialize-CorePowerLatest {
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         $global:ProgressPreference = $originalProgressPreference
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip\bin" -Scope CurrentUser
         Write-State "Installed"
     } else {
         Write-State "Already installed"
@@ -789,8 +789,6 @@ function CorePower-AdminSetup {
     {
         return
     }
-
-
 }
 
 
