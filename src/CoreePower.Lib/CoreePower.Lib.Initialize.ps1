@@ -3,7 +3,7 @@
 
 if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) { 
     . $PSScriptRoot\CoreePower.Lib.Includes.ps1
- }
+}
 
 function Initialize-NugetSourceRegistered {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
@@ -347,7 +347,6 @@ function Find-UpdatableModules {
         [Scope]$Scope = [Scope]::LocalMachine
     )
 
-    
     $LocalModulesAll = Get-ModuleInfoExtended -ModuleNames $ModuleNames -Scope $Scope | Select-Object @{Name='Name'; Expression={$_.Name}}, @{Name='Version'; Expression={$_.Version}} | Sort-Object Name, Version -Descending
     $LatestLocalModules = $LocalModulesAll | Group-Object Name | ForEach-Object { $_.Group | Select-Object -First 1  }
     [string[]]$SeachLocalModulesInPSGallery = $LatestLocalModules | Select-Object -ExpandProperty Name
