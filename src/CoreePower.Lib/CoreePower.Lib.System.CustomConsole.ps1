@@ -127,7 +127,7 @@ function Write-OutputText {
         [bool]$includeDateInPrefix = $true
     )
 
-    $rasterSize = 32
+    $rasterSize = 16
 
     if($rasterSize % 2 -eq 1) {
         $rasterSize += 1
@@ -136,9 +136,9 @@ function Write-OutputText {
     $rasterRemainder = $Host.UI.RawUI.BufferSize.Width % $rasterSize
     $rasterPartitions = ($Host.UI.RawUI.BufferSize.Width - $rasterRemainder) / $rasterSize
 
-    $contentWidth= ($rasterPartitions * ($rasterSize / 2)) + $rasterRemainder
-    $prefixWidth = $rasterPartitions * ($rasterSize / 4) +  2 * ($rasterSize / 8)
-    $suffixWidth = $rasterPartitions * ($rasterSize / 4) - 2 * ($rasterSize / 8)
+    $contentWidth= ($rasterPartitions * 7) + $rasterRemainder
+    $prefixWidth = $rasterPartitions * 6
+    $suffixWidth = $rasterPartitions * 3
 
     $currentDate = [datetime]::Now.ToString()
 
