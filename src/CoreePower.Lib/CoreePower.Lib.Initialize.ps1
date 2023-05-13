@@ -166,56 +166,75 @@ function Initialize-CorePowerLatest {
         return
     }
 
-    $module = Get-Module -Name $MyInvocation.MyCommand.Module.Name
-    $moduleName = $module.Name
-    $moduleVersion = $module.Version
+    if ($null -ne $MyInvocation.MyCommand.Module)
+    {
+        $module = Get-Module -Name $MyInvocation.MyCommand.Module.Name
+        $moduleName = $module.Name
+        $moduleVersion = $module.Version
+    }
+    else {
+        $moduleName = $MyInvocation.MyCommand.CommandType
+        $moduleVersion = "None"
+    }
 
-    Write-Begin "Command from $moduleName $moduleVersion" -State "Info"
+
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Useing module version: $moduleVersion" -SuffixText "Info"
 
     $updatesDone = $false
     
-    Write-Begin "Initialize-NugetPackageProviderInstalled" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Initiated"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
-    Write-State "Done"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Completed"
 
-    Write-Begin "Initialize-PowerShellGetLatest" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Initiated"
     Initialize-PowerShellGetLatest  -Scope $Scope
-    Write-State "Done"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Completed"
 
-    Write-Begin "Initialize-PackageManagementLatest" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Initiated"
     Initialize-PackageManagementLatest  -Scope $Scope
-    Write-State "Done"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Completed"
 
-    Write-Begin "Update-ModulesLatest CoreePower.Module CoreePower.Config" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Initiated"
     $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
-    Write-State "Done"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Completed"
 
-    Write-Begin "Initialize-NugetSourceRegistered" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Initiated"
     Initialize-NugetSourceRegistered
-    Write-State "Done"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Completed"
 
-    Write-Begin "Checking for availible command, 7z" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Check"
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
         $temporaryDir = New-TempDirectory
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download"
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Invoker"
         Set-AsInvoker -FilePath "$file"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting"
         $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
-        Write-State "Installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Available"
     } else {
-        Write-State "Already installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Already available"
     }
+    Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Completed"
 
     
-    Write-Begin "Checking for availible command, git" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Check"
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Download"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-        #cmd /c "start /min /wait """" ""$file"" -y -o""$($env:localappdata)\PortableGit"" "
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Download Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting"
         &7z x -y -o"$($env:localappdata)\PortableGit" "$file" | Out-Null
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting Completed"
 
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing"
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $currendir = Get-Location
         Set-Location "$($env:localappdata)\PortableGit"
@@ -226,12 +245,43 @@ function Initialize-CorePowerLatest {
         $process = [System.Diagnostics.Process]::Start($psi)
         $process.WaitForExit()
         Set-Location $currendir
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing Completed"
 
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
-        Write-State "Installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Available"
     } else {
-        Write-State "Already installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Already available"
     }
+    Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Completed"
+
+
+    Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Check"
+    if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download"
+        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting"
+        $temporaryDir = New-TempDirectory
+        $originalProgressPreference = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
+        Expand-Archive -Path $file -DestinationPath $temporaryDir
+        $global:ProgressPreference = $originalProgressPreference
+        $source = "$temporaryDir"
+        $destination = "$($env:localappdata)\githubcli"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying"
+        Copy-Recursive -Source $source -Destination $destination
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying  Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar"
+        AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Available"
+    } else {
+        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Already available"
+    }
+    Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Completed"
 
     Write-Begin "Checking for availible command, nuget" -State "Checking"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
@@ -245,23 +295,7 @@ function Initialize-CorePowerLatest {
         Write-State "Already installed"
     }
 
-    Write-Begin "Checking for availible command, gh" -State "Checking"
-    if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
-        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-        $temporaryDir = New-TempDirectory
-        $originalProgressPreference = $global:ProgressPreference
-        $global:ProgressPreference = 'SilentlyContinue'
-        Expand-Archive -Path $file -DestinationPath $temporaryDir
-        $global:ProgressPreference = $originalProgressPreference
-        $source = "$temporaryDir"
-        $destination = "$($env:localappdata)\githubcli"
-        Copy-Recursive -Source $source -Destination $destination
-        AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
-        Write-State "Installed"
-    } else {
-        Write-State "Already installed"
-    }
+
 
     Write-Begin "Checking for availible command, code" -State "Checking"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
@@ -570,7 +604,7 @@ if ($Host.Name -match "Visual Studio Code")
        $s = $result
     
        $x=1
-       #Initialize-PowerShellGetLatest
+       Initialize-CorePowerLatest
 
 }
 

@@ -94,10 +94,75 @@ function Confirm-AdminRightsEnabled {
     return Invoke-Prompt -PromptTitle "Admin Rights Required" -PromptMessage "This command requires administrator rights to run. Activate admin rights before continuing." -PromptChoices @(@("&Yes", "Enable admin rights."), @("&No", "Do not run this command.")) -DefaultChoiceIndex 1 -DisplayChoicesBeforePrompt $true
 }
 
+<#
+.SYNOPSIS
+   Writes an output text to the console with a prefix, content, and suffix.
+
+.DESCRIPTION
+   The Write-OutputText function generates a formatted output to the console. It accepts a prefix, content, and suffix as input parameters, and writes them to the console. It also ensures that the raster size used for partitioning the console width is even.
+
+.PARAMETER PrefixText
+   Specifies the prefix of the output text. The default is "Custom Message at".
+
+.PARAMETER ContentText
+   Specifies the main content of the output text. The default is "Invoking some command".
+
+.PARAMETER SuffixText
+   Specifies the suffix of the output text. The default is "Ended".
+
+.PARAMETER includeDateInPrefix
+   Specifies whether to include the current date in the prefix. The default is $true.
+
+.EXAMPLE
+   Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "End" -includeDateInPrefix $false
+
+   This example generates an output to the console with "Start" as the prefix, "Processing" as the content, and "End" as the suffix, with the date not included in the prefix.
+#>
+function Write-OutputText {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param (
+        [string]$PrefixText = "Custom Message at",
+        [string]$ContentText = "Invoking some command",
+        [string]$SuffixText = "Ended",
+        [bool]$includeDateInPrefix = $true
+    )
+
+    $rasterSize = 32
+
+    if($rasterSize % 2 -eq 1) {
+        $rasterSize += 1
+    }
+
+    $rasterRemainder = $Host.UI.RawUI.BufferSize.Width % $rasterSize
+    $rasterPartitions = ($Host.UI.RawUI.BufferSize.Width - $rasterRemainder) / $rasterSize
+
+    $contentWidth= ($rasterPartitions * ($rasterSize / 2)) + $rasterRemainder
+    $prefixWidth = $rasterPartitions * ($rasterSize / 4) + ($rasterSize / 8)
+    $suffixWidth = $rasterPartitions * ($rasterSize / 4) - ($rasterSize / 8)
+
+    $currentDate = [datetime]::Now.ToString()
+
+    if ($includeDateInPrefix)
+    {
+        $PrefixText = "$PrefixText $currentDate`:".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
+    }
+    else {
+        $PrefixText = "$PrefixText`:".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
+    }
+    
+    $ContentText = "$ContentText".PadRight($contentWidth, ' ').Substring(0, $contentWidth)
+    $SuffixText = "$SuffixText".PadRight($suffixWidth, ' ').Substring(0, $suffixWidth)
+
+    Write-Host -NoNewline "$PrefixText"
+    Write-Host -NoNewline "$ContentText"
+    Write-Host "$SuffixText"
+}
+
 function Test.CoreePower.Lib.System.CustomConsole {
     param()
     Write-Host "Start CoreePower.Lib.System.CustomConsole "
-    #Confirm-AdminRightsEnabled
+    #Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "End" -includeDateInPrefix $true
+    #Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending" -includeDateInPrefix $true
     Write-Host "End CoreePower.Lib.System.CustomConsole "
 }
 
