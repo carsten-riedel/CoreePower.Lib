@@ -166,6 +166,12 @@ function Initialize-CorePowerLatest {
         return
     }
 
+    $module = Get-Module -Name $MyInvocation.MyCommand.Module.Name
+    $moduleName = $module.Name
+    $moduleVersion = $module.Version
+
+    Write-Begin "Command from $moduleName $moduleVersion" -State "Info"
+
     $updatesDone = $false
     
     Write-Begin "Initialize-NugetPackageProviderInstalled" -State "Checking"
