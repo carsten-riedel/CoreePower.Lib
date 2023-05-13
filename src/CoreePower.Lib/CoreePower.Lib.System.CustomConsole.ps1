@@ -137,17 +137,17 @@ function Write-OutputText {
     $rasterPartitions = ($Host.UI.RawUI.BufferSize.Width - $rasterRemainder) / $rasterSize
 
     $contentWidth= ($rasterPartitions * ($rasterSize / 2)) + $rasterRemainder
-    $prefixWidth = $rasterPartitions * ($rasterSize / 4) + ($rasterSize / 8)
-    $suffixWidth = $rasterPartitions * ($rasterSize / 4) - ($rasterSize / 8)
+    $prefixWidth = $rasterPartitions * ($rasterSize / 4) +  2 * ($rasterSize / 8)
+    $suffixWidth = $rasterPartitions * ($rasterSize / 4) - 2 * ($rasterSize / 8)
 
     $currentDate = [datetime]::Now.ToString()
 
     if ($includeDateInPrefix)
     {
-        $PrefixText = "$PrefixText $currentDate`:".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
+        $PrefixText = "$PrefixText $currentDate`: ".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
     }
     else {
-        $PrefixText = "$PrefixText`:".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
+        $PrefixText = "$PrefixText`: ".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
     }
     
     $ContentText = "$ContentText".PadRight($contentWidth, ' ').Substring(0, $contentWidth)
