@@ -4,7 +4,4 @@ $originalProgressPreference = $global:ProgressPreference
 $global:ProgressPreference = 'SilentlyContinue'
 Install-Module -Name CoreePower.Lib -Scope CurrentUser -Force -AllowClobber | Out-Null
 $global:ProgressPreference = $originalProgressPreference
-Initialize-CorePowerLatest
-
-
-
+Write-Output "CoreePower.Lib succesfully installed. Invoke Initialize-CorePowerLatest to continue the setup."
