@@ -131,25 +131,7 @@ function Test-InteractiveShell {
     return $isInteractive
 }
 
-function Confirm-AdminRightsEnabled {
-    param()
-    $title   = 'Administrator Rights Required'
-    $msg     = 'This command requires administrator rights to run. Please activate/enabled administrator rights before continuing.'
-    $Choices = @(
-        [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "I have enabled administrator rights and understand the risks.")
-        [System.Management.Automation.Host.ChoiceDescription]::new("&No", "I do not want to run this command.")
-    )
-    $ChoiceDefault = 1
 
-    try {
-        $result = $Host.UI.PromptForChoice($title, $msg, $Choices, $ChoiceDefault)
-        return $result
-    }
-    catch {
-        Write-Error "Error occurred while prompting for choice: $_"
-        return 1
-    }
-}
 
 function Restart-Proc {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]

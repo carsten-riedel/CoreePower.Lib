@@ -97,19 +97,16 @@ function CanExecuteInDesiredScope {
 }
 
 
-function Test.CoreePower.Lib.Scope {
+function Test.CoreePower.Lib.System.Scope {
     param()
-    Write-Host "Start CoreePower.Lib.Scope"
+    Write-Host "Start CoreePower.Lib.System.Scope"
     #$result1 = CouldRunAsAdministrator
     #$result2 = HasLocalAdministratorClaim
     #$result3 = CanExecuteInDesiredScope -Scope CurrentUser
-    #$result4 = Remove-ModulesPrevious
-    #$result5 = Remove-Modules
-    #$result6 = Update-ModulesLatest
-    Write-Host "End CoreePower.Lib.Scope"
+    Write-Host "End CoreePower.Lib.System.Scope"
 }
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    Test.CoreePower.Lib.Scope
+    Test.CoreePower.Lib.System.Scope
 }
