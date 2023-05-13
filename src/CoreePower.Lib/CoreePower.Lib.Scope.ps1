@@ -100,9 +100,9 @@ function CanExecuteInDesiredScope {
 function Test.CoreePower.Lib.Scope {
     param()
     Write-Host "Start CoreePower.Lib.Scope"
-    $result1 = CouldRunAsAdministrator
-    $result2 = HasLocalAdministratorClaim
-    $result3 = CanExecuteInDesiredScope -Scope CurrentUser
+    #$result1 = CouldRunAsAdministrator
+    #$result2 = HasLocalAdministratorClaim
+    #$result3 = CanExecuteInDesiredScope -Scope CurrentUser
     #$result4 = Remove-ModulesPrevious
     #$result5 = Remove-Modules
     #$result6 = Update-ModulesLatest

@@ -1,3 +1,28 @@
+<#
+.SYNOPSIS
+    Recursively copies files and directories from a source directory to a destination directory.
+
+.DESCRIPTION
+    The `Copy-Recursive` function allows you to copy files and directories from a specified source directory to a destination directory. It performs a recursive copy operation, preserving the directory structure of the source directory.
+
+.PARAMETER Source
+    Specifies the path to the source directory. This is the directory from which files and directories will be copied.
+
+.PARAMETER Destination
+    Specifies the path to the destination directory. This is the directory where the files and directories from the source directory will be copied to.
+
+.NOTES
+    - This function performs a recursive copy, copying all files and directories from the source directory to the destination directory.
+    - The directory structure of the source directory is preserved in the destination directory.
+    - If the destination directory does not exist, it will be created.
+    - If a file or directory with the same name already exists in the destination directory, it will be overwritten.
+    - The function accepts the alias 'copyrec' for easier use.
+
+.EXAMPLE
+    PS C:\> Copy-Recursive -Source 'C:\SourceFolder' -Destination 'C:\DestinationFolder'
+
+    This example copies all files and directories from 'C:\SourceFolder' to 'C:\DestinationFolder', preserving the directory structure.
+#>
 function Copy-Recursive {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     [alias("copyrec")] 
@@ -16,17 +41,35 @@ function Copy-Recursive {
     }
 }
 
-function New-Tempdir {
+<#
+.SYNOPSIS
+    Creates a new temporary directory in the AppData\Local\Temp directory.
+
+.DESCRIPTION
+    The `New-TempDirectory` function creates a new temporary directory in the AppData\Local\Temp directory. It generates a unique identifier using `[System.Guid]::NewGuid().ToString()` and combines it with the AppData\Local\Temp path to create a unique directory path. If the directory does not exist, it is created using `New-Item`.
+
+.NOTES
+    - The function provides a convenient way to generate and create a new temporary directory.
+    - The generated temporary directory path is returned as the output.
+    - This function uses the `LocalApplicationData` folder within the AppData directory to ensure the creation of the temporary directory in the user's local application data.
+    - The function accepts the alias 'newtmpdir' for easier use.
+    
+.EXAMPLE
+    PS C:\> New-TempDirectory
+
+    This example creates a new temporary directory in the AppData\Local\Temp directory and returns the path of the newly created directory.
+#>
+function New-TempDirectory {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    [alias("newtmp")] 
+    [Alias("newtmpdir")]
     param ()
 
-    $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
-    if (-not (Test-Path $temporaryDir)) {
-        New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
+    $tempDirectoryPath = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Temp' | Join-Path -ChildPath ([System.Guid]::NewGuid().ToString())
+    if (-not (Test-Path $tempDirectoryPath)) {
+        New-Item -ItemType Directory -Path $tempDirectoryPath -Force | Out-Null
     }
 
-    return $temporaryDir
+    return $tempDirectoryPath
 }
 
 <#

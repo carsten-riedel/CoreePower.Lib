@@ -198,7 +198,7 @@ function Initialize-CorePowerLatest {
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
-        $temporaryDir = New-Tempdir
+        $temporaryDir = New-TempDirectory
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
         Set-AsInvoker -FilePath "$file"
         $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
@@ -249,7 +249,7 @@ function Initialize-CorePowerLatest {
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
         Write-State "Installing"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-        $temporaryDir = New-Tempdir
+        $temporaryDir = New-TempDirectory
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
@@ -266,7 +266,7 @@ function Initialize-CorePowerLatest {
     Write-Begin "Checking for availible command, code" -State "Checking"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
         Write-State "Installing"
-        $temporaryDir = New-Tempdir
+        $temporaryDir = New-TempDirectory
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
