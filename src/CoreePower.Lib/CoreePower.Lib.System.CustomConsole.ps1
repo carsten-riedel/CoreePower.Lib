@@ -136,8 +136,8 @@ function Write-OutputText {
     $rasterRemainder = $Host.UI.RawUI.BufferSize.Width % $rasterSize
     $rasterPartitions = ($Host.UI.RawUI.BufferSize.Width - $rasterRemainder) / $rasterSize
 
-    $contentWidth= ($rasterPartitions * 16) + $rasterRemainder
-    $prefixWidth = $rasterPartitions * 10
+    $contentWidth= ($rasterPartitions * 14) + $rasterRemainder
+    $prefixWidth = $rasterPartitions * 12
     $suffixWidth = $rasterPartitions * 6
 
     $currentDate = [datetime]::Now.ToString()
