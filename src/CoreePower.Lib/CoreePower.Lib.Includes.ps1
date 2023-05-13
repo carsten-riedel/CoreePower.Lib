@@ -5,8 +5,6 @@ $includes = @(
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Scope.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Modules.Management.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.ps1"},
-
-
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"}
 )
 
