@@ -1,10 +1,5 @@
-if (-not ([System.Management.Automation.PSTypeName]'Scope').Type) {
-    Add-Type @"
-    public enum Scope {
-        CurrentUser,
-        LocalMachine
-    }
-"@
+if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) { 
+    . $PSScriptRoot\CoreePower.Lib.Includes.ps1
 }
 
 <#
@@ -79,14 +74,14 @@ function CanExecuteInDesiredScope {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     [alias("cedc")]
     param (
-        [Scope]$Scope
+        [ModuleScope]$Scope
     )
 
     $IsAdmin = (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-    if ($Scope -eq [Scope]::CurrentUser) {
+    if ($Scope -eq [ModuleScope]::CurrentUser) {
         return $true
-    } elseif ($Scope -eq [Scope]::LocalMachine) {
+    } elseif ($Scope -eq [ModuleScope]::LocalMachine) {
         if ($IsAdmin -eq $true) {
             return $true
         } elseif (CouldRunAsAdministrator) {
@@ -99,4 +94,22 @@ function CanExecuteInDesiredScope {
             return $false
         }
     }
+}
+
+
+function Test.CoreePower.Lib.Scope {
+    param()
+    Write-Host "Start CoreePower.Lib.Scope"
+    $result1 = CouldRunAsAdministrator
+    $result2 = HasLocalAdministratorClaim
+    $result3 = CanExecuteInDesiredScope -Scope CurrentUser
+    #$result4 = Remove-ModulesPrevious
+    #$result5 = Remove-Modules
+    #$result6 = Update-ModulesLatest
+    Write-Host "End CoreePower.Lib.Scope"
+}
+
+if ($Host.Name -match "Visual Studio Code")
+{
+    Test.CoreePower.Lib.Scope
 }

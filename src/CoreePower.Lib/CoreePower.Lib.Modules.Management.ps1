@@ -2,15 +2,6 @@ if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) {
     . $PSScriptRoot\CoreePower.Lib.Includes.ps1
 }
 
-if (-not ([System.Management.Automation.PSTypeName]'RecordState').Type) {
-    Add-Type @"
-    public enum ModulRecordState {
-        Latest,
-        Previous
-    }
-"@
-}
-
 <#
 .SYNOPSIS
     Retrieves information about installed PowerShell modules with extended details.
@@ -56,25 +47,25 @@ function Get-ModulesInfoExtended {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param(
         [string[]] $ModuleNames = @('*'),
-        [Scope]$Scope = [Scope]::LocalMachine,
+        [ModuleScope]$Scope = [ModuleScope]::LocalMachine,
         [bool]$ExcludeSystemModules = $false
     )
-    
-    $LocalModulesAll = Get-Module -ListAvailable $ModuleNames |  Select-Object *,
+
+    $LocalModulesAll = Get-Module -Name $ModuleNames -ListAvailable  |  Select-Object *,
         @{ Name='BasePath' ; Expression={ $_.ModuleBase.TrimEnd($_.Version.ToString()).TrimEnd('\').TrimEnd($_.Name).TrimEnd('\')  } },
         @{ Name='IsMachine' ; Expression={ ($_.ModuleBase -Like "*$env:ProgramFiles*") -or ($_.ModuleBase -Like "*$env:ProgramW6432*")  } },
         @{ Name='IsUser' ; Expression={ ($_.ModuleBase -Like "*$env:userprofile*") } },
         @{ Name='IsSystem' ; Expression={ ($_.ModuleBase -Like "*$env:SystemRoot*")  } } 
 
-    if ($Scope -eq [Scope]::LocalMachine -and ($ExcludeSystemModules -eq $false))
+    if ($Scope -eq [ModuleScope]::LocalMachine -and ($ExcludeSystemModules -eq $false))
     {
         return $LocalModulesAll
     }
-    elseif ($Scope -eq [Scope]::LocalMachine -and ($ExcludeSystemModules -eq $true)) {
+    elseif ($Scope -eq [ModuleScope]::LocalMachine -and ($ExcludeSystemModules -eq $true)) {
         $LocalAndUser = $LocalModulesAll | Where-Object { $_.IsSystem -eq $false }
         return $LocalAndUser
     }
-    elseif ($Scope -eq [Scope]::CurrentUser) {
+    elseif ($Scope -eq [ModuleScope]::CurrentUser) {
         $UserModules = $LocalModulesAll | Where-Object { $_.IsUser -eq $true }
         return $UserModules
     }
@@ -116,19 +107,21 @@ function Get-ModulesLocal {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param(
         [string[]] $ModuleNames = @('*'),
-        [Scope]$Scope = [Scope]::LocalMachine,
+        [ModuleScope]$Scope = [ModuleScope]::LocalMachine,
         [bool]$ExcludeSystemModules = $true,
-        [ModulRecordState]$ModulRecordState = [ModulRecordState]::Latest
+        [ModuleRecordState]$ModulRecordState = [ModuleRecordState]::Latest
     )
 
-    $LocalModulesAll = Get-ModulesInfoExtended -ModuleNames $ModuleNames -Scope $Scope -ExcludeSystemModules $ExcludeSystemModules | Sort-Object Name, Version -Descending
+    $ModuleInfo = Get-ModulesInfoExtended -ModuleNames $ModuleNames -Scope $Scope -ExcludeSystemModules $ExcludeSystemModules
+    $LocalModulesAll = $ModuleInfo | Sort-Object Name, Version -Descending
 
-    if ($ModulRecordState -eq [ModulRecordState]::Latest)
-    {
+    if ($ModulRecordState -eq [ModuleRecordState]::Latest) {
         $LatestLocalModules = $LocalModulesAll | Group-Object Name | ForEach-Object { $_.Group | Select-Object -First 1  }
     }
-    else {
+    elseif ($ModulRecordState -eq [ModuleRecordState]::Previous){
         $LatestLocalModules = $LocalModulesAll | Group-Object Name | ForEach-Object { $_.Group | Select-Object -Skip 1  }
+    } else {
+        $LatestLocalModules = $LocalModulesAll | Group-Object Name | ForEach-Object { $_.Group }
     }
 
     return $LatestLocalModules
@@ -152,7 +145,7 @@ function Get-ModulesUpdatable {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param(
         [string[]] $ModuleNames = @('*'),
-        [Scope]$Scope = [Scope]::LocalMachine,
+        [ModuleScope]$Scope = [ModuleScope]::LocalMachine,
         [string[]] $Repositorys = @('All')
     )
 
@@ -208,7 +201,7 @@ function Remove-ModulesPrevious {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     param(
         [string[]]$ModuleNames = @('*'),
-        [Scope]$Scope = [Scope]::CurrentUser
+        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
     )
 
     # Check if the current process can execute in the desired scope
@@ -227,12 +220,112 @@ function Remove-ModulesPrevious {
     }
 }
 
+<#
+.SYNOPSIS
+    Removes specified PowerShell modules from the current user's module directory.
 
+.DESCRIPTION
+    The `Remove-Modules` function removes specified PowerShell modules from the module directory of the current user. It allows for the removal of modules that are no longer needed or outdated.
+
+.PARAMETER ModuleNames
+    Specifies the names of the PowerShell modules to be removed. Multiple module names can be provided as an array.
+
+.PARAMETER Scope
+    Specifies the scope of the module removal operation. The available values are "LocalMachine" and "CurrentUser". The default value is "CurrentUser".
+
+.NOTES
+    - The function requires appropriate permissions to remove modules from the module directory.
+    - Removing modules will permanently delete their associated files and directories.
+    - The function does not remove modules installed in system folders.
+    - It is recommended to use caution when removing modules, as it may affect the functionality of dependent scripts or applications.
+
+.EXAMPLE
+    PS C:\> Remove-Modules -ModuleNames "Module1", "Module2"
+
+    This command removes the PowerShell modules named "Module1" and "Module2" from the current user's module directory.
+
+.EXAMPLE
+    PS C:\> Remove-Modules -ModuleNames "OutdatedModule" -Scope CurrentUser
+
+    This command removes the PowerShell module named "OutdatedModule" from the module directory of the current user.
+
+.EXAMPLE
+    PS C:\> Remove-Modules -ModuleNames "Module3" -Scope LocalMachine
+
+    This command removes the PowerShell module named "Module3" from the module directory of the local machine.
+
+.NOTES
+    This function internally uses the `Get-ModulesLocal` function to retrieve module information and the `Remove-Item` cmdlet to delete module files and directories.
+#>
+function Remove-Modules {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [string[]]$ModuleNames,
+        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
+    )
+
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+    
+    $outdated = Get-ModulesLocal -ModuleNames $ModuleNames -Scope $Scope -ExcludeSystemModules $true -ModulRecordState All
+ 
+    foreach ($item in $outdated)
+    {
+        $DirVers = "$($item.BasePath)\$($item.Name)\$($item.Version)"
+        Remove-Item -Recurse -Force -Path $DirVers
+        Write-Host "Removed module:" $DirVers
+    }
+}
+
+<#
+.SYNOPSIS
+    Updates specified PowerShell modules to their latest versions.
+
+.DESCRIPTION
+    The `Update-ModulesLatest` function updates specified PowerShell modules to their latest versions. It retrieves the available updates for the specified modules and installs them, ensuring that the modules are up to date.
+
+.PARAMETER ModuleNames
+    Specifies the names of the PowerShell modules to be updated. Multiple module names can be provided as an array. By default, all installed modules are considered for updating.
+
+.PARAMETER Scope
+    Specifies the scope of the module update operation. The available values are "LocalMachine" and "CurrentUser". The default value is "CurrentUser".
+
+.PARAMETER SuppressProgressPreference
+    Indicates whether to suppress progress preference during the update process. By default, progress preference is not suppressed.
+
+.NOTES
+    - The function requires appropriate permissions to update modules in the module directory.
+    - The function internally uses the `Get-ModulesUpdatable` function to retrieve information about available module updates.
+    - The function uses the `Install-Module` cmdlet to install the updates.
+    - Use caution when updating modules, as it may affect the functionality of dependent scripts or applications.
+
+.EXAMPLE
+    PS C:\> Update-ModulesLatest
+
+    This command updates all installed PowerShell modules to their latest versions in the current user's module directory.
+
+.EXAMPLE
+    PS C:\> Update-ModulesLatest -ModuleNames "Module1", "Module2" -Scope LocalMachine
+
+    This command updates the PowerShell modules named "Module1" and "Module2" to their latest versions in the module directory of the local machine.
+
+.EXAMPLE
+    PS C:\> Update-ModulesLatest -ModuleNames "*" -SuppressProgressPreference $true
+
+    This command updates all installed PowerShell modules to their latest versions in the current user's module directory, suppressing progress preference during the update process.
+
+.NOTES
+    - If updates are applied successfully, the function returns `$true`. Otherwise, it returns `$false`.
+    - It is recommended to regularly update modules to benefit from bug fixes and new features.
+#>
 function Update-ModulesLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param(
         [string[]] $ModuleNames = @('*'),
-        [Scope]$Scope = [Scope]::CurrentUser,
+        [ModuleScope]$Scope = [ModuleScope]::CurrentUser,
         [bool]$SuppressProgressPreference = $false
     )
     # Check if the current process can execute in the desired scope
@@ -269,5 +362,19 @@ function Update-ModulesLatest {
     }
 }
 
-Update-ModulesLatest
+function Test.CoreePower.Lib.Modules.Management {
+    param()
+    Write-Host "Start Test.CoreePower.Lib.Modules.Management"
+    #$result1 = Get-ModulesInfoExtended
+    #$result2 = Get-ModulesLocal
+    #$result3 = Get-ModulesUpdatable
+    #$result4 = Remove-ModulesPrevious
+    #$result5 = Remove-Modules
+    #$result6 = Update-ModulesLatest
+    Write-Host "End Test.CoreePower.Lib.Modules.Management"
+}
 
+if ($Host.Name -match "Visual Studio Code")
+{
+    Test.CoreePower.Lib.Modules.Management
+}

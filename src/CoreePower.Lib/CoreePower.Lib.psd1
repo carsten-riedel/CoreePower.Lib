@@ -74,9 +74,7 @@ FunctionsToExport = 'HasLocalAdministratorClaim', 'CouldRunAsAdministrator',
                'Initialize-NugetPackageProviderInstalled', 
                'Initialize-PowerShellGetLatest', 
                'Initialize-PackageManagementLatest', 'Initialize-Powershell', 
-               'Find-UpdatableModules', 'Find-LocalOutdatedModules', 
-               'Update-ModulesLatest', 'Initialize-CorePowerLatest', 
-               'Get-ModuleInfoExtended', 'Remove-OutdatedModules', 'Copy-Recursive', 
+                'Copy-Recursive', 
                'New-Tempdir', 'Restart-Proc'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
