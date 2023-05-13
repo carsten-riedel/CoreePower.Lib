@@ -283,53 +283,67 @@ function Initialize-CorePowerLatest {
     }
     Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Completed"
 
-    Write-Begin "Checking for availible command, nuget" -State "Checking"
+    
+    Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Check"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar"
         $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
-        Write-State "Installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Available"
     } 
     else {
-        Write-State "Already installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Already available"
     }
+    Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Completed"
 
+    Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Check"
+    if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
+        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy"
+        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
+        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar"
+        AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
+        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Available"
+    } else {
+        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Already available"
+    }
+    Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Completed"
 
-
-    Write-Begin "Checking for availible command, code" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Check"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
-        Write-State "Installing"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download"
         $temporaryDir = New-TempDirectory
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting"
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         $global:ProgressPreference = $originalProgressPreference
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying"
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip\bin" -Scope CurrentUser
-        Write-State "Installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar Completed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Available"
     } else {
-        Write-State "Already installed"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Already available"
     }
 
-    Write-Begin "Checking for availible command, dotnet" -State "Checking"
-    if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        Write-State "Installing"
-        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
-        AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
-        Write-State "Installed"
-    } else {
-        Write-State "Already installed"
-    }
-
-    Write-Begin "Update-ModulesLatest CoreePower.Lib" -State "Checking"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Lib" -SuffixText "Initiated"
     $updatesDone = $updatesDone -or (Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope)
-    Write-State "Done"
+    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Lib" -SuffixText "Completed"
 
     if ($updatesDone)
     {
-        Write-Begin "A restart of Powershell is required to implement the update." -State "Info"
+        Write-OutputText -PrefixText "$moduleName" -ContentText "A restart of Powershell is required to implement the update." -SuffixText "Info"
     }
 
 }

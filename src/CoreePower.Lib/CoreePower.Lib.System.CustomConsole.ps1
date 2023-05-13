@@ -137,14 +137,14 @@ function Write-OutputText {
     $rasterPartitions = ($Host.UI.RawUI.BufferSize.Width - $rasterRemainder) / $rasterSize
 
     if ($includeDateInPrefix) {
-        $contentWidth= ($rasterPartitions * 12) + $rasterRemainder
-        $prefixWidth = $rasterPartitions * 13
-        $suffixWidth = $rasterPartitions * 6
+        $contentWidth= ($rasterPartitions * 13) + $rasterRemainder
+        $prefixWidth = $rasterPartitions * 11
+        $suffixWidth = $rasterPartitions * 8
     }
     else {
-        $contentWidth= ($rasterPartitions * 18) + $rasterRemainder
+        $contentWidth= ($rasterPartitions * 16) + $rasterRemainder
         $prefixWidth = $rasterPartitions * 8
-        $suffixWidth = $rasterPartitions * 6
+        $suffixWidth = $rasterPartitions * 8
     }
 
 
