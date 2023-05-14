@@ -14,7 +14,7 @@ if ($null -ne $selffound)
     $found = $false
     foreach($item in $selffound)
     {
-        if (Test-Path "$($selffound.ModuleBase)\shown.txt") {
+        if (Test-Path "$($item.ModuleBase)\shown.txt") {
             $found = $true
         }
     }
