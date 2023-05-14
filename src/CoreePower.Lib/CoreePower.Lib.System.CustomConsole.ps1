@@ -188,7 +188,7 @@ function Write-OutputText2 {
         $PrefixText = "$PrefixText`: "
     }
 
-    $ContentText = "$ContentText "
+    $SuffixText = " $SuffixText"
 
     $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
     if ($global:WriteOutputTextScreenWidth -ne $ScreenWidth)
