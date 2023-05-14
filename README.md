@@ -24,9 +24,7 @@ PS C:\Users\UserName> Initialize-CorePowerLatest
 
 The `Initialize-CorePowerLatest` PowerShell function is a comprehensive script designed to automate the setup and update of a variety of essential tools for a developer's environment. It can be invoked with a specified module scope.
 
-The function first checks if the current process has the necessary permissions to execute in the specified scope. If it doesn't, the function returns and ends.
-
-If the function is invoked within a module, it retrieves the module's name and version. If not, it records the command type as the module name and sets the module version to "None".
+The `Initialize-CorePowerLatest` executes in user scope by default.
 
 The function then initializes and checks for updates for a set of specific tools and modules:
 
