@@ -181,8 +181,11 @@ function Write-OutputText2 {
 
     if ($includeDateInPrefix)
     {
-        $currentDate = [datetime]::Now.ToString()
-        $PrefixText = "$PrefixText $currentDate`: "
+        $date = Get-Date
+        $dateonly = $date.ToString("yyyy-MM-dd")
+        $timeonly = $date.ToString("HH:mm:ss")
+        $currentDate = "$dateonly $timeonly"
+        $PrefixText = "$currentDate $PrefixText`: "
     }
     else {
         $PrefixText = "$PrefixText`: "
