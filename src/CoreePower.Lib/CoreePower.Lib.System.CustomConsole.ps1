@@ -92,88 +92,56 @@ function Confirm-AdminRightsEnabled {
     return Invoke-Prompt -PromptTitle "Admin Rights Required" -PromptMessage "This command requires administrator rights to run. Activate admin rights before continuing." -PromptChoices @(@("&Yes", "Enable admin rights."), @("&No", "Do not run this command.")) -DefaultChoiceIndex 1 -DisplayChoicesBeforePrompt $true
 }
 
+
+$global:WriteFormatedTextPrefix = [int]0
+$global:WriteFormatedTextSuffix = [int]0
+$global:WriteFormatedTextScreen = [int]0
+
 <#
 .SYNOPSIS
-   Writes an output text to the console with a prefix, content, and suffix.
+    Writes formatted text to the console.
 
 .DESCRIPTION
-   The Write-OutputText function generates a formatted output to the console. It accepts a prefix, content, and suffix as input parameters, and writes them to the console. It also ensures that the raster size used for partitioning the console width is even.
+    The Write-FormatedText function writes text to the console with a customizable prefix and suffix. 
+    The prefix and suffix text can be adjusted to have a minimum length. 
+    The prefix can optionally include the current date and time. 
+    The text is formatted to fit the current console width.
 
 .PARAMETER PrefixText
-   Specifies the prefix of the output text. The default is "Custom Message at".
+    The text to display as a prefix. Default is "Custom Message at".
 
 .PARAMETER ContentText
-   Specifies the main content of the output text. The default is "Invoking some command".
+    The main content of the text to display. Default is "Invoking some command".
 
 .PARAMETER SuffixText
-   Specifies the suffix of the output text. The default is "Ended".
+    The text to display as a suffix. Default is "Ended".
 
 .PARAMETER includeDateInPrefix
-   Specifies whether to include the current date in the prefix. The default is $true.
+    Whether to include the current date and time in the prefix. Default is $true.
+
+.PARAMETER PrefixTextLenMin
+    The minimum length for the prefix text. Default is 15.
+
+.PARAMETER SuffixTextLenMin
+    The minimum length for the suffix text. Default is 25.
 
 .EXAMPLE
-   Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "End" -includeDateInPrefix $false
+    Write-FormatedText -PrefixText "Starting" -ContentText "Running script" -SuffixText "Completed"
 
-   This example generates an output to the console with "Start" as the prefix, "Processing" as the content, and "End" as the suffix, with the date not included in the prefix.
+    This will output something like:
+
+    2023-05-14 12:34:56 Starting:         Running script                Completed
+
+.NOTES
+    The function adjusts the lengths of the prefix, content, and suffix text to fit the current console width.
+    It also maintains the last used lengths in global variables.
 #>
-function Write-OutputText {
+function Write-FormatedText {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
-        [string]$PrefixText = "Custom Message at",
-        [string]$ContentText = "Invoking some command",
-        [string]$SuffixText = "Ended",
-        [bool]$includeDateInPrefix = $true
-    )
-
-    $rasterSize = 32
-
-    if($rasterSize % 2 -eq 1) {
-        $rasterSize += 1
-    }
-
-    $rasterRemainder = $Host.UI.RawUI.BufferSize.Width % $rasterSize
-    $rasterPartitions = ($Host.UI.RawUI.BufferSize.Width - $rasterRemainder) / $rasterSize
-
-    if ($includeDateInPrefix) {
-        $contentWidth= ($rasterPartitions * 12) + $rasterRemainder
-        $prefixWidth = $rasterPartitions * 12
-        $suffixWidth = $rasterPartitions * 8
-    }
-    else {
-        $contentWidth= ($rasterPartitions * 16) + $rasterRemainder
-        $prefixWidth = $rasterPartitions * 8
-        $suffixWidth = $rasterPartitions * 8
-    }
-
-
-    $currentDate = [datetime]::Now.ToString()
-
-    if ($includeDateInPrefix)
-    {
-        $PrefixText = "$PrefixText $currentDate`: ".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
-    }
-    else {
-        $PrefixText = "$PrefixText`: ".PadRight($prefixWidth, ' ').Substring(0, $prefixWidth)
-    }
-    
-    $ContentText = "$ContentText".PadRight($contentWidth, ' ').Substring(0, $contentWidth)
-    $SuffixText = "$SuffixText".PadRight($suffixWidth, ' ').Substring(0, $suffixWidth)
-
-    Write-Host -NoNewline "$PrefixText"
-    Write-Host -NoNewline "$ContentText"
-    Write-Host "$SuffixText"
-}
-
-$global:WriteOutputTextPrefix = [int]0
-$global:WriteOutputTextSuffix = [int]0
-$global:WriteOutputTextScreenWidth = [int]0
-
-function Write-OutputText2 {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [string]$PrefixText = "Custom Message at",
-        [string]$ContentText = "Invoking some command",
-        [string]$SuffixText = "Ended",
+        [string]$PrefixText = "Starting",
+        [string]$ContentText = "Running script",
+        [string]$SuffixText = "Completed",
         [bool]$includeDateInPrefix = $true,
         [int]$PrefixTextLenMin = 15,
         [int]$SuffixTextLenMin = 25
@@ -194,21 +162,21 @@ function Write-OutputText2 {
     $SuffixText = " $SuffixText"
 
     $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
-    if ($global:WriteOutputTextScreenWidth -ne $ScreenWidth)
+    if ($global:WriteFormatedTextScreen -ne $ScreenWidth)
     {
-        $global:WriteOutputTextScreenWidth = $ScreenWidth
-        $global:WriteOutputTextPrefix = 0
-        $global:WriteOutputTextSuffix = 0
+        $global:WriteFormatedTextScreen = $ScreenWidth
+        $global:WriteFormatedTextPrefix = 0
+        $global:WriteFormatedTextSuffix = 0
     }
 
-    if ($global:WriteOutputTextPrefix -lt $PrefixTextLenMin)
+    if ($global:WriteFormatedTextPrefix -lt $PrefixTextLenMin)
     {
-        $global:WriteOutputTextPrefix = $PrefixTextLenMin
+        $global:WriteFormatedTextPrefix = $PrefixTextLenMin
     }
 
-    if ($global:WriteOutputTextSuffix -lt $SuffixTextLenMin )
+    if ($global:WriteFormatedTextSuffix -lt $SuffixTextLenMin )
     {
-        $global:WriteOutputTextSuffix = $SuffixTextLenMin 
+        $global:WriteFormatedTextSuffix = $SuffixTextLenMin 
     }
 
     $rasterSize = 32
@@ -234,21 +202,21 @@ function Write-OutputText2 {
 
     $suffixWidth = $rasterPartitionsWidth * $rasterPrefixFactor
 
-    if ($global:WriteOutputTextPrefix -lt $prefixWidth)
+    if ($global:WriteFormatedTextPrefix -lt $prefixWidth)
     {
-        $global:WriteOutputTextPrefix = $prefixWidth
+        $global:WriteFormatedTextPrefix = $prefixWidth
     }
     
-    if ($global:WriteOutputTextSuffix -lt $suffixWidth)
+    if ($global:WriteFormatedTextSuffix -lt $suffixWidth)
     {
-        $global:WriteOutputTextSuffix = $suffixWidth
+        $global:WriteFormatedTextSuffix = $suffixWidth
     }
 
-    $contentWidth = $global:WriteOutputTextScreenWidth - $global:WriteOutputTextPrefix - $global:WriteOutputTextSuffix
+    $contentWidth = $global:WriteFormatedTextScreen - $global:WriteFormatedTextPrefix - $global:WriteFormatedTextSuffix
 
-    $PrefixText = "$PrefixText".PadRight($global:WriteOutputTextPrefix, ' ').Substring(0, $global:WriteOutputTextPrefix)
+    $PrefixText = "$PrefixText".PadRight($global:WriteFormatedTextPrefix, ' ').Substring(0, $global:WriteFormatedTextPrefix)
     $ContentText = "$ContentText".PadRight($contentWidth, ' ').Substring(0, $contentWidth)
-    $SuffixText = "$SuffixText".PadRight($global:WriteOutputTextSuffix , ' ').Substring(0, $global:WriteOutputTextSuffix )
+    $SuffixText = "$SuffixText".PadRight($global:WriteFormatedTextSuffix , ' ').Substring(0, $global:WriteFormatedTextSuffix )
 
     Write-Host -NoNewline "$PrefixText"
     Write-Host -NoNewline "$ContentText"
@@ -259,11 +227,11 @@ function Write-OutputText2 {
 function Test.CoreePower.Lib.System.CustomConsole {
     param()
     Write-Host "Start CoreePower.Lib.System.CustomConsole "
-    #Write-OutputText2 -PrefixText "Start" -ContentText "Processingx" -SuffixText "End" -includeDateInPrefix $true
-    #Write-OutputText2 -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending"
-    #Write-OutputText2 -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaa" 
-    #Write-OutputText2 -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" 
-    #Write-OutputText2 -PrefixText "Startaaa" -ContentText "Processing were" -SuffixText "Ending" 
+    #Write-FormatedText -PrefixText "Start" -ContentText "Processingx" -SuffixText "End" -includeDateInPrefix $true
+    #Write-FormatedText -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending"
+    #Write-FormatedText -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaa" 
+    #Write-FormatedText -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" 
+    #Write-FormatedText -PrefixText "Startaaa" -ContentText "Processing were" -SuffixText "Ending" 
     Write-Host "End CoreePower.Lib.System.CustomConsole "
 }
 
