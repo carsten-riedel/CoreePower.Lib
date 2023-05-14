@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.156'
+ModuleVersion = '0.0.0.157'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -104,13 +104,13 @@ PrivateData = @{
         Tags = 'lib', 'windows', 'beta'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.156/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.157/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         # ProjectUri = ''
 
         # A URL to an icon representing this module.
-        IconUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.156/Content/ICON.png'
+        IconUri = 'https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/b65d3cfafc08fe78ac54804cb74896ff4e606a22/src/ICON.png'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
