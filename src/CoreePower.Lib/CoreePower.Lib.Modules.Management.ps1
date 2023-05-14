@@ -156,6 +156,12 @@ function Get-ModulesUpdatable {
     }
 
     $LatestLocalModules = Get-ModulesLocal -ModuleNames $ModuleNames -Scope $Scope -ExcludeSystemModules $true -ModulRecordState Latest
+
+    if ($null -eq $LatestLocalModules)
+    {
+        return
+    }
+
     [string[]]$SeachLocalModulesInPSGallery = $LatestLocalModules | Select-Object -ExpandProperty Name
 
     $LocalModulesMaxLimitFind = Split-Array -SourceArray $SeachLocalModulesInPSGallery -MaxPartitionSize 63
