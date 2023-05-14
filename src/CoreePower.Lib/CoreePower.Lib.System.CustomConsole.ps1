@@ -188,15 +188,7 @@ function Write-OutputText2 {
         $PrefixText = "$PrefixText`: "
     }
 
-    if ($global:WriteOutputTextPrefix -le $PrefixTextLenMin)
-    {
-        $global:WriteOutputTextPrefix = $PrefixTextLenMin
-    }
 
-    if ($global:WriteOutputTextSuffix -le $SuffixTextLenMin )
-    {
-        $global:WriteOutputTextSuffix = $SuffixTextLenMin 
-    }
 
 
     $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
@@ -205,6 +197,16 @@ function Write-OutputText2 {
         $global:WriteOutputTextScreenWidth = $ScreenWidth
         $global:WriteOutputTextPrefix = 0
         $global:WriteOutputTextSuffix = 0
+    }
+
+    if ($global:WriteOutputTextPrefix -lt $PrefixTextLenMin)
+    {
+        $global:WriteOutputTextPrefix = $PrefixTextLenMin
+    }
+
+    if ($global:WriteOutputTextSuffix -lt $SuffixTextLenMin )
+    {
+        $global:WriteOutputTextSuffix = $SuffixTextLenMin 
     }
 
     $rasterSize = 16
@@ -230,12 +232,12 @@ function Write-OutputText2 {
 
     $suffixWidth = $rasterPartitionsWidth * $rasterPrefixFactor
 
-    if ($global:WriteOutputTextPrefix -le $prefixWidth)
+    if ($global:WriteOutputTextPrefix -lt $prefixWidth)
     {
         $global:WriteOutputTextPrefix = $prefixWidth
     }
     
-    if ($global:WriteOutputTextSuffix -le $suffixWidth)
+    if ($global:WriteOutputTextSuffix -lt $suffixWidth)
     {
         $global:WriteOutputTextSuffix = $suffixWidth
     }
@@ -255,7 +257,7 @@ function Write-OutputText2 {
 function Test.CoreePower.Lib.System.CustomConsole {
     param()
     Write-Host "Start CoreePower.Lib.System.CustomConsole "
-    #Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "End" -includeDateInPrefix $true
+    #Write-OutputText2 -PrefixText "Start" -ContentText "Processingx" -SuffixText "End" -includeDateInPrefix $true
     #Write-OutputText2 -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending"
     #Write-OutputText2 -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaa" 
     #Write-OutputText2 -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" 
