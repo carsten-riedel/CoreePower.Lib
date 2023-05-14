@@ -175,8 +175,8 @@ function Write-OutputText2 {
         [string]$ContentText = "Invoking some command",
         [string]$SuffixText = "Ended",
         [bool]$includeDateInPrefix = $true,
-        [int]$PrefixTextLenMin = 20,
-        [int]$SuffixTextLenMin = 20
+        [int]$PrefixTextLenMin = 15,
+        [int]$SuffixTextLenMin = 22
     )
 
     if ($includeDateInPrefix)
@@ -187,9 +187,6 @@ function Write-OutputText2 {
     else {
         $PrefixText = "$PrefixText`: "
     }
-
-
-
 
     $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
     if ($global:WriteOutputTextScreenWidth -ne $ScreenWidth)
@@ -209,7 +206,7 @@ function Write-OutputText2 {
         $global:WriteOutputTextSuffix = $SuffixTextLenMin 
     }
 
-    $rasterSize = 16
+    $rasterSize = 32
 
     if($rasterSize % 2 -eq 1) {
         $rasterSize += 1
