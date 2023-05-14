@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.155'
+ModuleVersion = '0.0.0.156'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@ CompanyName = 'Carsten Riedel'
 Copyright = '(c) Carsten Riedel. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Powershell library module for the CoreePower project'
+Description = 'Base Powershell library module for the CoreePower project. '
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -81,7 +81,7 @@ FunctionsToExport = 'HasLocalAdministratorClaim', 'CouldRunAsAdministrator',
 CmdletsToExport = @()
 
 # Variables to export from this module
-# VariablesToExport = @()
+VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = 'cpcp', 'copyrec', 'newtmp'
@@ -101,16 +101,16 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'lib', 'windows'
+        Tags = 'lib', 'windows', 'beta'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.155/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.156/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         # ProjectUri = ''
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.156/Content/ICON.png'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
