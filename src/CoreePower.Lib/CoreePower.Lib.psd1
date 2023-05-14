@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.157'
+ModuleVersion = '0.0.0.159'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -30,7 +30,11 @@ CompanyName = 'Carsten Riedel'
 Copyright = '(c) Carsten Riedel. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Base Powershell library module for the CoreePower project. '
+Description = 'Base Powershell library module for the CoreePower project.
+Use Initialize-CorePowerLatest to get the latest.
+Add commandline programs from latest orginal sources if not availible.
+7-Zip , Git , GitHub CLI , NuGet , dotnet , Visual Studio Code
+'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -101,13 +105,15 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'lib', 'windows', 'beta'
+        Tags = 'lib', 'windows', 'beta', 'setup', 'NuGetPackageProvider', 'PowerShellGet', 
+               'PackageManagement', '7-Zip', 'Git', 'GitHubCLI', 'NuGet', 'dotnet', 
+               'VisualStudioCode'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.157/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.159/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/carsten-riedel/CoreePower.Lib'
 
         # A URL to an icon representing this module.
         IconUri = 'https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/b65d3cfafc08fe78ac54804cb74896ff4e606a22/src/ICON.png'
