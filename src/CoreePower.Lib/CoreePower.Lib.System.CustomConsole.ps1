@@ -174,8 +174,30 @@ function Write-OutputText2 {
         [string]$PrefixText = "Custom Message at",
         [string]$ContentText = "Invoking some command",
         [string]$SuffixText = "Ended",
-        [bool]$includeDateInPrefix = $true
+        [bool]$includeDateInPrefix = $true,
+        [int]$PrefixTextLenMin = 20,
+        [int]$SuffixTextLenMin = 20
     )
+
+    if ($includeDateInPrefix)
+    {
+        $currentDate = [datetime]::Now.ToString()
+        $PrefixText = "$PrefixText $currentDate`: "
+    }
+    else {
+        $PrefixText = "$PrefixText`: "
+    }
+
+    if ($global:WriteOutputTextPrefix -le $PrefixTextLenMin)
+    {
+        $global:WriteOutputTextPrefix = $PrefixTextLenMin
+    }
+
+    if ($global:WriteOutputTextSuffix -le $SuffixTextLenMin )
+    {
+        $global:WriteOutputTextSuffix = $SuffixTextLenMin 
+    }
+
 
     $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
     if ($global:WriteOutputTextScreenWidth -ne $ScreenWidth)
@@ -185,7 +207,7 @@ function Write-OutputText2 {
         $global:WriteOutputTextSuffix = 0
     }
 
-    $rasterSize = 8
+    $rasterSize = 16
 
     if($rasterSize % 2 -eq 1) {
         $rasterSize += 1
@@ -234,9 +256,10 @@ function Test.CoreePower.Lib.System.CustomConsole {
     param()
     Write-Host "Start CoreePower.Lib.System.CustomConsole "
     #Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "End" -includeDateInPrefix $true
-    #Write-OutputText2 -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending" -includeDateInPrefix $true
-    #Write-OutputText2 -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaaa" -includeDateInPrefix $true
-    #Write-OutputText2 -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" -includeDateInPrefix $true
+    #Write-OutputText2 -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending"
+    #Write-OutputText2 -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaa" 
+    #Write-OutputText2 -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" 
+    #Write-OutputText2 -PrefixText "Startaaa" -ContentText "Processing were" -SuffixText "Ending" 
     Write-Host "End CoreePower.Lib.System.CustomConsole "
 }
 

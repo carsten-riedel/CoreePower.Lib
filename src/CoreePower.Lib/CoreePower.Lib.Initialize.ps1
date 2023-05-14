@@ -618,7 +618,7 @@ if ($Host.Name -match "Visual Studio Code")
        $s = $result
     
        $x=1
-       #Initialize-CorePowerLatest
+       Initialize-CorePowerLatest
 
 }
 
