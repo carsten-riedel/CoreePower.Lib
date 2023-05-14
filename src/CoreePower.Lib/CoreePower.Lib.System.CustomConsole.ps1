@@ -176,7 +176,7 @@ function Write-OutputText2 {
         [string]$SuffixText = "Ended",
         [bool]$includeDateInPrefix = $true,
         [int]$PrefixTextLenMin = 15,
-        [int]$SuffixTextLenMin = 22
+        [int]$SuffixTextLenMin = 25
     )
 
     if ($includeDateInPrefix)
@@ -187,6 +187,8 @@ function Write-OutputText2 {
     else {
         $PrefixText = "$PrefixText`: "
     }
+
+    $ContentText = "$ContentText "
 
     $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
     if ($global:WriteOutputTextScreenWidth -ne $ScreenWidth)
