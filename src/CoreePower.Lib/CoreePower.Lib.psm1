@@ -25,6 +25,8 @@ if ($null -ne $selffound)
         $shown = "$($selffound.ModuleBase)\shown.txt"
         New-Item -ItemType File -Path $shown
         Write-Host "Thanks for installing CoreePower.Lib !"
+        Write-Host "Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
+       
     }
 }
 
