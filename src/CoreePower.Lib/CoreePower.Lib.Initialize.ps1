@@ -178,63 +178,63 @@ function Initialize-CorePowerLatest {
     }
 
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Useing module version: $moduleVersion" -SuffixText "Info"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Useing module version: $moduleVersion" -SuffixText "Info"
 
     $updatesDone = $false
     
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Initiated"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Initiated"
     Initialize-NugetPackageProviderInstalled -Scope $Scope
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Initiated"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Initiated"
     Initialize-PowerShellGetLatest  -Scope $Scope
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Initiated"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Initiated"
     Initialize-PackageManagementLatest  -Scope $Scope
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Initiated"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Initiated"
     $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Initiated"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Initiated"
     Initialize-NugetSourceRegistered
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Check"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Check"
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
         $temporaryDir = New-TempDirectory
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download"
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Invoker"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Invoker"
         Set-AsInvoker -FilePath "$file"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting"
         $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Available"
     } else {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Already available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Already available"
     }
-    Write-OutputText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Completed"
 
     
-    Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Check"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Check"
     if (-not(Get-Command "git" -ErrorAction SilentlyContinue)) {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Download"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Download"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Download Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Download Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting"
         &7z x -y -o"$($env:localappdata)\PortableGit" "$file" | Out-Null
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting Completed"
 
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing"
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $currendir = Get-Location
         Set-Location "$($env:localappdata)\PortableGit"
@@ -245,24 +245,24 @@ function Initialize-CorePowerLatest {
         $process = [System.Diagnostics.Process]::Start($psi)
         $process.WaitForExit()
         Set-Location $currendir
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing Completed"
 
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Available"
     } else {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Already available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Already available"
     }
-    Write-OutputText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Completed"
 
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Check"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Check"
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting"
         $temporaryDir = New-TempDirectory
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
@@ -270,80 +270,80 @@ function Initialize-CorePowerLatest {
         $global:ProgressPreference = $originalProgressPreference
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying"
         Copy-Recursive -Source $source -Destination $destination
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying  Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying  Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Available"
     } else {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Already available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Already available"
     }
-    Write-OutputText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Completed"
 
     
-    Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Check"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Check"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install"
         Install-NugetToPackagemanagement -Name "Nuget.Commandline"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar"
         $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
-        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Available"
     } 
     else {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Already available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Already available"
     }
-    Write-OutputText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Check"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Check"
     if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy"
         &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
-        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
-        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Available"
     } else {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Already available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Already available"
     }
-    Write-OutputText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Completed"
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Check"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Check"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download"
         $temporaryDir = New-TempDirectory
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting"
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         $global:ProgressPreference = $originalProgressPreference
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying"
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip\bin" -Scope CurrentUser
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar Completed"
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar Completed"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Available"
     } else {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Already available"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Already available"
     }
 
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Lib" -SuffixText "Initiated"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Lib" -SuffixText "Initiated"
     $updatesDone = $updatesDone -or (Update-ModulesLatest -ModuleNames @("CoreePower.Lib") -Scope $Scope)
-    Write-OutputText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Lib" -SuffixText "Completed"
+    Write-OutputText2 -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Lib" -SuffixText "Completed"
 
     if ($updatesDone)
     {
-        Write-OutputText -PrefixText "$moduleName" -ContentText "A restart of Powershell is required to implement the update." -SuffixText "Info"
+        Write-OutputText2 -PrefixText "$moduleName" -ContentText "A restart of Powershell is required to implement the update." -SuffixText "Info"
     }
 
 }
@@ -618,7 +618,7 @@ if ($Host.Name -match "Visual Studio Code")
        $s = $result
     
        $x=1
-       Initialize-CorePowerLatest
+       #Initialize-CorePowerLatest
 
 }
 

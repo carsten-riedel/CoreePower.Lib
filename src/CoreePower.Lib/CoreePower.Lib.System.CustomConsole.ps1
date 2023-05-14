@@ -1,5 +1,3 @@
-
-
 <#
 .SYNOPSIS
     Displays a prompt with choices and allows the user to make a selection.
@@ -166,11 +164,79 @@ function Write-OutputText {
     Write-Host "$SuffixText"
 }
 
+$global:WriteOutputTextPrefix = [int]0
+$global:WriteOutputTextSuffix = [int]0
+$global:WriteOutputTextScreenWidth = [int]0
+
+function Write-OutputText2 {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param (
+        [string]$PrefixText = "Custom Message at",
+        [string]$ContentText = "Invoking some command",
+        [string]$SuffixText = "Ended",
+        [bool]$includeDateInPrefix = $true
+    )
+
+    $ScreenWidth = $Host.UI.RawUI.BufferSize.Width
+    if ($global:WriteOutputTextScreenWidth -ne $ScreenWidth)
+    {
+        $global:WriteOutputTextScreenWidth = $ScreenWidth
+        $global:WriteOutputTextPrefix = 0
+        $global:WriteOutputTextSuffix = 0
+    }
+
+    $rasterSize = 8
+
+    if($rasterSize % 2 -eq 1) {
+        $rasterSize += 1
+    }
+
+    $rasterRemainder = $ScreenWidth % $rasterSize
+    $rasterPartitionsWidth = ($ScreenWidth - $rasterRemainder) / $rasterSize
+
+    $rasterPrefixFactor = 0
+    for ($i = 0; $i -lt $PrefixText.Length; $i=$i+$rasterPartitionsWidth) {
+        $rasterPrefixFactor++
+    }
+
+    $prefixWidth = $rasterPartitionsWidth * $rasterPrefixFactor
+
+    $rasterPrefixFactor = 0
+    for ($i = 0; $i -lt $SuffixText.Length; $i=$i+$rasterPartitionsWidth) {
+        $rasterPrefixFactor++
+    }
+
+    $suffixWidth = $rasterPartitionsWidth * $rasterPrefixFactor
+
+    if ($global:WriteOutputTextPrefix -le $prefixWidth)
+    {
+        $global:WriteOutputTextPrefix = $prefixWidth
+    }
+    
+    if ($global:WriteOutputTextSuffix -le $suffixWidth)
+    {
+        $global:WriteOutputTextSuffix = $suffixWidth
+    }
+
+    $contentWidth = $global:WriteOutputTextScreenWidth - $global:WriteOutputTextPrefix - $global:WriteOutputTextSuffix
+
+    $PrefixText = "$PrefixText".PadRight($global:WriteOutputTextPrefix, ' ').Substring(0, $global:WriteOutputTextPrefix)
+    $ContentText = "$ContentText".PadRight($contentWidth, ' ').Substring(0, $contentWidth)
+    $SuffixText = "$SuffixText".PadRight($global:WriteOutputTextSuffix , ' ').Substring(0, $global:WriteOutputTextSuffix )
+
+    Write-Host -NoNewline "$PrefixText"
+    Write-Host -NoNewline "$ContentText"
+    Write-Host "$SuffixText"
+}
+
+
 function Test.CoreePower.Lib.System.CustomConsole {
     param()
     Write-Host "Start CoreePower.Lib.System.CustomConsole "
     #Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "End" -includeDateInPrefix $true
-    #Write-OutputText -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending" -includeDateInPrefix $true
+    #Write-OutputText2 -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending" -includeDateInPrefix $true
+    #Write-OutputText2 -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaaa" -includeDateInPrefix $true
+    #Write-OutputText2 -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" -includeDateInPrefix $true
     Write-Host "End CoreePower.Lib.System.CustomConsole "
 }
 
@@ -178,4 +244,6 @@ if ($Host.Name -match "Visual Studio Code")
 {
     Test.CoreePower.Lib.System.CustomConsole
 }
+
+
 
