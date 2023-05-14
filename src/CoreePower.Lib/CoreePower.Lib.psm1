@@ -7,3 +7,24 @@
 
 . "$PSScriptRoot\CoreePower.Lib.Includes.ps1" 
 
+$selffound = Get-ModulesLocal -ModuleNames @("CoreePower.Lib") -ModulRecordState All
+
+if ($null -ne $selffound)
+{
+    $found = $false
+    foreach($item in $selffound)
+    {
+        if (Test-Path "$($selffound.ModuleBase)\shown.txt") {
+            $found = $true
+        }
+    }
+
+    if (-not ($found))
+    {
+        $selffound = Get-ModulesLocal -ModuleNames @("CoreePower.Lib") -ModulRecordState  Latest
+        $shown = "$($selffound.ModuleBase)\shown.txt"
+        New-Item -ItemType File -Path $shown
+        Write-Host "Thanks for installing CoreePower.Lib !"
+    }
+}
+
