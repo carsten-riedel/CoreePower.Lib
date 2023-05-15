@@ -9,6 +9,10 @@ $includes = @(
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.System.Process.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Modules.Management.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetPackageProvider.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PowerShellGet.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PackageManagement.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetSourceRegistered.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"}
 )
 

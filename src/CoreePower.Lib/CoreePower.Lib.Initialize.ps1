@@ -5,32 +5,6 @@ if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) {
     . $PSScriptRoot\CoreePower.Lib.Includes.ps1
 }
 
-function Initialize-NugetSourceRegistered {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    
-    $nugetSource = Get-PackageSource -Name NuGet -Provider Nuget -ErrorAction SilentlyContinue
-    if (!$nugetSource) {
-        Register-PackageSource -Name NuGet -Location "https://www.nuget.org/api/v2/" -ProviderName NuGet -Trusted | Out-Null
-        #Write-Output "NuGet package source registered successfully"
-    }
-
-    if ($nugetSource.IsTrusted -eq $false)
-    {
-        Set-PackageSource -Name NuGet -NewName NuGet -Trusted -ProviderName NuGet
-    }
-
-    $nugetSource = Get-PackageSource -Name nuget.org -Provider Nuget -ErrorAction SilentlyContinue
-    if (!$nugetSource) {
-
-        Register-PackageSource -Name nuget.org -Location "https://api.nuget.org/v3/index.json" -ProviderName NuGet -Trusted -SkipValidate | Out-Null
-        #Write-Output "Nuget.org package source registered successfully."
-    }
-
-    if ($nugetSource.IsTrusted -eq $false)
-    {
-        Set-PackageSource -Name nuget.org -ProviderName NuGet -Trusted -SkipValidate 
-    }
-}
 
 function Install-NugetToPackagemanagement {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
@@ -84,59 +58,6 @@ function Get-NugetToPackagemanagementPathLatest {
     }
 }
 
-function Initialize-NugetPackageProviderInstalled {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
-    )
-    # Check if the current process can execute in the desired scope
-    if (-not(CanExecuteInDesiredScope -Scope $Scope))
-    {
-        return
-    }
-
-    $nugetProvider = Get-PackageProvider -ListAvailable -ErrorAction SilentlyContinue | Where-Object Name -eq "nuget"
-    if (-not($nugetProvider -and $nugetProvider.Version -ge "2.8.5.201")) {
-        $originalProgressPreference = $global:ProgressPreference
-        $global:ProgressPreference = 'SilentlyContinue'
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope $Scope -Force | Out-Null
-        $global:ProgressPreference = $originalProgressPreference
-    }
-}
-
-function Initialize-PowerShellGetLatest {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
-    )
-    # Check if the current process can execute in the desired scope
-    if (-not(CanExecuteInDesiredScope -Scope $Scope))
-    {
-        return
-    }
-    $originalProgressPreference = $global:ProgressPreference
-    $global:ProgressPreference = 'SilentlyContinue'
-    Update-ModulesLatest -ModuleNames @("PowerShellGet") -Scope $Scope  | Out-Null
-    Set-PackageSource -Name PSGallery -Trusted -ProviderName PowerShellGet | Out-Null
-    $global:ProgressPreference = $originalProgressPreference
-}
-
-function Initialize-PackageManagementLatest {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
-    )
-    # Check if the current process can execute in the desired scope
-    if (-not(CanExecuteInDesiredScope -Scope $Scope))
-    {
-        return
-    }
-    $originalProgressPreference = $global:ProgressPreference
-    $global:ProgressPreference = 'SilentlyContinue'
-    Update-ModulesLatest -ModuleNames @("PackageManagement") -Scope $Scope | Out-Null
-    $global:ProgressPreference = $originalProgressPreference
-}
-
 function Initialize-Powershell {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
@@ -148,9 +69,9 @@ function Initialize-Powershell {
         return
     }
 
-    Initialize-NugetPackageProviderInstalled -Scope $Scope
-    Initialize-PowerShellGetLatest -Scope $Scope
-    Initialize-PackageManagementLatest -Scope $Scope
+    Initialize-NugetPackageProvider -Scope $Scope
+    Initialize-PowerShellGet -Scope $Scope
+    Initialize-PackageManagement -Scope $Scope
     Initialize-NugetSourceRegistered
 }
 
@@ -182,17 +103,17 @@ function Initialize-CorePowerLatest {
 
     $updatesDone = $false
     
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Initiated"
-    Initialize-NugetPackageProviderInstalled -Scope $Scope
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProviderInstalled" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProvider" -SuffixText "Initiated"
+    Initialize-NugetPackageProvider -Scope $Scope
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProvider" -SuffixText "Completed"
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Initiated"
-    Initialize-PowerShellGetLatest  -Scope $Scope
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGetLatest" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGet" -SuffixText "Initiated"
+    Initialize-PowerShellGet  -Scope $Scope
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PowerShellGet" -SuffixText "Completed"
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Initiated"
-    Initialize-PackageManagementLatest  -Scope $Scope
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagementLatest" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagement" -SuffixText "Initiated"
+    Initialize-PackageManagement  -Scope $Scope
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-PackageManagement" -SuffixText "Completed"
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "Update-ModulesLatest CoreePower.Module CoreePower.Config" -SuffixText "Initiated"
     $updatesDone = Update-ModulesLatest -ModuleNames @("CoreePower.Module","CoreePower.Config") -Scope $Scope
