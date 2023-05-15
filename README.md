@@ -1,9 +1,9 @@
 # CoreePower.Lib
 CoreePower.Lib is a set of functions that can be used to enhance the functionality of your CoreePower project.
 
-## Install via Powershell
+## Install via Powershell (silent)
 ```
-try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))
+try { Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))
 ```
 
 ## Install via cmd
@@ -11,7 +11,7 @@ try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } 
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "try { Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))"
 ```
 
-## After install
+## Manual install
 ### Launch Powershell and invoke the command.
 ```
 Windows PowerShell
@@ -19,14 +19,13 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
+PS C:\Users\UserName> Install-Module CoreePower.Lib -Scope CurrentUser -Force
 PS C:\Users\UserName> Initialize-CorePowerLatest
 ```
 
 The `Initialize-CorePowerLatest` PowerShell function is a comprehensive script designed to automate the setup and update of a variety of essential tools for a developer's environment. It can be invoked with a specified module scope.
 
-The function first checks if the current process has the necessary permissions to execute in the specified scope. If it doesn't, the function returns and ends.
-
-If the function is invoked within a module, it retrieves the module's name and version. If not, it records the command type as the module name and sets the module version to "None".
+The `Initialize-CorePowerLatest` executes in user scope by default.
 
 The function then initializes and checks for updates for a set of specific tools and modules:
 
