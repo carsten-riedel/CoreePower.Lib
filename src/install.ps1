@@ -6,9 +6,8 @@ Install-Module -Name CoreePower.Lib -Scope CurrentUser -Force -AllowClobber | Ou
 $global:ProgressPreference = $originalProgressPreference
 
 
-
-$process = Get-Process -Id $pid
-$parentProcess = Get-Process -Id $process.ParentId
+$parentProcessId = (Get-WmiObject -Query "SELECT ParentProcessId FROM Win32_Process WHERE ProcessId=$pid").ParentProcessId
+$parentProcess = Get-Process -Id $parentProcessId
 
 Write-Host "Parent Process Name: $($parentProcess.ProcessName)"
 Write-Host "Parent Process ID: $($parentProcess.Id)"
