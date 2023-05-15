@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0.172'
+ModuleVersion = '0.0.0.173'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -78,7 +78,7 @@ FunctionsToExport = 'HasLocalAdministratorClaim', 'CouldRunAsAdministrator',
                'Initialize-PowerShellGetLatest', 
                'Initialize-PackageManagementLatest', 'Initialize-Powershell', 
                'Copy-Recursive', 'New-Tempdir', 'Restart-Proc', 
-               'Initialize-CorePowerLatest'
+               'Initialize-CorePowerLatest', 'AddPathEnviromentVariable'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -109,7 +109,7 @@ PrivateData = @{
                'VisualStudioCode'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.172/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.0.173/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/carsten-riedel/CoreePower.Lib'
