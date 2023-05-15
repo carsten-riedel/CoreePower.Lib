@@ -15,6 +15,9 @@ try { Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Forc
 
 ## Manual install
 ### Launch Powershell and invoke the command.
+
+![image](https://github.com/carsten-riedel/CoreePower.Lib/assets/97656046/047e107c-395c-4534-a73f-9563a486e45a)
+
 ```
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
