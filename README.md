@@ -44,7 +44,7 @@ The function then initializes and checks for updates for a set of specific tools
 3. **PackageManagement**: Also known as OneGet, a unified interface to package management systems and aims to make Software Discovery, Installation and Inventory work via a common set of cmdlets, regardless of the installation technology underneath. The function initializes the latest version of PackageManagement for the specified scope.
 4. **CorePower Modules**: The function checks for updates for the "CoreePower.Module" and "CoreePower.Config" modules.
 5. **7-Zip**: If 7-Zip isn't already installed, the function downloads it from SourceForge and installs it in the local application data directory.
-6. **Git**: If Git isn't already installed, the function downloads the latest 64-bit portable version from GitHub, extracts and initializes it
+6. **PortableGit**: If Git isn't already installed, the function downloads the latest 64-bit portable version from GitHub, extracts and initializes it.
 7. **GitHub CLI**: If the GitHub CLI isn't already installed, the function downloads the latest release for Windows from GitHub, extracts it.
 8. **NuGet**: If NuGet isn't already installed, the function installs it.
 9. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version.
@@ -56,7 +56,6 @@ The function then initializes and checks for updates for a set of specific tools
 **5-8 + 10:** Extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
 
 **9:** Invoke of orginal user scoped install.
-
 
 The function is a one-stop solution for setting up and maintaining a developer's environment with these tools, simplifying the process and saving time.
 
