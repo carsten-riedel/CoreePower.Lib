@@ -1,5 +1,7 @@
 # CoreePower.Lib
-CoreePower.Lib is a set of functions that can be used to enhance the functionality of your CoreePower project.
+The "CoreePower.Lib" module is a powerful addition to your CoreePower project, offering a range of specialized functions that enhance its functionality and enable advanced capabilities.
+
+One of the key features of the module is the `Initialize-CorePowerLatest` command, which automates the setup and updates of crucial development tools. By ensuring that you have the latest versions installed, this command streamlines your development environment for maximum efficiency.
 
 ## Install via Powershell (silent)
 ```
@@ -39,8 +41,14 @@ The function then initializes and checks for updates for a set of specific tools
 8. **NuGet**: If NuGet isn't already installed, the function installs it and adds its location to the system PATH.
 9. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version and adds its location to the system PATH.
 10. **Visual Studio Code**: If Visual Studio Code isn't already installed, the function downloads it, extracts it, and adds its location to the system PATH.
+11. **CoreePower.Lib"** Lastly, the function checks for updates for the "CoreePower.Lib" module.
 
-Lastly, the function checks for updates for the "CoreePower.Lib" module.
+**1-4 + 11:** Are Powershell updates
+
+**5-8 + 10:** Extractions to local application data directory.
+
+**9:** Invoke of orginal user scoped install.
+
 
 The function is a one-stop solution for setting up and maintaining a developer's environment with these tools, simplifying the process and saving time.
 
