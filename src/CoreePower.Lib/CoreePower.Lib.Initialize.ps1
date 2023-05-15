@@ -273,7 +273,7 @@ function Initialize-CorePowerLatest {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying"
         Copy-Recursive -Source $source -Destination $destination
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying  Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar Completed"
@@ -347,55 +347,6 @@ function Initialize-CorePowerLatest {
     }
 
 }
-
-
-function Get-GithubLatestReleaseAssetUrls {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
-    param(
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$RepositoryUrl
-    )
-
-    $repositoryUri = [System.Uri]$RepositoryUrl
-  
-    return $(Invoke-RestMethod "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url
-}
-
-function Download-GithubLatestReleaseMatchingAssets {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
-    param(
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$RepositoryUrl,
-        [Parameter(Mandatory)]
-        [string[]]$AssetNameFilters
-    )
-
-    $assetUrls = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "$RepositoryUrl"
-    $matchedUrl = Find-ItemsContainingAllStrings -InputItems $assetUrls -SearchStrings $AssetNameFilters
-    $fileName = $matchedUrl.Split("/")[-1]
-
-    $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
-    if (-not (Test-Path $temporaryDir)) {
-        New-Item -ItemType Directory -Path $temporaryDir -Force | Out-Null
-    }
-
-    $downloadTargetLocation = "$temporaryDir\$fileName"
-
-    #Invoke-WebRequest -Uri $matchedUrl -OutFile "$downloadTargetLocation"
-    $client = New-Object System.Net.WebClient
-    $client.DownloadFile($matchedUrl, $downloadTargetLocation)
-
-    return $downloadTargetLocation
-}
-
-
-
-
-
-
-
 
 
 if ($Host.Name -match "Visual Studio Code")
