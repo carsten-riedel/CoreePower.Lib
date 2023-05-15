@@ -9,12 +9,11 @@ $global:ProgressPreference = $originalProgressPreference
 $parentProcessId = (Get-WmiObject -Query "SELECT ParentProcessId FROM Win32_Process WHERE ProcessId=$pid").ParentProcessId
 $parentProcess = Get-Process -Id $parentProcessId
 
-Write-Host "Parent Process Name: $($parentProcess.ProcessName)"
-Write-Host "Parent Process ID: $($parentProcess.Id)"
-
-$module = Get-ModulesLocal -ModuleNames @('CoreePower.Lib')
-
-$currentDir = Get-Location
-Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$currentDir\Initialize-CorePowerLatest.cmd"
+if ($parentProcess.ProcessName -eq "cmd")
+{
+    $module = Get-ModulesLocal -ModuleNames @('CoreePower.Lib')
+    $currentDir = Get-Location
+    Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$currentDir\Initialize-CorePowerLatest.cmd"
+}
 
 Write-Output "Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
