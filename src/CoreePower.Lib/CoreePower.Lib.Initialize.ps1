@@ -5,7 +5,6 @@ if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) {
     . $PSScriptRoot\CoreePower.Lib.Includes.ps1
 }
 
-
 function Install-NugetToPackagemanagement {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
@@ -154,7 +153,6 @@ function Initialize-CorePowerLatest {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting"
         &7z x -y -o"$($env:localappdata)\PortableGit" "$file" | Out-Null
         Write-FormatedText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Extracting Completed"
-
         Write-FormatedText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing"
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $currendir = Get-Location
@@ -167,7 +165,6 @@ function Initialize-CorePowerLatest {
         $process.WaitForExit()
         Set-Location $currendir
         Write-FormatedText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Initializing Completed"
-
         Write-FormatedText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\PortableGit\cmd" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "git commandline" -SuffixText "Adding envar Completed"
@@ -272,27 +269,7 @@ function Initialize-CorePowerLatest {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    function FOO {
-        write-output "HEY"
-        Start-Sleep 2
-        write-output "HOY"
-        }
-
-       Start-Job -ScriptBlock ${Function:FOO} -Name "ddd" | Out-Null
-   
-       Wait-Job -Name @('ddd')   | Out-Null
-     
-       Receive-Job -Name @('ddd') -OutVariable result | Out-Null
-       
-       $state = Get-Job -State Completed
-   
-       $state | Remove-Job
-   
-       #$s = $result
-    
-       #$x=1
-       #Initialize-CorePowerLatest
-
+    $module = Get-ModulesLocal -ModuleNames @('CoreePower.Lib') -Scope CurrentUser -ModulRecordState All
+    $x=1
 }
-
 
