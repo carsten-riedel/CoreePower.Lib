@@ -5,7 +5,17 @@ $global:ProgressPreference = 'SilentlyContinue'
 Install-Module -Name CoreePower.Lib -Scope CurrentUser -Force -AllowClobber | Out-Null
 $global:ProgressPreference = $originalProgressPreference
 
+
+
+$process = Get-Process -Id $pid
+$parentProcess = Get-Process -Id $process.ParentId
+
+Write-Host "Parent Process Name: $($parentProcess.ProcessName)"
+Write-Host "Parent Process ID: $($parentProcess.Id)"
+
 $module = Get-ModulesLocal -ModuleNames @('CoreePower.Lib')
-AddPathEnviromentVariable -Path "$($module.ModuleBase)" -Scope CurrentUser
+
+$currentDir = Get-Location
+Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$currentDir\Initialize-CorePowerLatest.cmd"
 
 Write-Output "Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
