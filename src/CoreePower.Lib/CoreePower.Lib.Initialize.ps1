@@ -269,7 +269,7 @@ function Initialize-CorePowerLatest {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    $module = Get-ModulesLocal -ModuleNames @('CoreePower.Lib') -Scope CurrentUser -ModulRecordState All
+
     $x=1
 }
 
