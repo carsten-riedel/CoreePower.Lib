@@ -50,29 +50,27 @@ function Get-NugetToPackagemanagementPathLatest {
     }
 
     if ($Scope -eq [ModuleScope]::LocalMachine) {
-        return Find-Package -Name $Name -AllVersions -Source "$($Env:Programfiles)\AppData\Local\PackageManagement\NuGet\Packages" | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}} | Select-Object -ExpandProperty Path
+        $localPackages = Find-Package -Name $Name -Source "$($Env:Programfiles)\AppData\Local\PackageManagement\NuGet\Packages"
+        return $localPackages | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}} | Select-Object -ExpandProperty Path
     }
     elseif ($Scope -eq [ModuleScope]::CurrentUser) {
-        return Find-Package -Name $Name -AllVersions -Source "$($env:userprofile)\AppData\Local\PackageManagement\NuGet\Packages" | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}}  | Select-Object -ExpandProperty Path
+        $localPackages = Find-Package -Name $Name  -Source "$($env:userprofile)\AppData\Local\PackageManagement\NuGet\Packages"
+        return $localPackages | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}}  | Select-Object -ExpandProperty Path
     }
 }
 
-function Initialize-Powershell {
+function Get-PackageManagementNuGetPackages {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
+        [Parameter(Mandatory)]
+        [string]$Name,
+        [string]$RequiredVersion = $null,
         [ModuleScope]$Scope = [ModuleScope]::CurrentUser
     )
-    # Check if the current process can execute in the desired scope
-    if (-not(CanExecuteInDesiredScope -Scope $Scope))
-    {
-        return
-    }
 
-    Initialize-NugetPackageProvider -Scope $Scope
-    Initialize-PowerShellGet -Scope $Scope
-    Initialize-PackageManagement -Scope $Scope
-    Initialize-NugetSourceRegistered
+    
 }
+
 
 function Initialize-CorePowerLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
@@ -269,7 +267,10 @@ function Initialize-CorePowerLatest {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-
+    $localPackages = Find-Package -Name $Name  -Source "$($env:userprofile)"
+    $local = Get-Package | Where-Object ($_.ProviderName -contains "nuget")
+    $var =  Get-NugetToPackagemanagementPathLatest -Name "*"
+    $varx =  Find-Package -Name "Nuget.commandl*"
     $x=1
 }
 

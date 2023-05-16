@@ -55,5 +55,3 @@ function AddPathEnviromentVariable {
     $NEW = "$PROCESSPATHS;$Path"
     [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Process)
 }
-
-AddPathEnviromentVariable2 -Path "C:\tempxxx"
