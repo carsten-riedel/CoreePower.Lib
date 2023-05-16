@@ -5,72 +5,6 @@ if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) {
     . $PSScriptRoot\CoreePower.Lib.Includes.ps1
 }
 
-function Install-NugetToPackagemanagement {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [Parameter(Mandatory)]
-        [string]$Name,
-        [string]$RequiredVersion = $null,
-        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
-    )
-
-    # Check if the current process can execute in the desired scope
-    if (-not(CanExecuteInDesiredScope -Scope $Scope))
-    {
-        return
-    }
-
-    if ($Scope -eq [ModuleScope]::LocalMachine)  {
-        $originalProgressPreference = $global:ProgressPreference
-        $global:ProgressPreference = 'SilentlyContinue'
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope AllUsers  | Out-Null
-        $global:ProgressPreference = $originalProgressPreference
-    }
-    elseif ($Scope -eq [ModuleScope]::CurrentUser) {
-        $originalProgressPreference = $global:ProgressPreference
-        $global:ProgressPreference = 'SilentlyContinue'
-        Install-Package -Name $Name -RequiredVersion $RequiredVersion -Source NuGet -ProviderName NuGet -Scope CurrentUser | Out-Null
-        $global:ProgressPreference = $originalProgressPreference
-    }
-}
-
-function Get-NugetToPackagemanagementPathLatest {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [Parameter(Mandatory)]
-        [string]$Name,
-        [string]$RequiredVersion = $null,
-        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
-    )
-
-    # Check if the current process can execute in the desired scope
-    if (-not(CanExecuteInDesiredScope -Scope $Scope))
-    {
-        return
-    }
-
-    if ($Scope -eq [ModuleScope]::LocalMachine) {
-        $localPackages = Find-Package -Name $Name -Source "$($Env:Programfiles)\AppData\Local\PackageManagement\NuGet\Packages"
-        return $localPackages | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}} | Select-Object -ExpandProperty Path
-    }
-    elseif ($Scope -eq [ModuleScope]::CurrentUser) {
-        $localPackages = Find-Package -Name $Name  -Source "$($env:userprofile)\AppData\Local\PackageManagement\NuGet\Packages"
-        return $localPackages | Select-Object -First 1 @{Name='Path'; Expression={"$($_.Source)\$($_.Name).$($_.Version)"}}  | Select-Object -ExpandProperty Path
-    }
-}
-
-function Get-PackageManagementNuGetPackages {
-    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
-    param (
-        [Parameter(Mandatory)]
-        [string]$Name,
-        [string]$RequiredVersion = $null,
-        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
-    )
-
-    
-}
-
 
 function Initialize-CorePowerLatest {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
@@ -203,10 +137,10 @@ function Initialize-CorePowerLatest {
     Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Check"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install"
-        Install-NugetToPackagemanagement -Name "Nuget.Commandline"
+        Install-PackagemanagementNuget -Name "Nuget.Commandline"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar"
-        $path = Get-NugetToPackagemanagementPathLatest -Name "Nuget.Commandline"
+        $path = Find-PackagemanagementNugetLocal -Name "Nuget.Commandline"
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Available"
@@ -267,10 +201,7 @@ function Initialize-CorePowerLatest {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    $localPackages = Find-Package -Name $Name  -Source "$($env:userprofile)"
-    $local = Get-Package | Where-Object ($_.ProviderName -contains "nuget")
-    $var =  Get-NugetToPackagemanagementPathLatest -Name "*"
-    $varx =  Find-Package -Name "Nuget.commandl*"
-    $x=1
+    
+
 }
 
