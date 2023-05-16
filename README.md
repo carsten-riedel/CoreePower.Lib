@@ -61,10 +61,10 @@ The function is a one-stop solution for setting up and maintaining a developer's
 
 <h1></h1>
 
-### Powershell git clone a special version of the CoreePower.Lib git to a local directoy
+## Powershell git clone a special version of the CoreePower.Lib git to a local directoy
 ```
-git clone --branch V0.0.0.167 --depth 1 https://github.com/carsten-riedel/CoreePower.Lib.git C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.167
-Remove-Item -Recurse -Force "C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.167\.git"
+git clone --branch V0.0.0.177 --depth 1 https://github.com/carsten-riedel/CoreePower.Lib.git C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.177
+Remove-Item -Recurse -Force "C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.177\.git"
 ```
 
 
