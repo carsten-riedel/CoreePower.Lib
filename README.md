@@ -63,7 +63,7 @@ The function is a one-stop solution for setting up and maintaining a developer's
 
 ## Powershell git clone a special version of the CoreePower.Lib git to a local directoy
 ```
-git clone --branch V0.0.0.177 --depth 1 https://github.com/carsten-riedel/CoreePower.Lib.git C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.177
+git clone --branch V0.0.0.177 --depth 1 https://github.com/carsten-riedel/CoreePower.Lib.git C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.177 > null 2>&1
 Remove-Item -Recurse -Force "C:\VCS\raw\github.com\carsten-riedel\CoreePower.Module\V0.0.0.177\.git"
 ```
 
