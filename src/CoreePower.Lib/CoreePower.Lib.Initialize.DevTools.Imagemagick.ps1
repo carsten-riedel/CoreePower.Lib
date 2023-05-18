@@ -59,5 +59,8 @@ function Initialize-DevToolsImagemagick {
 if ($Host.Name -match "Visual Studio Code")
 {
     #Initialize-DevToolsImagemagick
+    #https://www.svgrepo.com/
+    #magick convert -density 300 -define icon:auto-resize=256,128,96,64,48,32,16 -background none sunflower-svgrepo-com.svg out.ico
+    #magick convert -background none -size 1024x1024 infile.svg outfile.png
 }
 
