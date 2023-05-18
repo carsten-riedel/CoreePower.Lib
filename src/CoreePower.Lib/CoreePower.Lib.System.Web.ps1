@@ -159,3 +159,79 @@ function Download-GithubLatestReleaseMatchingAssets {
 
     return $downloadTargetLocation
 }
+
+function Download-String {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param (
+        [Parameter(Mandatory)]
+        [string]$url
+    )
+
+    #enable unsecure downloads
+    [System.Net.ServicePointManager]::SecurityProtocol = 0
+
+    try {
+        $str = (New-Object Net.WebClient).DownloadString($url) 
+    }
+    catch {
+        Write-Host "DownloadString thrown a exception"
+        Write-Host "$($PSItem.Exception.Message)"
+        $str = ""
+    }
+    return [string]$str
+}
+
+function Find-AHrefInHtml {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param (
+        [Parameter(Mandatory)]
+        [string]$html,
+        [Parameter(Mandatory)]
+        [string]$url
+    )
+
+    $retval = @()
+
+    $RegExPattern = [regex]::new('<a href\s*=\s*\"(.*?)\".*>')
+
+    $regexMatches = $RegExPattern.Matches($html)
+
+    foreach($match in $regexMatches)
+    {
+        $ma = [System.Uri]$match.Groups[1].Value
+        if ($null -eq $ma.AbsoluteUri)
+        {
+            $joined = "$($url.TrimEnd('/'))/$($ma.ToString().TrimStart('/'))"
+        }
+        else {
+            $joined = "$ma"
+        }
+        
+        $retval += [System.Uri]$joined
+    }
+
+    return $retval
+}
+
+function Find-Links {
+    param (
+    [Parameter(Mandatory)]
+    [string]$url
+    )
+
+    $content = Download-String -url $url
+    $links = Find-AHrefInHtml -url $url -html $content
+    return $links
+}
+
+function Test.CoreePower.Lib.System.Web {
+    param()
+    Write-Host "Start CoreePower.Lib.System.Web"
+
+    Write-Host "End CoreePower.Lib.System.Web"
+}
+
+if ($Host.Name -match "Visual Studio Code")
+{
+    Test.CoreePower.Lib.System.Web
+}

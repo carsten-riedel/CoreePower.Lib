@@ -101,6 +101,7 @@ function Find-ItemsContainingAllStrings {
         [string[]]$SearchStrings
     )
 
+    $matchedItems = @()
     $matchedItems = $InputItems | Where-Object {
         $foundStringCount = 0
         foreach ($searchString in $SearchStrings) {

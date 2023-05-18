@@ -117,6 +117,7 @@ function Initialize-DevTools {
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsNuget)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsDotnet)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsVsCode)
+    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsImagemagick)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsCoreeLibSelf)
 
     Initialize-DevToolsCompleted -UpdatesDone $UpdatesDone

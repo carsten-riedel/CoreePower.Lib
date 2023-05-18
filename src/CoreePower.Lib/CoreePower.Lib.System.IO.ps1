@@ -30,6 +30,9 @@ function Copy-Recursive {
         [string]$Source,
         [string]$Destination
     )
+
+    New-Directory -Directory $Destination
+
     Get-ChildItem $Source -Recurse | Foreach-Object {
         $targetPath = $_.FullName -replace [regex]::Escape($Source), $Destination
         if ($_.PSIsContainer) {
@@ -70,6 +73,44 @@ function New-TempDirectory {
     }
 
     return $tempDirectoryPath
+}
+
+function New-Directory {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Directory
+    )
+
+    if (-not(Test-Path -Path $Directory -PathType Container)) {
+        New-Item -ItemType Directory -Path $Directory -Force | Out-Null
+    }
+
+    if (Test-Path -Path $Directory -PathType Leaf) {
+        $Directory = [System.IO.Path]::GetDirectoryName($Directory)
+        $Directory = New-Directory -Directory $Directory
+    }
+
+    return $Directory
+}
+
+function Remove-TempDirectory {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    [Alias("rmtmpdir")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$TempDirectory
+    )
+ 
+    if (Test-Path -Path $TempDirectory -PathType Container) {
+        Remove-Item -Path "$TempDirectory" -Recurse -Force
+    }
+
+    if (Test-Path -Path $TempDirectory -PathType Leaf) {
+        $TempDirectory = [System.IO.Path]::GetDirectoryName($TempDirectory)
+        Remove-Item -Path "$TempDirectory" -Recurse -Force
+    }
+
 }
 
 <#
@@ -161,4 +202,18 @@ function Set-AsInvoker {
     $replaceText = 'asInvoker"           '
 
     Update-TextInFileWithEncoding -FilePath $FilePath -SearchText $searchText -ReplaceText $replaceText -Encoding ([System.Text.Encoding]::ASCII)
+}
+
+function Test.CoreePower.Lib.System.IO {
+    param()
+    Write-Host "Start CoreePower.Lib.System.IO"
+
+    $temp = "C:\Users\Valgrind\AppData\Local\Temp\c189f75e-5e2c-45d8-93d2-56bb4988fd85\ImageMagick-7.1.1-9-portable-Q16-HDRI-x64.zip"
+    Remove-TempDirectory -TempDirectory $temp
+    Write-Host "End CoreePower.Lib.System.IO"
+}
+
+if ($Host.Name -match "Visual Studio Code")
+{
+    Test.CoreePower.Lib.System.IO
 }
