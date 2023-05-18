@@ -70,16 +70,9 @@ function Initialize-DevToolsBase {
         return
     }
 
-    if ($null -ne $MyInvocation.MyCommand.Module)
-    {
-        $module = Get-Module -Name $MyInvocation.MyCommand.Module.Name
-        $moduleName = $module.Name
-        $moduleVersion = $module.Version
-    }
-    else {
-        $moduleName = $MyInvocation.MyCommand.CommandType
-        $moduleVersion = "None"
-    }
+    $moduleName , $moduleVersion = Get-CurrentModule 
+    $updatesDone = $false
+
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetPackageProvider" -SuffixText "Initiated"
     Initialize-NugetPackageProvider -Scope $Scope
@@ -96,6 +89,8 @@ function Initialize-DevToolsBase {
     Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Initiated"
     Initialize-NugetSourceRegistered
     Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-NugetSourceRegistered" -SuffixText "Completed"
+
+    return $updatesDone
 }
 
 function Initialize-DevTools {
@@ -113,9 +108,8 @@ function Initialize-DevTools {
     $UpdatesDone = $false
 
     Initialize-DevToolsInitiated
-    
-    Initialize-DevToolsBase
-
+ 
+    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsBase)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsCoreeModules)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevTools7z)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsGit)
@@ -124,7 +118,6 @@ function Initialize-DevTools {
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsDotnet)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsVsCode)
     $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsCoreeLibSelf)
-    
 
     Initialize-DevToolsCompleted -UpdatesDone $UpdatesDone
 
