@@ -49,13 +49,39 @@ The function then initializes and checks for updates for a set of specific tools
 8. **NuGet**: If NuGet isn't already installed, the function installs it.
 9. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version.
 10. **Visual Studio Code**: If Visual Studio Code isn't already installed, the function downloads it, extracts it.
-11. **CoreePower.Lib"** Lastly, the function checks for updates for the "CoreePower.Lib" module.
+11. **Imagemagick**
+12. **CoreePower.Lib"** Lastly, the function checks for updates for the "CoreePower.Lib" module.
 
-**1-4 + 11:** Are Powershell updates
+**1-4 + 12:** Are Powershell updates
 
-**5-8 + 10:** Extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
+**5-8 + 10-11:** Extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
 
 **9:** Invoke of orginal user scoped install.
+
+### After setup the following commands should be available
+```
+C:\>7z
+7-Zip 22.01 (x64) : Copyright (c) 1999-2022 Igor Pavlov : 2022-07-15
+
+C:\>git -v
+git version 2.39.2.windows.1
+
+C:\>gh --version
+gh version 2.28.0 (2023-04-25)
+https://github.com/cli/cli/releases/tag/v2.28.0
+
+C:\>nuget
+NuGet Version: 6.5.0.154
+
+C:\>dotnet --version
+7.0.201
+
+C:\>code --version
+1.78.2
+
+C:\>magick --version
+Version: ImageMagick 7.1.1-9 Q16-HDRI x64 776a88d:20230514 https://imagemagick.org
+```
 
 The function is a one-stop solution for setting up and maintaining a developer's environment with these tools, simplifying the process and saving time.
 
