@@ -15,6 +15,14 @@ $includes = @(
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetSourceRegistered.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.Powershell.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PackagemanagementNuget.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.CoreeModules.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.7z.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Git.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Gh.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Nuget.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Dotnet.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.VsCode.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"}
 )
 

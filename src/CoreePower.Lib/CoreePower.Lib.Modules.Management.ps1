@@ -368,6 +368,23 @@ function Update-ModulesLatest {
     }
 }
 
+function Get-CurrentModule {
+    [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
+    param()
+
+    if ($null -ne $MyInvocation.MyCommand.Module)
+    {
+        $module = Get-Module -Name $MyInvocation.MyCommand.Module.Name
+        $moduleName = $module.Name
+        $moduleVersion = $module.Version
+    }
+    else {
+        $moduleName = $MyInvocation.MyCommand.CommandType
+        $moduleVersion = "None"
+    }
+    return ,$moduleName , $moduleVersion
+}
+
 function Test.CoreePower.Lib.Modules.Management {
     param()
     Write-Host "Start Test.CoreePower.Lib.Modules.Management"
