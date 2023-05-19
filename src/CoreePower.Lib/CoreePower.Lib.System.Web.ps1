@@ -164,20 +164,35 @@ function Download-String {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
     param (
         [Parameter(Mandatory)]
-        [string]$url
+        [Uri]$Uri
     )
 
     #enable unsecure downloads
-    [System.Net.ServicePointManager]::SecurityProtocol = 0
+    $currentServicePointManagerSetting = [System.Net.ServicePointManager]::SecurityProtocol
+
+    if ($uri.Scheme -eq "https")
+    {
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 48 # Ssl3
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 192 # Tls
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 768 # Tls11
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 # Tls12
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 12288 # Tls13
+    } elseif ($uri.Scheme -eq "http") {
+        [System.Net.ServicePointManager]::SecurityProtocol = 0
+    }
+
 
     try {
-        $str = (New-Object Net.WebClient).DownloadString($url) 
+        $str = (New-Object Net.WebClient).DownloadString($Uri.OriginalString) 
     }
     catch {
         Write-Host "DownloadString thrown a exception"
         Write-Host "$($PSItem.Exception.Message)"
         $str = ""
     }
+
+    [System.Net.ServicePointManager]::SecurityProtocol = $currentServicePointManagerSetting
+
     return [string]$str
 }
 
@@ -219,7 +234,15 @@ function Find-Links {
     [string]$url
     )
 
-    $content = Download-String -url $url
+    try {
+        $uri = [System.URI]$url
+    }
+    catch {
+         write-error "Error parsing URL"
+    }
+   
+
+    $content = Download-String -Uri $uri
     $links = Find-AHrefInHtml -url $url -html $content
     return $links
 }
@@ -227,7 +250,7 @@ function Find-Links {
 function Test.CoreePower.Lib.System.Web {
     param()
     Write-Host "Start CoreePower.Lib.System.Web"
-
+    #$uris = Find-Links -url "https://imagemagick.org/script/download.php"
     Write-Host "End CoreePower.Lib.System.Web"
 }
 

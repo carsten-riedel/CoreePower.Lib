@@ -31,7 +31,7 @@ function Initialize-DevToolsCompleted {
     [Diagnostics.CodeAnalysis.SuppressMessage("PSUseApprovedVerbs","")]
     param (
         [Parameter(Mandatory)]
-        [bool]$UpdatesDone,
+        [bool]$RestartRequired,
         [ModuleScope]$Scope = [ModuleScope]::CurrentUser
     )
     # Check if the current process can execute in the desired scope
@@ -53,7 +53,7 @@ function Initialize-DevToolsCompleted {
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "Initialize-DevTools in module version: $moduleVersion" -SuffixText "Completed"
 
-    if ($UpdatesDone)
+    if ($RestartRequired)
     {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "A restart of Powershell is required to implement the update." -SuffixText "Info"
     }
@@ -105,22 +105,26 @@ function Initialize-DevTools {
         return
     }
 
-    $UpdatesDone = $false
+    $RestartRequired = $false
 
     Initialize-DevToolsInitiated
- 
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsBase)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsCoreeModules)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevTools7z)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsGit)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsGh)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsNuget)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsDotnet)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsVsCode)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsImagemagick)
-    $UpdatesDone = $UpdatesDone -or (Initialize-DevToolsCoreeLibSelf)
 
-    Initialize-DevToolsCompleted -UpdatesDone $UpdatesDone
+    $UpdatesDoneDevToolsBase = Initialize-DevToolsBase
+    $UpdatesDoneDevToolsCoreeModules = Initialize-DevToolsCoreeModules
+    $UpdatesDoneDevTools7z = Initialize-DevTools7z
+    $UpdatesDoneDevToolsGit = Initialize-DevToolsGit
+    $UpdatesDoneDevToolsGh = Initialize-DevToolsGh
+    $UpdatesDoneDevToolsNuget = Initialize-DevToolsNuget
+    $UpdatesDoneDevToolsDotnet = Initialize-DevToolsDotnet
+    $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
+    $UpdatesDoneDevToolsImagemagick = Initialize-DevToolsImagemagick
+    $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
+
+    $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsBase
+    $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsCoreeModules
+    $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsCoreeLibSelf
+
+    Initialize-DevToolsCompleted -RestartRequired $RestartRequired
 
 }
 
