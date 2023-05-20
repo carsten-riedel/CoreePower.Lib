@@ -111,7 +111,6 @@ function Initialize-DevTools {
 
     $UpdatesDoneDevToolsBase = Initialize-DevToolsBase
     $UpdatesDoneDevToolsCoreeModules = Initialize-DevToolsCoreeModules
-    $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
 
     $UpdatesDoneDevTools7z = Initialize-DevTools7z
     $UpdatesDoneDevToolsGit = Initialize-DevToolsGit
@@ -122,6 +121,8 @@ function Initialize-DevTools {
 
     $UpdatesDoneDevToolsDotnet = Initialize-DevToolsDotnet
     $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
+
+    $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
 
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsBase
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsCoreeModules
