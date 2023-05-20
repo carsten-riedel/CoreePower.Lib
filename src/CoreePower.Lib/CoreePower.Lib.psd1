@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1.9'
+ModuleVersion = '0.0.1.10'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -32,6 +32,7 @@ Copyright = '(c) Carsten Riedel. All rights reserved.'
 # Description of the functionality provided by this module
 Description = 'The "CoreePower.Lib" module is the fundamental part of the CoreePower project.
 It adds command-line programs like 7-Zip, Git, GitHub CLI, NuGet, dotnet, and Visual Studio Code from the latest sources, if not already available.
+See full readme at https://github.com/carsten-riedel/CoreePower.Lib/#readme
 Note: the "Initialize-CorePowerLatest" command may conflict with existing installations. Use with caution.
 '
 
@@ -110,7 +111,7 @@ PrivateData = @{
                'VisualStudioCode'
 
         # A URL to the license for this module.
-        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.1.9/Content/LICENSE.txt'
+        LicenseUri = 'https://www.powershellgallery.com/packages/CoreePower.Lib/0.0.1.10/Content/LICENSE.txt'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/carsten-riedel/CoreePower.Lib'
