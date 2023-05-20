@@ -117,6 +117,7 @@ function Initialize-DevTools {
     $UpdatesDoneDevToolsNuget = Initialize-DevToolsNuget
     $UpdatesDoneDevToolsDotnet = Initialize-DevToolsDotnet
     $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
+    $UpdatesDoneDevToolsWix = Initialize-DevToolsWix
     $UpdatesDoneDevToolsImagemagick = Initialize-DevToolsImagemagick
     $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
 
