@@ -19,15 +19,16 @@ This solution provides a comprehensive approach to the identified challenges, im
 ## The Module is available via Powershellgallery
 https://www.powershellgallery.com/packages/CoreePower.Lib
 
-## Install via Powershell (silent)
+## Install via Powershell (Unattended)
 ```
 try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))
 ```
 
-## Install via cmd (silent)
+## Install via cmd (Unattended)
 ```
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))"
 ```
+A fully functional `Initialize-CorePowerLatest.cmd` script is generated in the current directory, which refreshes the PATH environment after the PowerShell execution concludes. Therefore, simply appending or invoking `Initialize-CorePowerLatest` after the command will suffice.
 
 ## Manual install
 ### Launch Powershell and invoke the command.
@@ -42,7 +43,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
+PS C:\Users\UserName> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force #Maybe required
+
 PS C:\Users\UserName> Install-Module CoreePower.Lib -Scope CurrentUser -Force
+
 PS C:\Users\UserName> Initialize-CorePowerLatest
 ```
 
