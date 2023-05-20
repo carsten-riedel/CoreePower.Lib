@@ -111,15 +111,17 @@ function Initialize-DevTools {
 
     $UpdatesDoneDevToolsBase = Initialize-DevToolsBase
     $UpdatesDoneDevToolsCoreeModules = Initialize-DevToolsCoreeModules
+    $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
+
     $UpdatesDoneDevTools7z = Initialize-DevTools7z
     $UpdatesDoneDevToolsGit = Initialize-DevToolsGit
     $UpdatesDoneDevToolsGh = Initialize-DevToolsGh
     $UpdatesDoneDevToolsNuget = Initialize-DevToolsNuget
-    $UpdatesDoneDevToolsDotnet = Initialize-DevToolsDotnet
-    $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
     $UpdatesDoneDevToolsWix = Initialize-DevToolsWix
     $UpdatesDoneDevToolsImagemagick = Initialize-DevToolsImagemagick
-    $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
+
+    $UpdatesDoneDevToolsDotnet = Initialize-DevToolsDotnet
+    $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
 
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsBase
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsCoreeModules
