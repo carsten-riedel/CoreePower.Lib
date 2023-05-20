@@ -16,21 +16,23 @@ function Initialize-DevToolsNuget {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Check"
+    $contentText = "Nuget (NuGet CLI)"
+
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "nuget" -ErrorAction SilentlyContinue)) {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Install"
         Install-PackagemanagementNuget -Name "Nuget.Commandline"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Install Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Install Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
         $path = Find-PackagemanagementNugetLocal -Name "Nuget.Commandline"
         AddPathEnviromentVariable -Path "$path\tools" -Scope CurrentUser
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Adding envar Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } 
     else {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Already available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
     }
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "nuget commandline" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Completed"
 
     return $updatesDone
 }

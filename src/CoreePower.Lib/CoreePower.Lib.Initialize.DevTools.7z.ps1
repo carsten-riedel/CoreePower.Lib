@@ -16,27 +16,29 @@ function Initialize-DevTools7z {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Check"
+    $contentText = "7z (7-Zip)"
+
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "7z" -ErrorAction SilentlyContinue)) {
         $sz = $(Invoke-RestMethod "https://sourceforge.net/projects/sevenzip/best_release.json").platform_releases.windows
         $temporaryDir = New-TempDirectory
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
         $file = Get-RedirectDownload -Url "$($sz.url)" -OutputDirectory "$temporaryDir"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Download Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Invoker"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Change Invoker"
         Set-AsInvoker -FilePath "$file"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Change Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Change Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting"
         $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Extracting Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Adding envar Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Already available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
     }
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "7z commandline" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Completed"
 
     return $updatesDone
 }

@@ -16,12 +16,14 @@ function Initialize-DevToolsGh {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Check"
+    $contentText = "gh (GitHub CLI)"
+
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Download Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting"
         $temporaryDir = New-TempDirectory
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
@@ -29,18 +31,18 @@ function Initialize-DevToolsGh {
         $global:ProgressPreference = $originalProgressPreference
         $source = "$temporaryDir"
         $destination = "$($env:localappdata)\githubcli"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Extracting Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying"
         Copy-Recursive -Source $source -Destination $destination
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Copying Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Adding envar Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Already available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
     }
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "gh commandline" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Completed"
 
     return $updatesDone
 }

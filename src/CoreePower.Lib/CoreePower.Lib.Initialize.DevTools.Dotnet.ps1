@@ -16,19 +16,21 @@ function Initialize-DevToolsDotnet {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Check"
+    $contentText = "dotnet (.NET)"
+
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Deploy"
         &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Deploy Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Deploy Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Adding envar Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Already available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
     }
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "dotnet commandline" -SuffixText "Completed"
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Completed"
 
     return $updatesDone
 }

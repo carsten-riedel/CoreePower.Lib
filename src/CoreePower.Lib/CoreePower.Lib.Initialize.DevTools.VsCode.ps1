@@ -16,27 +16,29 @@ function Initialize-DevToolsVsCode {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Check"
+    $contentText = "code (Visual Studio Code)"
+
+    Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
         $temporaryDir = New-TempDirectory
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Download Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting"
         $originalProgressPreference = $global:ProgressPreference
         $global:ProgressPreference = 'SilentlyContinue'
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         $global:ProgressPreference = $originalProgressPreference
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Extracting Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying"
         Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Copying Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip\bin" -Scope CurrentUser
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Adding envar Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "code commandline (visual studio code)" -SuffixText "Already available"
+        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
     }
 
     return $updatesDone

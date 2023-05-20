@@ -16,7 +16,7 @@ function Initialize-DevToolsImagemagick {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    $contentText = "magick commandline"
+    $contentText = "magick (Imagemagick)"
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Check"
     if (-not(Get-Command "magick" -ErrorAction SilentlyContinue)) {

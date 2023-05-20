@@ -16,7 +16,7 @@ function Initialize-DevToolsWix {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    $contentText = "WixToolset"
+    $contentText = "dark (WixToolset)"
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "dark" -ErrorAction SilentlyContinue)) {
