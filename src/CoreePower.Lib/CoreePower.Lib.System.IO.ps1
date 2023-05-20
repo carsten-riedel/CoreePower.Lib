@@ -108,7 +108,11 @@ function Remove-TempDirectory {
 
     if (Test-Path -Path $TempDirectory -PathType Leaf) {
         $TempDirectory = [System.IO.Path]::GetDirectoryName($TempDirectory)
-        Remove-Item -Path "$TempDirectory" -Recurse -Force
+        $guidPattern = "\\[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        if ($TempDirectory -match $guidPattern) {
+            # Removing parent directory recursively if it is a guid pattern
+            Remove-Item -Path "$TempDirectory" -Recurse -Force
+        }
     }
 
 }

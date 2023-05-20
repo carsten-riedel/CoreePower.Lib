@@ -45,7 +45,24 @@ function Initialize-DevToolsImagemagick {
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Removing Extraction"
         Remove-TempDirectory -TempDirectory $ExtractDirectory
 
-        Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Adding envar"
+        if (Get-Command "dark" -ErrorAction SilentlyContinue) {
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Runtime"
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Download"
+            $file = Get-RedirectDownload2 -Url "https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe"
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Download Completed"
+            $ExtractDirectory = New-TempDirectory
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Extracting"
+            &dark -x "$ExtractDirectory" "$file" | Out-Null
+            &expand -F:* "$ExtractDirectory\AttachedContainer\packages\vcRuntimeMinimum_amd64\cab1.cab" "$TargetDirectory" | Out-Null
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Extracting Completed"
+            Remove-TempDirectory -TempDirectory $file
+            Remove-TempDirectory -TempDirectory $ExtractDirectory
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Runtime Completed"
+         } else {
+            Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "dark not available"
+         }
+
+         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Adding envar"
         AddPathEnviromentVariable -Path "$TargetDirectory" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Adding envar Completed"
     } else {
@@ -58,6 +75,7 @@ function Initialize-DevToolsImagemagick {
 
 if ($Host.Name -match "Visual Studio Code")
 {
+    Initialize-DevToolsImagemagick
     #Initialize-DevToolsImagemagick
     #https://www.svgrepo.com/
     #magick convert -density 300 -define icon:auto-resize=256,128,96,64,48,32,16 -background none sunflower-svgrepo-com.svg out.ico
