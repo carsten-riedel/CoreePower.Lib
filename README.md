@@ -44,21 +44,26 @@ The function then initializes and checks for updates for a set of specific tools
 1. **NuGet Package Provider**: NuGet is a free and open-source package manager for the .NET ecosystem. The function ensures NuGet is installed for the specified scope.
 2. **PowerShellGet**: This is a module with commands for discovering, installing, updating, and publishing PowerShell artifacts such as Modules, DSC Resources, Role Capabilities, and Scripts. The function initializes the latest version of PowerShellGet for the specified scope.
 3. **PackageManagement**: Also known as OneGet, a unified interface to package management systems and aims to make Software Discovery, Installation and Inventory work via a common set of cmdlets, regardless of the installation technology underneath. The function initializes the latest version of PackageManagement for the specified scope.
-4. **CorePower Modules**: The function checks for updates for the "CoreePower.Module" and "CoreePower.Config" modules.
-5. **7-Zip**: If 7-Zip isn't already installed, the function downloads it from SourceForge and installs it in the local application data directory.
-6. **PortableGit**: If Git isn't already installed, the function downloads the latest 64-bit portable version from GitHub, extracts and initializes it.
-7. **GitHub CLI**: If the GitHub CLI isn't already installed, the function downloads the latest release for Windows from GitHub, extracts it.
-8. **NuGet**: If NuGet isn't already installed, the function installs it.
-9. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version.
-10. **Visual Studio Code**: If Visual Studio Code isn't already installed, the function downloads it, extracts it.
-11. **Imagemagick**
-12. **CoreePower.Lib"** Lastly, the function checks for updates for the "CoreePower.Lib" module.
+4. **CorePower Modules**: The function checks for updates for the "CoreePower.Module" and "CoreePower.Config" modules. If not installed nothing happens.
+5. **CoreePower.Lib"** The function checks for updates for the "CoreePower.Lib" module.
 
-**1-4 + 12:** Are Powershell updates
+7. **7-Zip**: If 7-Zip isn't already installed, the function downloads it from SourceForge and installs it in the local application data directory.
+8. **PortableGit**: If Git isn't already installed, the function downloads the latest 64-bit portable version from GitHub, extracts and initializes it.
+9. **GitHub CLI**: If the GitHub CLI isn't already installed, the function downloads the latest release for Windows from GitHub, extracts it.
+10. **NuGet**: If NuGet isn't already installed, the function installs it.
+13. **WixToolset** If *dark* part of the WixToolset is not installed, the function downloads the latest release for Windows from GitHub, extracts it. (Required for extracting vc_redist exe)
+14. **Imagemagick** Currently not fully working cause of missing dependecy of vc_redist. (vcomp140.dll)
 
-**5-8 + 10-11:** Extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
+16. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version.
+17. **Visual Studio Code**: If Visual Studio Code isn't already installed, the function downloads it, extracts it.
 
-**9:** Invoke of orginal user scoped install.
+**1-5:** Are Powershell updates
+
+**7-14:** Download from **orginal sources** and extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
+
+**16:** Invoke of orginal user scoped install.
+
+**17:** Extraction of the user installer, add adding them to the users path variable.
 
 ### After setup the following commands should be available
 ```
@@ -80,6 +85,10 @@ C:\>dotnet --version
 
 C:\>code --version
 1.78.2
+
+C:>dark
+Windows Installer XML Toolset Decompiler version 3.11.2.4516
+Copyright (c) .NET Foundation and contributors. All rights reserved.
 
 C:\>magick --version
 Version: ImageMagick 7.1.1-9 Q16-HDRI x64 776a88d:20230514 https://imagemagick.org
