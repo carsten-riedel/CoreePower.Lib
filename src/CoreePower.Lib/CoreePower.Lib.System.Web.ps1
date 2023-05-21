@@ -1,3 +1,7 @@
+if (-not($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) { 
+    . $PSScriptRoot\CoreePower.Lib.Includes.ps1
+}
+
 <#
 .SYNOPSIS
 Downloads a file from a URL that may involve one or more redirects.
@@ -93,6 +97,9 @@ function Get-RedirectDownload2 {
     # Retrieve the response from the web request.
     $response = $request.GetResponse()
    
+    foreach ($header in $response.Headers.Keys) {
+        #Write-Host "$($header): $($response.Headers[$header])"
+    }
 
     # Extract the filename from the URL.
     $FileName = [System.IO.Path]::GetFileName($response.ResponseUri)
@@ -112,8 +119,6 @@ function Get-RedirectDownload2 {
     # Download the file from the final URL and save it to the specified output directory.
     $client = New-Object System.Net.WebClient
     $client.DownloadFile($response.ResponseUri, $OutputPath)
-
-    
 
     return $OutputPath
 }
@@ -139,11 +144,12 @@ function Download-GithubLatestReleaseMatchingAssets {
         [ValidateNotNullOrEmpty()]
         [string]$RepositoryUrl,
         [Parameter(Mandatory)]
-        [string[]]$AssetNameFilters
+        [string[]]$AssetNameFilters,
+        [string[]]$BlackList = $null
     )
 
     $assetUrls = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "$RepositoryUrl"
-    $matchedUrl = Find-ItemsContainingAllStrings -InputItems $assetUrls -SearchStrings $AssetNameFilters
+    $matchedUrl = Filter-ItemsWithLists -InputItems $assetUrls -WhiteListMatch $AssetNameFilters -BlackListMatch $BlackList
     $fileName = $matchedUrl.Split("/")[-1]
 
     $temporaryDir = Join-Path $env:TEMP ([System.Guid]::NewGuid().ToString())
@@ -250,11 +256,33 @@ function Find-Links {
 function Test.CoreePower.Lib.System.Web {
     param()
     Write-Host "Start CoreePower.Lib.System.Web"
+
+    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/actions/runner/releases" -AssetNameFilters @("win","x64",".zip")
+    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/actions/runner/releases" -AssetNameFilters @("win","x64",".zip") -BlackList @("noruntime","noexternals")
     #$uris = Find-Links -url "https://imagemagick.org/script/download.php"
-    Write-Host "End CoreePower.Lib.System.Web"
+    #$curDate = Get-Date
+    #$curDatestr = $curDate.ToString("yyyyMMdd") + "T" + $curDate.ToString("hhmmss") + "Z";
+
+    #$foo = Invoke-RestMethod "https://arc.msn.com/v3/Delivery/Placement?pid=338387&fmt=json&cfmt=poly&sft=jpeg&ctry=us&pl=en-US&cdm=1&time=2022-01-01T235959"
+    #$Data  = $foo.batchrsp.items[0].item | ConvertFrom-Json
+    #$first = $Data.ad.image_fullscreen_001_landscape.u
+    #$namex = $Data.ad.title_text.tx.Replace(",","")
+
+    #$name = Get-RedirectDownload2 -Url $first -OutputDirectory "C:\temp\spotlight" -RemoveQueryParams $true
+
+    #$oldFilePath = "$name"
+    #$newFilePath = "$name.jpg"
+
+    #$fullnew = [System.IO.Path]::GetDirectoryName($newFilePath) + "\" + "$namex.jpg"
+
+    #Rename-Item -Path $oldFilePath -NewName $fullnew
+   
+
+
 }
 
 if ($Host.Name -match "Visual Studio Code")
 {
+  
     Test.CoreePower.Lib.System.Web
 }

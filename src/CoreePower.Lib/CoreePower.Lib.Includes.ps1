@@ -24,6 +24,7 @@ $includes = @(
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Dotnet.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.VsCode.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Imagemagick.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.GitActionsRunner.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.ps1"}
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"}
 )

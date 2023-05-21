@@ -115,6 +115,51 @@ function Find-ItemsContainingAllStrings {
     return $matchedItems
 }
 
+function Filter-ItemsWithLists {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$InputItems,
+        [string[]]$WhiteListMatch = $null,
+        [string[]]$BlackListMatch = $null,
+        [bool]$RequireAllWhiteListMatches = $true
+    )
+
+    $OutputItems = @()
+
+    foreach ($item in $InputItems) {
+        $whitelistMatches = 0
+        $blacklistMatches = 0
+
+        if ($null -ne $WhiteListMatch) {
+            foreach ($whiteItem in $WhiteListMatch) {
+                if ($item -match $whiteItem) {
+                    $whitelistMatches++
+                }
+            }
+
+            if ($RequireAllWhiteListMatches -and $whitelistMatches -ne $WhiteListMatch.Count) {
+                continue
+            }
+        }
+
+        foreach ($blackItem in $BlackListMatch) {
+            if ($item -match $blackItem) {
+                $blacklistMatches++
+                break
+            }
+        }
+
+        if (($whitelistMatches -gt 0 -or $null -eq $WhiteListMatch) -and $blacklistMatches -eq 0) {
+            $OutputItems += $item
+        }
+    }
+
+    return $OutputItems
+}
+
+
 <#
 .SYNOPSIS
     Finds the index of a byte array within another byte array.
@@ -167,4 +212,19 @@ function IndexOfBytes {
         $i++
     }
     return -1
+}
+
+
+
+
+function Test.CoreePower.Lib.System.Array {
+    param()
+    Write-Host "Start CoreePower.Lib.System.Array"
+    
+    Write-Host "End CoreePower.Lib.System.Array"
+}
+
+if ($Host.Name -match "Visual Studio Code")
+{
+    Test.CoreePower.Lib.System.Array
 }

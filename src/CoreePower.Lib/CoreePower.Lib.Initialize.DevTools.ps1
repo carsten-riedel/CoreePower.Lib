@@ -122,6 +122,8 @@ function Initialize-DevTools {
     $UpdatesDoneDevToolsDotnet = Initialize-DevToolsDotnet
     $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
 
+    $UpdatesDoneDevToolsGitActionsRunner = Initialize-DevToolsGitActionsRunner
+
     $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
 
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsBase

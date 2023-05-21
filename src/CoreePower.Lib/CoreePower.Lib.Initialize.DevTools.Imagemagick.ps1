@@ -25,7 +25,7 @@ function Initialize-DevToolsImagemagick {
         $uris = Find-Links -url "https://imagemagick.org/script/download.php"
         $stringUris = $uris | ForEach-Object { $_.AbsoluteUri }
         $foundUrls = @()
-        $foundUrls = Find-ItemsContainingAllStrings -InputItems $stringUris -SearchStrings @("ImageMagick","portable","Q16","HDRI","x64",".zip")
+        $foundUrls = Filter-ItemsWithLists -InputItems $stringUris -WhiteListMatch @("ImageMagick","portable","Q16","HDRI","x64",".zip")
         $file = Get-RedirectDownload2 -Url $foundUrls
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Download Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Extracting"
@@ -75,7 +75,7 @@ function Initialize-DevToolsImagemagick {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    Initialize-DevToolsImagemagick
+    #Initialize-DevToolsImagemagick
     #Initialize-DevToolsImagemagick
     #https://www.svgrepo.com/
     #magick convert -density 300 -define icon:auto-resize=256,128,96,64,48,32,16 -background none sunflower-svgrepo-com.svg out.ico
