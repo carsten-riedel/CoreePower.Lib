@@ -208,12 +208,95 @@ function Set-AsInvoker {
     Update-TextInFileWithEncoding -FilePath $FilePath -SearchText $searchText -ReplaceText $replaceText -Encoding ([System.Text.Encoding]::ASCII)
 }
 
+function Recursive-Copy {
+    param (
+        [string]$Source,       # The source directory to copy from
+        [string]$Destination   # The destination directory to copy to
+    )
+
+    # Create the destination directory, if it doesn't exist
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+
+    # Get all items in the source directory recursively
+    $items = Get-ChildItem $Source -Recurse
+    for ($i = 0; $i -lt $items.Count; $i++) {
+        $sourceItem = $items[$i]
+
+        # Replace the source path with the destination in the target path
+        $targetPath = $sourceItem.FullName -replace [regex]::Escape($Source), $Destination
+
+        if (Test-Path -Path $targetPath)
+        {
+            $targetItem = Get-Item $targetPath
+        }
+
+        # Check if the current sourceItem is a directory
+        if ($sourceItem.PSIsContainer) {
+            # If it is, create the same directory structure in the destination
+            New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
+        } else {
+
+            $overwrite = $true
+
+            if (Test-Path -Path $targetPath -PathType Leaf)
+            {
+                # If it's a file, copy it to the destination
+                if ($sourceItem.Extension -eq ".dll" -or $sourceItem.Extension -eq ".exe" -or $sourceItem.Extension -eq ".sys" )
+                {
+                    $sourceVersion = (Get-Command "$($sourceItem.FullName)")
+                    $destVersion =  (Get-Command "$($targetPath)")
+
+                    if (($sourceItem.Length -eq $targetItem.Length) -and ($sourceItem.Length -eq $targetItem.Length))
+                    {
+                        if ($sourceVersion.FileVersionInfo.FileVersion -eq $destVersion.FileVersionInfo.FileVersion)
+                        {
+                            if ($sourceVersion.FileVersionInfo.ProductVersion -eq $destVersion.FileVersionInfo.ProductVersion)
+                            {
+                                $overwrite = $false
+                            }
+                        }
+
+                    }
+                }
+                elseif ($sourceItem.Extension -eq ".ico")
+                {
+                  if (($sourceItem.Length -eq $targetItem.Length) -and ($sourceItem.Length -eq $targetItem.Length))
+                    {
+                        if ($sourceItem.LastWriteTimeUtc -eq $targetItem.LastWriteTimeUtc)
+                        {
+                                $overwrite = $false
+                        }
+
+                    }
+                }
+            }
+
+            if ($overwrite)
+            {
+                Write-Host "Copying"
+                Write-Host "$($sourceItem.FullName)"
+                Write-Host "$targetPath"       
+                Copy-Item $sourceItem.FullName -Destination $targetPath -Force | Out-Null
+            }
+            else {
+                Write-Host "Skipping"
+                Write-Host "$($sourceItem.FullName)"
+            }
+            Write-Host ""
+            
+        }
+    }
+}
+
+
 function Test.CoreePower.Lib.System.IO {
     param()
     Write-Host "Start CoreePower.Lib.System.IO"
-
-    $temp = "C:\Users\Valgrind\AppData\Local\Temp\c189f75e-5e2c-45d8-93d2-56bb4988fd85\ImageMagick-7.1.1-9-portable-Q16-HDRI-x64.zip"
-    Remove-TempDirectory -TempDirectory $temp
+    #Recursive-Copy -Source "C:\base\github.com\CARSTE~1\blob\blobstub" -Destination "C:\tmp\dev"
+    #Recursive-Copy -Source "C:\base\github.com\carsten-riedel\blob\blobstub" -Destination "C:\tmp\dev"
+    
+    #$temp = "C:\Users\Valgrind\AppData\Local\Temp\c189f75e-5e2c-45d8-93d2-56bb4988fd85\ImageMagick-7.1.1-9-portable-Q16-HDRI-x64.zip"
+    #Remove-TempDirectory -TempDirectory $temp
     Write-Host "End CoreePower.Lib.System.IO"
 }
 
