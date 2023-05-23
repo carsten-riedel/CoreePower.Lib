@@ -14,7 +14,8 @@ This solution provides a comprehensive approach to the identified challenges, im
 5. **Portable Git Installer packaging:** The Portable Git Installer is packaged as a 7z self-extractor, necessitating the use of 7zip for extraction.
 6. **Latest release downloads:** The solution provides for downloading the latest releases from GitHub via the GitHub API, ensuring up-to-date components are used.
 7. **Nuget.exe acquisition:** The solution ensures the latest version of nuget.exe is obtained for the system.
-8. **Imagemagick:** Imagemagick requires vc runtime 2015 even in the portable version.
+8. **Imagemagick:** Imagemagick requires vc runtime 2015 even in the portable version. (Basic runtime is been copied, please take care of system updates, API set redirection will point to the latest version of your system)
+
 
 ## The Module is available via Powershellgallery
 https://www.powershellgallery.com/packages/CoreePower.Lib
@@ -70,6 +71,7 @@ The function then initializes and checks for updates for a set of specific tools
 12. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version.
 13. **Visual Studio Code**: If Visual Studio Code isn't already installed, the function downloads it, extracts it.
 14. **Latest. CoreePower.Lib** The function checks for updates for the "CoreePower.Lib" module. (If a update is availble the powershell session needs to be restarted to take affect) 
+15.  **Github actions-runner** The github actions-runner will be copied and extracted to C:\actions-runner.
 
 **1-5 + Latest:** Are Powershell updates
 
