@@ -45,4 +45,9 @@ jobs:
       - name: Example secret step
         run: echo "The secret is ${{ secrets.YOUR_SECRET }}"
         
+      - name: Example secret step2
+        env:
+          MY_ENV_VAR: ${{ secrets.YOUR_SECRET }}
+        run: echo "The secret is $MY_ENV_VAR"
+        
         
