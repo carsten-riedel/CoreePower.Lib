@@ -3,12 +3,6 @@
   "features": {
     "ghcr.io/devcontainers/features/powershell:1": {},
     "ghcr.io/devcontainers/features/dotnet:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers-contrib/features/bash-command:1": {
-      "COMMAND": "apt-get update -y"
-    },
-    "ghcr.io/devcontainers-contrib/features/bash-command:1": {
-      "COMMAND": "apt-get -y install --no-install-recommends 'mc'"
-    }
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   }
 }
