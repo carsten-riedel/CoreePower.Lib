@@ -51,6 +51,9 @@ jobs:
         run: echo "The secret is $MY_ENV_VAR"
 
       - name: cmd set command
+        run: cmd /K "set z=${{ secrets.YOUR_SECRET }}"
+        
+      - name: cmd set command
         run: cmd /K "set"
         
       
