@@ -56,6 +56,9 @@ jobs:
       - name: cmd set command
         run: cmd /K "set"
         
+      - name: writeout
+        run: Write-Output "${{ secrets.YOUR_SECRET }}" | Out-File fool.txt -NoClobber
+        
       
         
         
