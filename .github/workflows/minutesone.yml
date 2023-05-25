@@ -34,4 +34,12 @@ jobs:
           echo test, and deploy your project.
           
       - name: Check PowerShell version
-        run: Write-Host "$PSVersionTable"
+        run: Write-Output "$PSVersionTable"
+        
+      - name: Install CoreePower.Lib
+        run: Install-Module CoreePower.Lib -Scope CurrentUser -Force
+   
+      - name: Run Initialize-CorePowerLatest
+        run: Initialize-CorePowerLatest
+        
+        
