@@ -32,3 +32,6 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+          
+      - name: Check PowerShell version
+        run: Write-Host "$PSVersionTable"
