@@ -42,4 +42,7 @@ jobs:
       - name: Run Initialize-CorePowerLatest
         run: Initialize-CorePowerLatest
         
+      - name: Example secret step
+        run: echo "The secret is ${{ secrets.YOUR_SECRET }}"
+        
         
