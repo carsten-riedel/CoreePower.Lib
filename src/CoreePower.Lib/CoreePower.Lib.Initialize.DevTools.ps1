@@ -123,12 +123,15 @@ function Initialize-DevTools {
     $UpdatesDoneDevToolsVsCode = Initialize-DevToolsVsCode
 
     $UpdatesDoneDevToolsGitActionsRunner = Initialize-DevToolsGitActionsRunner
+    $UpdatesDoneDevToolPwsh = Initialize-DevToolPwsh
 
     $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
 
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsBase
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsCoreeModules
     $RestartRequired = $RestartRequired -or $UpdatesDoneDevToolsCoreeLibSelf
+
+
 
     Initialize-DevToolsCompleted -RestartRequired $RestartRequired
 
