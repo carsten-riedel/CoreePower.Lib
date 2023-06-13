@@ -19,7 +19,7 @@ function Initialize-DevToolPwsh {
     $contentText = "pwsh (Powershell core)"
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
-    if (-not(Get-Command "gh" -ErrorAction SilentlyContinue)) {
+    if (-not(Get-Command "pwsh" -ErrorAction SilentlyContinue)) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
         $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/PowerShell/PowerShell/releases/latest" -AssetNameFilters @("win","x64",".zip")
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download Completed"
