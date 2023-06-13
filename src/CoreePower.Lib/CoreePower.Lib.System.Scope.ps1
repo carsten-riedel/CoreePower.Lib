@@ -79,6 +79,12 @@ function CanExecuteInDesiredScope {
 
     $IsAdmin = (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
+    #Microsoft just does this inside Install-PowerShellRemoting.ps1
+    #if (! ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+    #Write-Error "WinRM registration requires Administrator rights. To run this cmdlet, start PowerShell with the `"Run as administrator`" option."
+    #return
+
+
     if ($Scope -eq [ModuleScope]::CurrentUser) {
         return $true
     } elseif ($Scope -eq [ModuleScope]::LocalMachine) {
