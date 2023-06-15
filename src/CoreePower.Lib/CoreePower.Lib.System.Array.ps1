@@ -159,6 +159,84 @@ function Filter-ItemsWithLists {
     return $OutputItems
 }
 
+function Extract-MatchGroups {
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string[]]$InputStrings,
+        [Parameter(Mandatory=$true)]
+        [string]$RegexPattern
+    )
+
+    $regex = [regex]$RegexPattern
+    $matchesArray = @()
+
+    foreach ($item in $InputStrings) {
+        $matches = $regex.Match($item)
+        if ($matches.Success) {
+            $groups = $matches.Groups
+            $matchGroups = @{
+                "OriginalItem" = $item
+            }
+
+            for ($i = 1; $i -lt $groups.Count; $i++) {
+                $matchGroups["Match$i"] = $groups[$i].Value
+            }
+
+            $matchesArray += $matchGroups
+        }
+    }
+
+    return $matchesArray
+}
+
+function Sort-MatchGroupsx {
+    param(
+        [Parameter(Mandatory=$true)]
+        [Array]$MatchGroupsArray,
+
+        [Parameter(Mandatory=$true)]
+        [Array]$SortingParameter,
+
+        [Parameter(Mandatory=$false)]
+        [Array]$TryVersionConvertForSorting = @()
+    )
+
+    # Apply Sort-Object for each parameter in reverse order
+    $sortedArray = $MatchGroupsArray
+    for ($i = $SortingParameter.Count - 1; $i -ge 0; $i--) {
+        $param = $SortingParameter[$i]
+
+        # If the parameter is in the TryVersionConvertForSorting list
+        if ($TryVersionConvertForSorting -contains $param) {
+            # Try to convert to version and sort. If it's not a version, use the default sorting
+            $sortedArray = $sortedArray | Sort-Object -Property {
+                if ($_.($param) -as [Version]) {
+                    return [Version]$_.($param)
+                } else {
+                    return $_.($param)
+                }
+            }
+        }
+        else {
+            # Default sorting
+            $sortedArray = $sortedArray | Sort-Object -Property $param
+        }
+    }
+
+    return $sortedArray
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 <#
 .SYNOPSIS

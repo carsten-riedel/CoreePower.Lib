@@ -124,6 +124,7 @@ function Initialize-DevTools {
 
     $UpdatesDoneDevToolsGitActionsRunner = Initialize-DevToolsGitActionsRunner
     $UpdatesDoneDevToolPwsh = Initialize-DevToolPwsh
+    $UpdatesDoneDevToolPwsh = Initialize-DevToolPython
 
     $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf
 
