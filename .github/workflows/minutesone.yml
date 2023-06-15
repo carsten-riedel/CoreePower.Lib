@@ -43,27 +43,15 @@ jobs:
       - name: Run Initialize-CorePowerLatest
         run: Initialize-CorePowerLatest
         
-      - name: Example secret step
+      - name: Sample secret step
         run: echo "The secret is ${{ secrets.YOUR_SECRET }}"
         
-      - name: Example secret step2
-        env:
-          MY_ENV_VAR: ${{ secrets.YOUR_SECRET }}
-        run: echo "The secret is $MY_ENV_VAR"
-
-      - name: cmd set command
-        run: cmd /K "set z=${{ secrets.YOUR_SECRET }}"
-        
-      - name: cmd set command
-        run: cmd /K "set"
-        
-      - name: writeout
+      - name: Secret to file
         run: Write-Output "${{ secrets.YOUR_SECRET }}" | Out-File fool.txt -NoClobber
-     
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        
+      - name: Secret display
+        run: Write-Output "$(Get-Content -Path fool.txt)"
+        
       
         
         
