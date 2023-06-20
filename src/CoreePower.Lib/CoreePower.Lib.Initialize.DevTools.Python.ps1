@@ -343,7 +343,7 @@ function Initialize-DevToolPython {
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "pythonw" -ErrorAction SilentlyContinue)) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
-        $targetdir = "$($env:localappdata)\PyhtonEmbeded"
+        $targetdir = "$($env:localappdata)\PythonEmbeded"
         $found = Find-Links -url "https://www.python.org/downloads/windows/"
         $AssetNameFilters = @("embed","amd64",".zip")
         $matchedUrl = Filter-ItemsWithLists -InputItems $found -WhiteListMatch $AssetNameFilters
@@ -370,7 +370,7 @@ function Initialize-DevToolPython {
         }
 
         if (Test-Path -Path "$targetdir\python.exe" -PathType Leaf) {
-            &cmd /c mklink "$targetdir\python3.exe" "$targetdir\python.exe"
+            #&runas /user:guest cmd /c mklink "$targetdir\python3.exe" "$targetdir\python.exe"
         }
 
         # need to reomve C:\Users\Valgrind\AppData\Local\Microsoft\WindowsApps
