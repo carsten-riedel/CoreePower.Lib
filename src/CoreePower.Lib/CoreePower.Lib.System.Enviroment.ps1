@@ -55,3 +55,65 @@ function AddPathEnviromentVariable {
     $NEW = "$PROCESSPATHS;$Path"
     [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Process)
 }
+
+<#
+.SYNOPSIS
+Removes a directory path from the system's environment variable PATH for a specified scope.
+
+.PARAMETER Path
+Specifies the directory path to remove from the PATH environment variable.
+
+.PARAMETER Scope
+Specifies the scope where the path will be removed. This can be one of the following values: "CurrentUser" or "LocalMachine". The default value is "CurrentUser".
+
+.NOTES
+This function has an alias "delenvpath" for ease of use.
+
+.EXAMPLE
+The following example removes the directory "C:\OldDirectory" from the PATH environment variable for the current user:
+DeletePathEnvironmentVariable -Path "C:\OldDirectory"
+
+#>
+function DeletePathEnviromentVariable {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    [alias("delenvpath")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Path,
+        [Scope]$Scope = [Scope]::CurrentUser
+    )
+    
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+
+    if ($Scope -eq [Scope]::CurrentUser) {
+        $UserPathArrayNew = @()
+        $UserPathArray = [System.Environment]::GetEnvironmentVariable("PATH",[System.EnvironmentVariableTarget]::User) -split ';'
+        foreach ($item in $UserPathArray)
+        {
+            if ($Path -notlike $item)
+            {
+                $UserPathArrayNew += $item
+            }
+        }
+        $UserPathArrayNewString = $UserPathArrayNew  -join ';'
+        [System.Environment]::SetEnvironmentVariable("PATH",$UserPathArrayNewString,[System.EnvironmentVariableTarget]::User)
+    }
+    elseif ($Scope -eq [Scope]::LocalMachine) {
+        $MachinePathArrayNew = @()
+        $MachinePathArray = [System.Environment]::GetEnvironmentVariable("PATH",[System.EnvironmentVariableTarget]::Machine) -split ';'
+        foreach ($item in $MachinePathArray)
+        {
+            if ($Path -notlike $item)
+            {
+                $MachinePathArrayNew += $item
+            }
+        }
+        $MachinePathArrayNewString = $MachinePathArrayNew  -join ';'
+        [System.Environment]::SetEnvironmentVariable("PATH",$MachinePathArrayNewString,[System.EnvironmentVariableTarget]::Machine)
+    }
+}

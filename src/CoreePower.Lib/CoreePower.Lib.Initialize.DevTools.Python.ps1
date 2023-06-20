@@ -343,7 +343,7 @@ function Initialize-DevToolPython {
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "pythonw" -ErrorAction SilentlyContinue)) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
-
+        $targetdir = "$($env:localappdata)\PyhtonEmbeded"
         $found = Find-Links -url "https://www.python.org/downloads/windows/"
         $AssetNameFilters = @("embed","amd64",".zip")
         $matchedUrl = Filter-ItemsWithLists -InputItems $found -WhiteListMatch $AssetNameFilters
@@ -356,8 +356,23 @@ function Initialize-DevToolPython {
 
         $file = Get-RedirectDownload2 -Url "$($latstreleaseversion.OriginalItem)"
 
-        Expand-Archive -Path $file -DestinationPath "$($env:localappdata)\PyhtonEmbeded" -Force
-        AddPathEnviromentVariable -Path "$($env:localappdata)\PythonEmbeded" -Scope CurrentUser
+        Expand-Archive -Path $file -DestinationPath "$targetdir" -Force
+        AddPathEnviromentVariable -Path "$targetdir" -Scope CurrentUser
+
+        $filePath= "$($env:localappdata)\Microsoft\WindowsApps\$((Get-Command "python" -ErrorAction SilentlyContinue).Name)"
+        if (Test-Path -Path $filePath -PathType Leaf) {
+            Remove-Item -Path $filePath -Force
+        }
+
+        $filePath= "$($env:localappdata)\Microsoft\WindowsApps\$((Get-Command "python3" -ErrorAction SilentlyContinue).Name)"
+        if (Test-Path -Path $filePath -PathType Leaf) {
+            Remove-Item -Path $filePath -Force
+        }
+
+        if (Test-Path -Path "$targetdir\python.exe" -PathType Leaf) {
+            &cmd /c mklink "$targetdir\python3.exe" "$targetdir\python.exe"
+        }
+
         # need to reomve C:\Users\Valgrind\AppData\Local\Microsoft\WindowsApps
     } else {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
