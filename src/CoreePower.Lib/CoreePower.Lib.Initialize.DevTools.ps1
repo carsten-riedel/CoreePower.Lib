@@ -107,6 +107,8 @@ function Initialize-DevTools {
 
     $RestartRequired = $false
 
+    $global:CoreeDevToolsRoot = "$($env:localappdata)\CoreeDevTools"
+
     Initialize-DevToolsInitiated
 
     $UpdatesDoneDevToolsBase = Initialize-DevToolsBase

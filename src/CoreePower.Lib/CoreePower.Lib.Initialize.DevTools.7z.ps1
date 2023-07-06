@@ -29,10 +29,10 @@ function Initialize-DevTools7z {
         Set-AsInvoker -FilePath "$file"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Change Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting"
-        $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($env:localappdata)\7zip`""
+        $output, $errorOutput = Start-ProcessSilent -File "$file" -Arguments "/S /D=`"$($global:CoreeDevToolsRoot)\7zip`""
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\7zip" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($global:CoreeDevToolsRoot)\7zip" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
