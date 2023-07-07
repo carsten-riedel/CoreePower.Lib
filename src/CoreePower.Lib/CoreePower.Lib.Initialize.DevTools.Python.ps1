@@ -338,7 +338,7 @@ function Initialize-DevToolPython {
     $moduleName , $moduleVersion = Get-CurrentModule 
     $updatesDone = $false
 
-    $contentText = "Python (Powershell core)"
+    $contentText = "Python (PythonEmbeded)"
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "pythonw" -ErrorAction SilentlyContinue)) {

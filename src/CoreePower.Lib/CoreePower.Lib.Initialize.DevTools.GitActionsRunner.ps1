@@ -20,7 +20,7 @@ function Initialize-DevToolsGitActionsRunner {
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check Dir"
 
-    $targetdir = "C:\actions-runner"
+    $targetdir = "$($global:CoreeDevToolsRoot)\actions-runner"
 
     if (-not(Test-Path -Path "$targetdir" -PathType Container)) {
         New-Item -ItemType Directory -Path "$targetdir" -Force | Out-Null
