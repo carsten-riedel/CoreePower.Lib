@@ -21,10 +21,11 @@ function Initialize-DevToolsDotnet {
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Deploy"
-        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS" | Out-Null
+        #https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script
+        &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1'))) -Channel LTS -InstallDir `"$($global:CoreeDevToolsRoot)\dotnet`"" | Out-Null
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Deploy Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\Microsoft\dotnet" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($global:CoreeDevToolsRoot)\dotnet" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {

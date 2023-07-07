@@ -30,13 +30,13 @@ function Initialize-DevToolPwsh {
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         $global:ProgressPreference = $originalProgressPreference
         $source = "$temporaryDir"
-        $destination = "$($env:localappdata)\PowershellCore"
+        $destination = "$($global:CoreeDevToolsRoot)\PowershellCore"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying"
         Copy-Recursive -Source $source -Destination $destination
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\PowershellCore" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($global:CoreeDevToolsRoot)\PowershellCore" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {

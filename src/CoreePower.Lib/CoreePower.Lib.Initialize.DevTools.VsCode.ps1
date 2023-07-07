@@ -19,7 +19,7 @@ function Initialize-DevToolsVsCode {
     $contentText = "code (Visual Studio Code)"
 
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
-    if (-not((Test-Path "$($env:localappdata)\vscodezip\code.exe" -PathType Leaf))) {
+    if (-not((Test-Path "$($global:CoreeDevToolsRoot)\vscodezip\code.exe" -PathType Leaf))) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
         $temporaryDir = New-TempDirectory
         $file = Get-RedirectDownload2 -Url "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-archive"
@@ -31,10 +31,10 @@ function Initialize-DevToolsVsCode {
         $global:ProgressPreference = $originalProgressPreference
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying"
-        Copy-Recursive -Source $temporaryDir -Destination "$($env:localappdata)\vscodezip"
+        Copy-Recursive -Source $temporaryDir -Destination "$($global:CoreeDevToolsRoot)\vscodezip"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\vscodezip\bin" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($global:CoreeDevToolsRoot)\vscodezip\bin" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {

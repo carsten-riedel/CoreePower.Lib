@@ -30,13 +30,13 @@ function Initialize-DevToolsGh {
         Expand-Archive -Path $file -DestinationPath $temporaryDir
         $global:ProgressPreference = $originalProgressPreference
         $source = "$temporaryDir"
-        $destination = "$($env:localappdata)\githubcli"
+        $destination = "$($global:CoreeDevToolsRoot)\githubcli"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying"
         Copy-Recursive -Source $source -Destination $destination
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\githubcli\bin" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($global:CoreeDevToolsRoot)\githubcli\bin" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {

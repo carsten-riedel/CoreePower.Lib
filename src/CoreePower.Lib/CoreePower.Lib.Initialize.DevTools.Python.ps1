@@ -343,7 +343,7 @@ function Initialize-DevToolPython {
     Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Check"
     if (-not(Get-Command "pythonw" -ErrorAction SilentlyContinue)) {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
-        $targetdir = "$($env:localappdata)\PythonEmbeded"
+        $targetdir = "$($global:CoreeDevToolsRoot)\PythonEmbeded"
         $found = Find-Links -url "https://www.python.org/downloads/windows/"
         $AssetNameFilters = @("embed","amd64",".zip")
         $matchedUrl = Filter-ItemsWithLists -InputItems $found -WhiteListMatch $AssetNameFilters

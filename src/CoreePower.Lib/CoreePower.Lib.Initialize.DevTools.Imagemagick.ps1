@@ -38,7 +38,7 @@ function Initialize-DevToolsImagemagick {
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Removing Download"
         Remove-TempDirectory -TempDirectory $file
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Copying"
-        $TargetDirectory = "$($env:localappdata)\ImageMagick"
+        $TargetDirectory = "$($global:CoreeDevToolsRoot)\ImageMagick"
         Copy-Recursive -Source $ExtractDirectory -Destination $TargetDirectory
         Write-FormatedText -PrefixText "$moduleName" -ContentText $contentText -SuffixText "Copying Completed"
 

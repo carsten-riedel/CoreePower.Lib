@@ -33,12 +33,12 @@ function Initialize-DevToolsWix {
         Remove-TempDirectory -TempDirectory $file
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download removed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying"
-        Copy-Recursive -Source $ExtractTemporaryDir -Destination "$($env:localappdata)\wixtoolset"
+        Copy-Recursive -Source $ExtractTemporaryDir -Destination "$($global:CoreeDevToolsRoot)\wixtoolset"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Copying Completed"
         Remove-TempDirectory -TempDirectory $ExtractTemporaryDir
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting removed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$($env:localappdata)\wixtoolset" -Scope CurrentUser
+        AddPathEnviromentVariable -Path "$($global:CoreeDevToolsRoot)\wixtoolset" -Scope CurrentUser
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
