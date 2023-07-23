@@ -134,8 +134,102 @@ function Get-GithubLatestReleaseAssetUrls {
 
     $repositoryUri = [System.Uri]$RepositoryUrl
   
-    return $(Invoke-RestMethod "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url
+    return $(Invoke-GithubApiWithRateLimitMonitoring -monitorRetries 5 -monitorSeconds 2 -apiCallRetries 6 -GitHubApiCall "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url;
 }
+
+function Invoke-GithubApiWithRateLimitMonitoring {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$GitHubApiCall,
+        [int]$apiCallRetries = 3,
+        [int]$monitorRetries = 20,
+        [int]$monitorSeconds = 3
+    )
+
+    $retryCount = 0
+
+    while ($true) {
+        try {
+            if ($retryCount -gt 0) {
+                Write-Host "API call attempt $retryCount of $($apiCallRetries). Invoke-RestMethod: $GitHubApiCall"
+            }
+            $githubApiRequestResult = $(Invoke-RestMethod "$GitHubApiCall")
+            return $githubApiRequestResult
+        } catch {
+            $response = $_.Exception.Response
+            if ($response.StatusCode -eq 403) {
+                if ($retryCount -lt $apiCallRetries) {
+                    $xRateLimitResetExists = $response.Headers.Contains('X-RateLimit-Reset')
+                    if ($xRateLimitResetExists) {
+                        $xRateLimitResetUnixEpochTime = $response.Headers.GetValues('X-RateLimit-Reset')[0]
+                        $xRateLimitResetLocalTime = Convert-UnixEpochToLocalDateTime -UnixEpochTime $xRateLimitResetUnixEpochTime
+                        $waitUntil = $xRateLimitResetLocalTime - [System.DateTime]::Now
+                        Write-Host "API rate limit exceeded. Reset in $($waitUntil.Minutes) minutes $($waitUntil.Seconds) seconds. Monitoring rate limit for proxy changes..."
+                        Monitor-GitHubRateLimit -monitorMaxRetries $monitorRetries -secondsToSleep $monitorSeconds
+                        $retryCount++
+                    } else {
+                        throw "Rate limit exceeded. No X-RateLimit-Reset header found."
+                    }
+                } else {
+                    throw $_.Exception.Message
+                }
+            } else {
+                throw $_.Exception.Message
+            }
+        }
+    }
+}
+
+
+
+function Monitor-GitHubRateLimit {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param (
+        
+        [int]$monitorMaxRetries = 20,
+        [int]$secondsToSleep = 3
+    )
+
+    $retryCount = 1
+
+    while ($retryCount -lt ($monitorMaxRetries+1)) {
+        $response = Invoke-RestMethod -Uri "https://api.github.com/rate_limit"
+        
+        $rateLimitLimit = $response.rate.limit
+        $rateLimitRemaining = $response.rate.remaining
+        $rateLimitResetTime = $response.rate.reset
+
+        $resetTimeLocalTime = Convert-UnixEpochToLocalDateTime -UnixEpochTime $rateLimitResetTime
+
+        Write-Host "Monitoring github api rate limit. (every $secondsToSleep seconds, Retry: $retryCount of $monitorMaxRetries) Resets at: $resetTimeLocalTime Remaining Requests: $rateLimitRemaining"
+
+        # Check if remaining requests > 0 or reset time has passed
+        if ($rateLimitRemaining -gt 0 -or $resetTimeLocalTime -lt [System.DateTime]::Now) {
+            Write-Host "Exiting the monitoring."
+            return
+        }
+
+        # Wait for specified seconds before checking again
+        Start-Sleep -Seconds $secondsToSleep
+        $retryCount++
+    }
+
+    Write-Host "Max retries reached. Exiting the monitoring."
+}
+
+function Convert-UnixEpochToLocalDateTime {
+    param (
+        [double]$UnixEpochTime
+    )
+    $dateTimeOffset = [System.DateTimeOffset]::FromUnixTimeSeconds($UnixEpochTime)
+    $localDateTime = $dateTimeOffset.LocalDateTime
+    return $localDateTime
+}
+
+
+
 
 function Download-GithubLatestReleaseMatchingAssets {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
@@ -253,6 +347,10 @@ function Find-Links {
     return $links
 }
 
+
+
+
+
 function Test.CoreePower.Lib.System.Web {
     param()
     Write-Host "Start CoreePower.Lib.System.Web"
@@ -284,4 +382,13 @@ function Test.CoreePower.Lib.System.Web {
 if ($Host.Name -match "Visual Studio Code")
 {
     Test.CoreePower.Lib.System.Web
+    # Call the function
+    $RepositoryUrl = "https://github.com/carsten-riedel/CoreePower.Lib/releases"
+    $repositoryUri = [System.Uri]$RepositoryUrl
+    for ($i = 0; $i -lt 1; $i++) {
+        $result = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "https://github.com/actions/runner/releases"
+        $x = $result
+    }
+    
+    
 }

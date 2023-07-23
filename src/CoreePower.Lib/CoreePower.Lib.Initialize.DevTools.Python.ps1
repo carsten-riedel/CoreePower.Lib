@@ -386,7 +386,7 @@ function Test.CoreePower.Lib.DevToolPython {
     param()
     Write-Host "Start Test.CoreePower.Lib.DevToolPython"
 
-    Initialize-DevToolPython
+    #Initialize-DevToolPython
 
     Write-Host "Test.CoreePower.Lib.DevToolPython"
 }
