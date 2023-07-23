@@ -387,7 +387,7 @@ if ($Host.Name -match "Visual Studio Code")
     $repositoryUri = [System.Uri]$RepositoryUrl
     for ($i = 0; $i -lt 1; $i++) {
         $result = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "https://github.com/actions/runner/releases"
-        $x = $result
+        #$x = $result
     }
     
     
