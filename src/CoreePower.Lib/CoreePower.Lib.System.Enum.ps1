@@ -37,7 +37,8 @@ if (-not ([System.Management.Automation.PSTypeName]'ModuleScope').Type) {
     Add-Type @"
     public enum ModuleScope {
         CurrentUser,
-        LocalMachine
+        LocalMachine,
+        Process
     }
 "@
 }
@@ -52,6 +53,6 @@ function Test.CoreePower.Lib.System.Enum {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    Test.CoreePower.Lib.System.Enum
+    #Test.CoreePower.Lib.System.Enum
 }
 

@@ -12,8 +12,9 @@ $parentProcess = Get-Process -Id $parentProcessId
 if ($parentProcess.ProcessName -eq "cmd")
 {
     $module = Get-ModulesLocal -ModuleNames @('CoreePower.Lib')
-    $currentDir = Get-Location
-    Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$currentDir\Initialize-CorePowerLatest.cmd"
+    $tempdir = New-TempDirectory 
+    AddPathEnviromentVariable -Path "$tempdir" -Scope [ModuleScope]::Process
+    Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$tempdir\Initialize-CorePowerLatest.cmd"
 }
 
 Write-Output "Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
