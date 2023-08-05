@@ -7,7 +7,6 @@ function Start-ComSpec {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = $env:ComSpec
     $psi.Arguments = $Arguments
-    $psi.UseShellExecute = $false
  
     try {
         $process = New-Object System.Diagnostics.Process
