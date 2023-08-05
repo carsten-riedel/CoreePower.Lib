@@ -20,9 +20,8 @@ if ($parentProcess.ProcessName -eq "cmd")
 
     Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$tempDirectoryPath\Initialize-CorePowerLatest.cmd"
 
-
-    Start-Process "$($Env:ComSpec)" -ArgumentList "/k cd ""$tempDirectoryPath"" & echo Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
+    Start-Process "$($Env:ComSpec)" -ArgumentList "/k cd ""$tempDirectoryPath"" & echo If you execute the command 'Initialize-CorePowerLatest', it will install the latest devtools. Please be aware that the 'Initialize-CorePowerLatest' command might potentially conflict with existing installations, so use it with caution."
     exit
 }
 
-Write-Output "Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
+Write-Output "If you execute the command 'Initialize-CorePowerLatest', it will install the latest devtools. Please be aware that the 'Initialize-CorePowerLatest' command might potentially conflict with existing installations, so use it with caution."
