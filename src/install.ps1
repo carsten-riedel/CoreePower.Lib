@@ -1,4 +1,23 @@
 #try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))
+function Start-ComSpec {
+    param (
+        [string]$Arguments
+    )
+
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = $env:ComSpec
+    $psi.Arguments = $Arguments
+    $psi.UseShellExecute = $false
+ 
+    try {
+        $process = New-Object System.Diagnostics.Process
+        $process.StartInfo = $psi
+        $process.Start()
+     } catch {
+        Write-Output "Error: $_.Exception.Message"
+    }
+}
+
 
 $originalProgressPreference = $global:ProgressPreference
 $global:ProgressPreference = 'SilentlyContinue'
@@ -26,21 +45,3 @@ if ($parentProcess.ProcessName -eq "cmd")
 
 Write-Output "If you execute the command 'Initialize-CorePowerLatest', it will install the latest devtools. Please be aware that the 'Initialize-CorePowerLatest' command might potentially conflict with existing installations, so use it with caution."
 
-function Start-ComSpec {
-    param (
-        [string]$Arguments
-    )
-
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = $env:ComSpec
-    $psi.Arguments = $Arguments
-    $psi.UseShellExecute = $false
- 
-    try {
-        $process = New-Object System.Diagnostics.Process
-        $process.StartInfo = $psi
-        $process.Start()
-     } catch {
-        Write-Output "Error: $_.Exception.Message"
-    }
-}
