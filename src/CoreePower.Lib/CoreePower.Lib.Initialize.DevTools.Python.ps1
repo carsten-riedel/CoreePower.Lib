@@ -393,5 +393,5 @@ function Test.CoreePower.Lib.DevToolPython {
 
 if ($Host.Name -match "Visual Studio Code")
 {
-    Test.CoreePower.Lib.DevToolPython
+    #Test.CoreePower.Lib.DevToolPython
 }
