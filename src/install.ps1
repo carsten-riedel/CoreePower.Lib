@@ -18,11 +18,11 @@ if ($parentProcess.ProcessName -eq "cmd")
         New-Item -ItemType Directory -Path $tempDirectoryPath -Force | Out-Null
     }
 
-    $PROCESSPATHS = [System.Environment]::GetEnvironmentVariable("PATH",[System.EnvironmentVariableTarget]::Process)
-    $NEW = "$PROCESSPATHS;$tempDirectoryPath"
-    [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Process)
-
     Copy-Item -Path "$($module.ModuleBase)\Initialize-CorePowerLatest.cmd" -Destination "$tempDirectoryPath\Initialize-CorePowerLatest.cmd"
+
+
+    Start-Process "$($Env:ComSpec)" -ArgumentList "/k cd ""$tempDirectoryPath"" & echo Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
+    exit
 }
 
 Write-Output "Note: the 'Initialize-CorePowerLatest' command may conflict with existing installations. Use with caution."
