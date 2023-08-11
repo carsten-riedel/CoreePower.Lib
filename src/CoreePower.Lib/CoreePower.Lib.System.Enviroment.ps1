@@ -56,6 +56,35 @@ function AddPathEnviromentVariable {
     [System.Environment]::SetEnvironmentVariable("PATH",$NEW,[System.EnvironmentVariableTarget]::Process)
 }
 
+
+function AddEnviromentVariable {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseApprovedVerbs", "")]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Name,
+        [ValidateNotNullOrEmpty()]
+        [string]$Value,
+        [ModuleScope]$Scope = [ModuleScope]::CurrentUser
+    )
+
+    # Check if the current process can execute in the desired scope
+    if (-not(CanExecuteInDesiredScope -Scope $Scope))
+    {
+        return
+    }
+    
+    if ($Scope -eq [ModuleScope]::CurrentUser) {
+        # Basic add if not contains
+        [System.Environment]::SetEnvironmentVariable($Name,$Value,[System.EnvironmentVariableTarget]::User)
+    }
+    elseif ($Scope -eq [ModuleScope]::LocalMachine) {
+        [System.Environment]::SetEnvironmentVariable($Name,$Value,[System.EnvironmentVariableTarget]::Machine)
+    }
+    
+    [System.Environment]::SetEnvironmentVariable($Name,$Value,[System.EnvironmentVariableTarget]::Process)
+}
+
 <#
 .SYNOPSIS
 Removes a directory path from the system's environment variable PATH for a specified scope.

@@ -9,25 +9,26 @@ $includes = @(
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.System.Process.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Modules.Management.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.ps1"},
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetPackageProvider.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PowerShellGet.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PackageManagement.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetSourceRegistered.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.Powershell.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PackagemanagementNuget.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.CoreeModules.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.7z.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Git.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Gh.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Wix.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Nuget.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Dotnet.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.VsCode.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Imagemagick.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.GitActionsRunner.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Pwsh.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Python.ps1"}
-   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.ps1"}
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetPackageProvider.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PowerShellGet.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PackageManagement.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.NugetSourceRegistered.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.Powershell.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.PackagemanagementNuget.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.CoreeModules.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.7z.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Git.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Gh.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Wix.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Nuget.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Dotnet.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.VsCode.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Imagemagick.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.GitActionsRunner.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Pwsh.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Python.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.MsOpenjdk17.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"}
    
 )
