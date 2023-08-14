@@ -128,6 +128,7 @@ function Initialize-DevTools {
     $UpdatesDoneDevToolPwsh = Initialize-DevToolPwsh
     $UpdatesDoneDevToolPython = Initialize-DevToolPython
     $UpdatesDoneDevToolMsOpenjdk17 = Initialize-DevToolsMsOpenjdk17
+    $UpdatesDoneDevToolAzurePipelinesAgent = Initialize-DevToolsAzurePipelinesAgent
     
 
     $UpdatesDoneDevToolsCoreeLibSelf = Initialize-DevToolsCoreeLibSelf

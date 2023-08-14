@@ -134,7 +134,20 @@ function Get-GithubLatestReleaseAssetUrls {
 
     $repositoryUri = [System.Uri]$RepositoryUrl
   
-    return $(Invoke-GithubApiWithRateLimitMonitoring -monitorRetries 5 -monitorSeconds 2 -apiCallRetries 6 -GitHubApiCall "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url;
+    $result = $(Invoke-GithubApiWithRateLimitMonitoring -monitorRetries 5 -monitorSeconds 2 -apiCallRetries 6 -GitHubApiCall "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url;
+    if ($result.EndsWith(".json"))
+    {
+        $result = Invoke-RestMethod -Uri $result
+        $urls = @()
+
+        foreach ($item in $result)
+        {
+                $urls += $item.downloadUrl
+        }
+        $result = $urls
+    }
+    return $result
+     
 }
 
 function Invoke-GithubApiWithRateLimitMonitoring {
@@ -383,12 +396,15 @@ if ($Host.Name -match "Visual Studio Code")
 {
     Test.CoreePower.Lib.System.Web
     # Call the function
-    $RepositoryUrl = "https://github.com/carsten-riedel/CoreePower.Lib/releases"
-    $repositoryUri = [System.Uri]$RepositoryUrl
-    for ($i = 0; $i -lt 1; $i++) {
-        $result = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "https://github.com/actions/runner/releases"
+
+    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("vsts","win","x64",".zip") -BlackList @("pipelines")
+
+    #$RepositoryUrl = "https://github.com/carsten-riedel/CoreePower.Lib/releases"
+    #$repositoryUri = [System.Uri]$RepositoryUrl
+    #for ($i = 0; $i -lt 1; $i++) {
+     #   $result = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "https://github.com/actions/runner/releases"
         #$x = $result
-    }
+    #}
     
     
 }
