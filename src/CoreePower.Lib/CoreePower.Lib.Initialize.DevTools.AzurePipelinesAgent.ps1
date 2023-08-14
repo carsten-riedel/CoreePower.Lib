@@ -26,7 +26,7 @@ function Initialize-DevToolsAzurePipelinesAgent {
         New-Item -ItemType Directory -Path "$targetdir" -Force | Out-Null
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Directory create"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download"
-        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("vsts","win","x64",".zip") -BlackList @("pipelines")
+        $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("pipelines-agent","win","x64",".zip")
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download Completed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Extracting"
         $originalProgressPreference = $global:ProgressPreference
@@ -51,7 +51,7 @@ function Initialize-DevToolsAzurePipelinesAgent {
 function Test.CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent {
     param()
     Write-Host "Start CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent"
-    $global:CoreeDevToolsRoot = "$($env:localappdata)\CoreeDevTools"
+    #$global:CoreeDevToolsRoot = "$($env:localappdata)\CoreeDevTools"
     #Initialize-DevToolsAzurePipelinesAgent
     Write-Host "End CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent"
 }

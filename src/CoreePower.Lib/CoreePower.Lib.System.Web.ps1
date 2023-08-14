@@ -398,7 +398,7 @@ if ($Host.Name -match "Visual Studio Code")
     # Call the function
 
     #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("vsts","win","x64",".zip") -BlackList @("pipelines")
-
+    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("pipelines-agent","win","x64",".zip")
     #$RepositoryUrl = "https://github.com/carsten-riedel/CoreePower.Lib/releases"
     #$repositoryUri = [System.Uri]$RepositoryUrl
     #for ($i = 0; $i -lt 1; $i++) {
