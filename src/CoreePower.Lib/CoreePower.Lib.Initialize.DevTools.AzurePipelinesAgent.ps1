@@ -37,9 +37,10 @@ function Initialize-DevToolsAzurePipelinesAgent {
         Remove-TempDirectory -TempDirectory $file
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Download removed"
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar"
-        AddPathEnviromentVariable -Path "$targetdir" -Scope CurrentUser
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
-        Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
+        #Conflicts with git actions runner.
+        #AddPathEnviromentVariable -Path "$targetdir" -Scope CurrentUser
+        #Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Adding envar Completed"
+        #Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Available"
     } else {
         Write-FormatedText -PrefixText "$moduleName" -ContentText "$contentText" -SuffixText "Already available"
     }

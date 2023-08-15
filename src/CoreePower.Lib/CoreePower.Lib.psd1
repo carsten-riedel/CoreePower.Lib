@@ -12,7 +12,7 @@
 RootModule = 'CoreePower.Lib.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.2.8'
+ModuleVersion = '0.0.2.9'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
