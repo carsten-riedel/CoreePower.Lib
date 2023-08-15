@@ -135,7 +135,7 @@ function Get-GithubLatestReleaseAssetUrls {
     $repositoryUri = [System.Uri]$RepositoryUrl
   
     $result = $(Invoke-GithubApiWithRateLimitMonitoring -monitorRetries 5 -monitorSeconds 2 -apiCallRetries 6 -GitHubApiCall "$($repositoryUri.Scheme)://api.github.com/repos$($repositoryUri.AbsolutePath)/latest").assets.browser_download_url;
-    if ($result.EndsWith(".json"))
+    if ($result.EndsWith(".json") -and $result.Count -eq 1)
     {
         $result = Invoke-RestMethod -Uri $result
         $urls = @()
@@ -368,7 +368,12 @@ function Test.CoreePower.Lib.System.Web {
     param()
     Write-Host "Start CoreePower.Lib.System.Web"
     #Find-Links -url "https://www.nuget.org/downloads"
-    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/actions/runner/releases" -AssetNameFilters @("win","x64",".zip")
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("pipelines-agent","win","x64",".zip")
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/cli/cli/releases" -AssetNameFilters @("windows","amd64",".zip")
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/git-for-windows/git/releases" -AssetNameFilters @("Portable","64-bit",".exe")
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/actions/runner/releases" -AssetNameFilters @("win","x64",".zip") -BlackList @("noruntime","noexternals")
+    $file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/wixtoolset/wix3/releases" -AssetNameFilters @("binaries",".zip")
+
     #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/actions/runner/releases" -AssetNameFilters @("win","x64",".zip") -BlackList @("noruntime","noexternals")
     #$uris = Find-Links -url "https://imagemagick.org/script/download.php"
     #$curDate = Get-Date
@@ -388,23 +393,11 @@ function Test.CoreePower.Lib.System.Web {
 
     #Rename-Item -Path $oldFilePath -NewName $fullnew
    
-
+    $x=1
 
 }
 
 if ($Host.Name -match "Visual Studio Code")
 {
     Test.CoreePower.Lib.System.Web
-    # Call the function
-
-    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("vsts","win","x64",".zip") -BlackList @("pipelines")
-    #$file = Download-GithubLatestReleaseMatchingAssets -RepositoryUrl "https://github.com/microsoft/azure-pipelines-agent/releases" -AssetNameFilters @("pipelines-agent","win","x64",".zip")
-    #$RepositoryUrl = "https://github.com/carsten-riedel/CoreePower.Lib/releases"
-    #$repositoryUri = [System.Uri]$RepositoryUrl
-    #for ($i = 0; $i -lt 1; $i++) {
-     #   $result = Get-GithubLatestReleaseAssetUrls -RepositoryUrl "https://github.com/actions/runner/releases"
-        #$x = $result
-    #}
-    
-    
 }
