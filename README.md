@@ -3,7 +3,7 @@
 
 The "CoreePower.Lib" module is a powerful addition to your CoreePower project, offering a range of specialized functions that enhance its functionality and enable advanced capabilities.
 
-One of the key features of the module is the `Initialize-CorePowerLatest` command, which automates the setup and updates of crucial development tools. By ensuring that you have the latest versions installed, this command streamlines your development environment for maximum efficiency.
+The key feature of the module is the `Initialize-CorePowerLatest` command, which automates the setup and updates of crucial development tools. By ensuring that you have the latest versions installed, this command streamlines your development environment for maximum efficiency.
 
 This solution provides a comprehensive approach to the identified challenges, implementing several key improvements:
 
@@ -15,6 +15,8 @@ This solution provides a comprehensive approach to the identified challenges, im
 6. **Latest release downloads:** The solution provides for downloading the latest releases from GitHub via the GitHub API, ensuring up-to-date components are used.
 7. **Nuget.exe acquisition:** The solution ensures the latest version of nuget.exe is obtained for the system.
 8. **Imagemagick:** Imagemagick requires vc runtime 2015 even in the portable version. (Basic runtime is been copied, please take care of system updates, API set redirection will point to the latest version of your system)
+9. **Github Ratelimits** If you are behind a proxy, there is a good chance that you can not call the github api, cause of github limitations. For unauthenticated requests, the rate limit allows for up to 60 requests per hour. Normal setups have some loadbalancing builtin so the api calls have some retry wait functions.
+
 
 
 ## The Module is available via Powershellgallery
@@ -29,7 +31,7 @@ try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } 
 ```
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted -Force } catch {} ; $nugetProvider = Get-PackageProvider -ListAvailable | Where-Object Name -eq "nuget"; if (-not($nugetProvider -and $nugetProvider.Version -ge '2.8.5.201')) { $pref = $global:ProgressPreference ; $global:ProgressPreference = 'SilentlyContinue' ; Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null ; $global:ProgressPreference = $pref; } ;[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072 ; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/install.ps1'))" & exit
 ```
-A fully functional `Initialize-CorePowerLatest.cmd` script is generated in the current directory, which refreshes the PATH environment after the PowerShell execution concludes. Therefore, simply appending or invoking `Initialize-CorePowerLatest` after the command will suffice.
+A fully functional `Initialize-CorePowerLatest.cmd` script is generated in the temporary directory, which refreshes the PATH environment after the PowerShell execution concludes. Therefore, simply appending or invoking `Initialize-CorePowerLatest` after the command will suffice.
 
 ## Manual install
 ### Launch Powershell and invoke the command.
