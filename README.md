@@ -67,19 +67,27 @@ The function then initializes and checks for updates for a set of specific tools
 8. **GitHub CLI**: If the GitHub CLI isn't already installed, the function downloads the latest release for Windows from GitHub, extracts it.
 9. **NuGet**: If NuGet isn't already installed, the function installs it.
 10. **WixToolset** If *dark* part of the WixToolset is not installed, the function downloads the latest release for Windows from GitHub, extracts it. (Required for extracting vc_redist exe)
-11. **Imagemagick** Currently not fully working cause of missing dependecy of vc_redist. (vcomp140.dll)
+11. **Imagemagick** Download latest version from the website and adds required vc runtime.
 12. **.NET Core**: If .NET Core isn't already installed, the function runs a script to download and install the latest LTS (Long Term Support) version.
 13. **Visual Studio Code**: If Visual Studio Code isn't already installed, the function downloads it, extracts it.
-14. **Latest. CoreePower.Lib** The function checks for updates for the "CoreePower.Lib" module. (If a update is availble the powershell session needs to be restarted to take affect) 
-15.  **Github actions-runner** The github actions-runner will be copied and extracted to C:\actions-runner.
+14. **github (Actions Runner)**: The github actions-runner will be copied and extracted.
+15. **pwsh (Powershell core)** Powershell core runtime
+16. **Python (PythonEmbeded)** Pyhton embeded version runtime.
+17. **Microsoft OpenJDK17** Java Runtime
+18. **AzurePipelinesAgent** CI/CD runner for https://dev.azure.com/ projects.The agent will be copied and extracted.
+19. **Latest. CoreePower.Lib** The function checks for updates for the "CoreePower.Lib" module. (If a update is availble the powershell session needs to be restarted to take affect) 
+
 
 **1-5 + Latest:** Are Powershell updates
 
-**6-11:** Download from **orginal sources** and extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
+**6-18:** Download from **orginal sources** and extractions to local application data directory. Locations are added to the process and users path variable, to invoke them from console.
 
 **12:** Invoke of orginal user scoped install.
 
 **13:** Extraction of the user installer, add adding them to the users path variable.
+
+### Extract location
+All tools are now placed inside ``%localappdata%\CoreeDevTools``
 
 ### After setup the following commands should be available
 ```
