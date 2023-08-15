@@ -118,6 +118,18 @@ Copyright (c) .NET Foundation and contributors. All rights reserved.
 
 C:\>magick --version
 Version: ImageMagick 7.1.1-9 Q16-HDRI x64 776a88d:20230514 https://imagemagick.org
+
+C:\>pwsh --version
+PowerShell 7.3.6
+
+C:\>python --version
+Python 3.11.4
+
+C:\>java --version
+openjdk 17.0.8 2023-07-18 LTS
+OpenJDK Runtime Environment Microsoft-8035246 (build 17.0.8+7-LTS)
+OpenJDK 64-Bit Server VM Microsoft-8035246 (build 17.0.8+7-LTS, mixed mode, sharing)
+
 ```
 
 The function is a one-stop solution for setting up and maintaining a developer's environment with these tools, simplifying the process and saving time.
