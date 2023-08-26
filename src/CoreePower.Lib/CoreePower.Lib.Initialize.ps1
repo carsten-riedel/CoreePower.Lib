@@ -22,9 +22,3 @@ function Initialize-CorePowerLatest {
 }
 
 
-if ($Host.Name -match "Visual Studio Code")
-{
-    
-
-}
-
