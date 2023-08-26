@@ -291,18 +291,3 @@ function IndexOfBytes {
     }
     return -1
 }
-
-
-
-
-function Test.CoreePower.Lib.System.Array {
-    param()
-    Write-Host "Start CoreePower.Lib.System.Array"
-    
-    Write-Host "End CoreePower.Lib.System.Array"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.System.Array
-}

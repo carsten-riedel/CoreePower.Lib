@@ -48,17 +48,3 @@ function Initialize-DevToolsWix {
 
     return $updatesDone
 }
-
-
-function Test.CoreePower.Lib.Initialize.DevTools.Wix {
-    param()
-    Write-Host "Start CoreePower.Lib.Initialize.DevTools.Wix"
-    #Initialize-DevToolsWix
-    Write-Host "End CoreePower.Lib.Initialize.DevTools.Wix"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.Initialize.DevTools.Wix
-}
-

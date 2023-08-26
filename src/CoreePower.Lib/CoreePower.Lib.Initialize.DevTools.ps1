@@ -142,15 +142,3 @@ function Initialize-DevTools {
     Initialize-DevToolsCompleted -RestartRequired $RestartRequired
 
 }
-
-function Test.CoreePower.Lib.Initialize.DevTools {
-    param()
-    Write-Host "Start CoreePower.Lib.Initialize.DevTools"
-    #Initialize-DevTools
-    Write-Host "End CoreePower.Lib.Initialize.DevTools"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.Initialize.DevTools
-}

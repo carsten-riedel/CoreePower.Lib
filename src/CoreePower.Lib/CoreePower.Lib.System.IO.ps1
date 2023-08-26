@@ -322,19 +322,3 @@ function Find-FileDirRecursively {
     $Directory = [System.IO.Path]::GetDirectoryName($found)
     return $Directory    
 }
-
-function Test.CoreePower.Lib.System.IO {
-    param()
-    Write-Host "Start CoreePower.Lib.System.IO"
-    #Recursive-Copy -Source "C:\base\github.com\CARSTE~1\blob\blobstub" -Destination "C:\tmp\dev"
-    #Recursive-Copy -Source "C:\base\github.com\carsten-riedel\blob\blobstub" -Destination "C:\tmp\dev"
-    $found = Find-FileDirRecursively -DirectoryPath "C:\Users\Valgrind\AppData\Local\CoreeDevTools\microsoft-jdk-17" -FileName "java.exe"
-    #$temp = "C:\Users\Valgrind\AppData\Local\Temp\c189f75e-5e2c-45d8-93d2-56bb4988fd85\ImageMagick-7.1.1-9-portable-Q16-HDRI-x64.zip"
-    #Remove-TempDirectory -TempDirectory $temp
-    Write-Host "End CoreePower.Lib.System.IO"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.System.IO
-}

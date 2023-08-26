@@ -222,23 +222,3 @@ function Write-FormatedText {
     Write-Host -NoNewline "$ContentText"
     Write-Host "$SuffixText"
 }
-
-
-function Test.CoreePower.Lib.System.CustomConsole {
-    param()
-    Write-Host "Start CoreePower.Lib.System.CustomConsole "
-    #Write-FormatedText -PrefixText "Start" -ContentText "Processingx" -SuffixText "End" -includeDateInPrefix $true
-    #Write-FormatedText -PrefixText "Startaaaaa" -ContentText "Processing" -SuffixText "Ending"
-    #Write-FormatedText -PrefixText "Start" -ContentText "Processing" -SuffixText "Ending aaaaaaaaaaaa" 
-    #Write-FormatedText -PrefixText "Startaaaaacc" -ContentText "Processing" -SuffixText "Ending" 
-    #Write-FormatedText -PrefixText "Startaaa" -ContentText "Processing were" -SuffixText "Ending" 
-    Write-Host "End CoreePower.Lib.System.CustomConsole "
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.System.CustomConsole
-}
-
-
-

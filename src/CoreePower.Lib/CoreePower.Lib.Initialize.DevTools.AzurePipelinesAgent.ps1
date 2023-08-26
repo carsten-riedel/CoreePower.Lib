@@ -48,16 +48,3 @@ function Initialize-DevToolsAzurePipelinesAgent {
 
     return $updatesDone
 }
-
-function Test.CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent {
-    param()
-    Write-Host "Start CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent"
-    #$global:CoreeDevToolsRoot = "$($env:localappdata)\CoreeDevTools"
-    #Initialize-DevToolsAzurePipelinesAgent
-    Write-Host "End CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent
-}

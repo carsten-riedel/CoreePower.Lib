@@ -101,18 +101,3 @@ function CanExecuteInDesiredScope {
         }
     }
 }
-
-
-function Test.CoreePower.Lib.System.Scope {
-    param()
-    Write-Host "Start CoreePower.Lib.System.Scope"
-    #$result1 = CouldRunAsAdministrator
-    #$result2 = HasLocalAdministratorClaim
-    #$result3 = CanExecuteInDesiredScope -Scope CurrentUser
-    Write-Host "End CoreePower.Lib.System.Scope"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.System.Scope
-}

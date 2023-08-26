@@ -384,20 +384,3 @@ function Get-CurrentModule {
     }
     return ,$moduleName , $moduleVersion
 }
-
-function Test.CoreePower.Lib.Modules.Management {
-    param()
-    Write-Host "Start Test.CoreePower.Lib.Modules.Management"
-    #$result1 = Get-ModulesInfoExtended
-    #$result2 = Get-ModulesLocal -ModuleNames @("CoreePower.Lib") -ModulRecordState All
-    #$result3 = Get-ModulesUpdatable
-    #$result4 = Remove-ModulesPrevious
-    #$result5 = Remove-Modules
-    #$result6 = Update-ModulesLatest
-    Write-Host "End Test.CoreePower.Lib.Modules.Management"
-}
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    Test.CoreePower.Lib.Modules.Management
-}

@@ -50,15 +50,3 @@ function Initialize-DevToolsMsOpenjdk17 {
 
     return $updatesDone
 }
-
-if ($Host.Name -match "Visual Studio Code")
-{
-    $global:CoreeDevToolsRoot = "$($env:localappdata)\CoreeDevTools"
-    Initialize-DevToolsMsOpenjdk17
-    #Initialize-DevToolsNuget2
-    #Initialize-DevToolsImagemagick
-    #https://www.svgrepo.com/
-    #magick convert -density 300 -define icon:auto-resize=256,128,96,64,48,32,16 -background none sunflower-svgrepo-com.svg out.ico
-    #magick convert -background none -size 128x128 infile.svg outfile.png
-    #magick convert -background none -size 1280x640 "C:\base\github.com\carsten-riedel\CoreePower.Lib\src\logo.svg" "C:\base\github.com\carsten-riedel\CoreePower.Lib\src\logox.png"
-}
