@@ -29,6 +29,7 @@ $includes = @(
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Python.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.MsOpenjdk17.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.AzurePipelinesAgent.ps1"},
+   @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.Baget.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.DevTools.ps1"},
    @{ Loaded=$false; Name="$PSScriptRoot\CoreePower.Lib.Initialize.ps1"}
    
