@@ -1,6 +1,11 @@
 # <img src="https://raw.githubusercontent.com/carsten-riedel/CoreePower.Lib/main/src/logo_64.png" align="left" />CoreePower.Lib
 <br clear="left"/>
 
+## Obsolete project migrated to
+https://github.com/carsten-riedel/CoreePower
+## 
+
+<br>
 The "CoreePower.Lib" module is a powerful addition to your CoreePower project, offering a range of specialized functions that enhance its functionality and enable advanced capabilities.
 
 The key feature of the module is the `Initialize-CorePowerLatest` command, which automates the setup and updates of crucial development tools. By ensuring that you have the latest versions installed, this command streamlines your development environment for maximum efficiency.
