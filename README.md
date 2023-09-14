@@ -5,7 +5,6 @@
 https://github.com/carsten-riedel/CoreePower
 
 
-
 <br>
 The "CoreePower.Lib" module is a powerful addition to your CoreePower project, offering a range of specialized functions that enhance its functionality and enable advanced capabilities.
 
